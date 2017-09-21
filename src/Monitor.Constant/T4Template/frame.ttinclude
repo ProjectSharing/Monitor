@@ -1,0 +1,207 @@
+﻿<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="System.Xml.Linq" #>
+<#@ assembly name="System.Data" #>
+<#@ Assembly Name="System.Reflection" #>
+<#@ assembly name="System.IO" #>
+<#@ Assembly Name="$(SolutionDir)Monitor.Constant\T4Template\CodeGenerator.dll"  #>
+<#@ Assembly Name="$(SolutionDir)Monitor.Constant\T4Template\Dapper.dll"  #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Xml" #>
+<#@ import namespace="System.Xml.Linq" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="CodeGenerator" #>
+
+<#+ 
+    public static class T4Helper{
+
+        // 判断目录是否存在
+        public static bool IsExistDirectory(string directoryPath,bool create)
+        {
+            if(!Directory.Exists(directoryPath)){
+                if(create){
+                    Directory.CreateDirectory(directoryPath);
+                }
+                return false;
+            }
+            return true;
+        }
+
+        // 判断文件是否存在
+        public static bool IsExistFile(string filePath)
+        {
+            return File.Exists(filePath);
+        }
+        // 写入文件
+        public static void CreateFile(string filePath, string text, Encoding encoding)
+        {
+            try
+            {
+                //如果文件不存在则创建该文件
+                if (!IsExistFile(filePath))
+                {
+                    //创建文件
+                    FileInfo file = new FileInfo(filePath);
+                    using (FileStream stream = file.Create())
+                    {
+                        using (StreamWriter writer = new StreamWriter(stream, encoding))
+                        {
+                            writer.Write(text);
+                            writer.Flush();
+                        }
+                    }
+                }
+            }
+            catch
+            {
+            }
+        }
+        // 将生成的文体包含到项目中
+        public static void ContainFileToCsproj(string fileName, string solutionDir, string csprojName)
+        {
+			//return;
+            //string path = solutionDir + csprojName + @"\" + csprojName + ".csproj";
+			//
+            //XDocument doc = XDocument.Load(path);
+            //XElement root = doc.Root;
+            //string xmlns = "{" + root.Attribute("xmlns").Value + "}";
+            //IEnumerable<XElement> compileList = root.Elements(xmlns + "ItemGroup").Elements(xmlns + "Compile");
+            //XElement itemGroup = compileList.FirstOrDefault().Parent;
+			//
+            //var _file=compileList.Where(u => u.Attribute("Include").Value == fileName);
+            //if (_file.Count() > 0)  _file.Remove();
+			//
+            //XElement compile = new XElement(xmlns + "Compile");
+            //compile.SetAttributeValue("Include", fileName);
+            //itemGroup.AddFirst(compile);
+            //doc.Save(path);
+        }
+
+        public static IEnumerable<TableInfo> GetTableList()
+        {
+            DapperHelper._Conn="Min Pool Size=10;Max Pool Size=500;Connection Timeout=50;Data Source=.;Initial Catalog=Monitor;Persist Security Info=True;User ID=sa;Password=123456";
+            DapperHelper._ProjectPrefix="Monitor";
+            return GeneralClassHelper.GetTableList("T_",new string[]{""});
+        }
+
+        // 生成仓储接口文件，不会覆盖原文件
+        public static void CreateIRepositoryFile(TableInfo info, string solutionDir,string prefix)
+        {
+            if (info!=null)
+            {
+                GeneralClassInfo generalClassInfo=GeneralClassHelper.GetIDalClass(info,prefix);
+                if(GeneralClassHelper.IsExistsInDir(solutionDir + @"Monitor.Repository\",generalClassInfo.Name)){
+                    return;
+                }
+
+                // 保存文件
+                CreateFile(solutionDir + @"Monitor.Repository\" + generalClassInfo.Name , generalClassInfo.Code, Encoding.UTF8);
+
+                // 包含项目
+                ContainFileToCsproj(generalClassInfo.Name, solutionDir, @"Monitor.Repository");
+            }
+        }
+        // 生成仓储文件，不会覆盖原文件
+        public static void CreateRepositoryFile(TableInfo info, string solutionDir,string prefix)
+        {
+            if (info!=null)
+            {
+                GeneralClassInfo generalClassInfo=GeneralClassHelper.GetDalClass(info,prefix,"Conn_Name_Monitor");
+                if(GeneralClassHelper.IsExistsInDir(solutionDir + @"Monitor.Repository\",generalClassInfo.Name)){
+                    return;
+                }
+                IsExistDirectory(solutionDir + @"Monitor.Repository\Implement\",true);
+                // 保存文件
+                CreateFile(solutionDir + @"Monitor.Repository\Implement\" + generalClassInfo.Name , generalClassInfo.Code, Encoding.UTF8);
+
+                // 包含项目
+                ContainFileToCsproj("Implement\\"+generalClassInfo.Name, solutionDir, @"Monitor.Repository");
+            }
+        }
+        // 生成DomainService接口文件，不会覆盖原文件
+        public static void CreateIDomainServiceFile(TableInfo info, string solutionDir,string prefix)
+        {
+            if (info!=null)
+            {
+                GeneralClassInfo generalClassInfo=GeneralClassHelper.GetIServiceClass(info,prefix);
+                if(GeneralClassHelper.IsExistsInDir(solutionDir + @"Monitor.DomainService\",generalClassInfo.Name)){
+                    return;
+                }
+
+                // 保存文件
+                CreateFile(solutionDir + @"Monitor.DomainService\" + generalClassInfo.Name , generalClassInfo.Code, Encoding.UTF8);
+
+                // 包含项目
+                ContainFileToCsproj(generalClassInfo.Name, solutionDir, @"Monitor.DomainService");
+            }
+        }
+        // 生成DomainService文件，不会覆盖原文件
+        public static void CreateDomainServiceFile(TableInfo info, string solutionDir,string prefix)
+        {
+            if (info!=null)
+            {
+                GeneralClassInfo generalClassInfo=GeneralClassHelper.GetServiceClass(info,prefix);
+                if(GeneralClassHelper.IsExistsInDir(solutionDir + @"Monitor.DomainService\",generalClassInfo.Name)){
+                    return;
+                }
+                IsExistDirectory(solutionDir + @"Monitor.DomainService\Implement\",true);
+                // 保存文件
+                CreateFile(solutionDir + @"Monitor.DomainService\Implement\" + generalClassInfo.Name , generalClassInfo.Code, Encoding.UTF8);
+
+                // 包含项目
+                ContainFileToCsproj("Implement\\"+generalClassInfo.Name, solutionDir, @"Monitor.DomainService");
+            }
+        }
+        // 生成ApplicationService接口文件，不会覆盖原文件
+        public static void CreateIApplicationServiceFile(TableInfo info, string solutionDir,string prefix)
+        {
+            if (info!=null)
+            {
+                GeneralClassInfo generalClassInfo=GeneralClassHelper.GetIBllClass(info,prefix);
+                if(GeneralClassHelper.IsExistsInDir(solutionDir + @"Monitor.Application\",generalClassInfo.Name)){
+                    return;
+                }
+
+                // 保存文件
+                CreateFile(solutionDir + @"Monitor.Application\" + generalClassInfo.Name , generalClassInfo.Code, Encoding.UTF8);
+
+                // 包含项目
+                ContainFileToCsproj(generalClassInfo.Name, solutionDir, @"Monitor.Application");
+            }
+        }
+        // 生成ApplicationService文件，不会覆盖原文件
+        public static void CreateApplicationServiceFile(TableInfo info, string solutionDir,string prefix)
+        {
+            if (info!=null)
+            {
+                GeneralClassInfo generalClassInfo=GeneralClassHelper.GetBllClass(info,prefix);
+                if(GeneralClassHelper.IsExistsInDir(solutionDir + @"Monitor.Application\",generalClassInfo.Name)){
+                    return;
+                }
+                IsExistDirectory(solutionDir + @"Monitor.Application\Implement\",true);
+                // 保存文件
+                CreateFile(solutionDir + @"Monitor.Application\Implement\" + generalClassInfo.Name , generalClassInfo.Code, Encoding.UTF8);
+
+                // 包含项目
+                ContainFileToCsproj("Implement\\"+generalClassInfo.Name, solutionDir, @"Monitor.Application");
+            }
+        }
+
+        public static void CreateModelFile(TableInfo info, string solutionDir,string prefix)
+        {
+            if (info!=null)
+            {
+                GeneralClassInfo generalClassInfo=GeneralClassHelper.GetModelClass(info,prefix);
+                if(GeneralClassHelper.IsExistsInDir(solutionDir + @"Monitor.Domain\",generalClassInfo.Name)){
+                    return;
+                }
+                // 保存文件
+                CreateFile(solutionDir + @"Monitor.Domain\" + generalClassInfo.Name , generalClassInfo.Code, Encoding.UTF8);
+
+                // 包含项目
+                ContainFileToCsproj(generalClassInfo.Name, solutionDir, @"Monitor.Domain");
+            }
+        }}
+#>

@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\JQCore.DataAccess\JQCore.DataAccess.csproj" />
+    <ProjectReference Include="..\JQCore\JQCore.csproj" />
+    <ProjectReference Include="..\Monitor.Constant\Monitor.Constant.csproj" />
+    <ProjectReference Include="..\Monitor.Infrastructure\Monitor.Infrastructure.csproj" />
+    <ProjectReference Include="..\Monitor.Trans\Monitor.Trans.csproj" />
+  </ItemGroup>
+
+</Project>
