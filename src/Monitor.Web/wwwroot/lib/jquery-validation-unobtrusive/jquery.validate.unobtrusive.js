@@ -39,19 +39,22 @@
     }
 
     function onError(error, inputElement) {  // 'this' is the form element
-        var container = $(this).find("[data-valmsg-for='" + escapeAttributeValue(inputElement[0].name) + "']"),
-            replaceAttrValue = container.attr("data-valmsg-replace"),
-            replace = replaceAttrValue ? $.parseJSON(replaceAttrValue) !== false : null;
-
-        container.removeClass("field-validation-valid").addClass("field-validation-error");
-        error.data("unobtrusiveContainer", container);
-
-        if (replace) {
-            container.empty();
-            error.removeClass("input-validation-error").appendTo(container);
-        }
-        else {
-            error.hide();
+        if (error && error.html() != "") {
+            $(inputElement).addClass("validateError");
+            var toolTipId = "tipTable" + error.attr("for");
+            $('body').append('<table id="' + toolTipId + '" class="tableTip" style="width:auto;z-index:99;"><tr><td  class="leftImage"></td> <td class="contenImage" align="left"></td> <td class="rightImage"></td></tr></table>');
+            var X = $(inputElement).offset().top;
+            var Y = $(inputElement).offset().left;
+            $('#' + toolTipId + '').css({ left: Y - 4 + 'px', top: X + 21 + 'px' });
+            $('#' + toolTipId + '').show()
+            $('#' + toolTipId + '').find('.contenImage').html(error.html());
+            $(inputElement).change(function () {
+                if ($(inputElement).val() != "") {
+                    $(inputElement).removeClass("validateError");
+                    $(inputElement).addClass("validateSuccess");
+                    $('#' + toolTipId + '').remove();
+                }
+            });
         }
     }
 
@@ -70,19 +73,10 @@
     }
 
     function onSuccess(error) {  // 'this' is the form element
-        var container = error.data("unobtrusiveContainer");
-
-        if (container) {
-            var replaceAttrValue = container.attr("data-valmsg-replace"),
-                replace = replaceAttrValue ? $.parseJSON(replaceAttrValue) : null;
-
-            container.addClass("field-validation-valid").removeClass("field-validation-error");
-            error.removeData("unobtrusiveContainer");
-
-            if (replace) {
-                container.empty();
-            }
-        }
+        var toolTipId = "tipTable" + error.attr("for");
+        try {
+            $('#' + toolTipId + '').remove();
+        } catch (e) { }
     }
 
     function onReset(event) {  // 'this' is the form element
@@ -107,7 +101,8 @@
             .removeClass("field-validation-error")
             .removeData("unobtrusiveContainer")
             .find(">*")  // If we were using valmsg-replace, get the underlying error
-                .removeData("unobtrusiveContainer");
+            .removeData("unobtrusiveContainer");
+        $('.tableTip,.validateError').remove();
     }
 
     function validationInfo(form) {
@@ -223,10 +218,10 @@
             // element with data-val=true
             var $selector = $(selector),
                 $forms = $selector.parents()
-                                  .addBack()
-                                  .filter("form")
-                                  .add($selector.find("form"))
-                                  .has("[data-val=true]");
+                    .addBack()
+                    .filter("form")
+                    .add($selector.find("form"))
+                    .has("[data-val=true]");
 
             $selector.find("[data-val=true]").each(function () {
                 $jQval.unobtrusive.parseElement(this, true);

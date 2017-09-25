@@ -1,5 +1,4 @@
-﻿
-/* 
+﻿/*
   layer mobile
 */
 
@@ -12,7 +11,6 @@
 .layui-m-layermain .layui-m-layersection{display:table-cell; vertical-align:middle; text-align:center;}
 .layui-m-layerchild{position:relative; display:inline-block; text-align:left; background-color:#fff; font-size:14px; border-radius: 5px; box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);  pointer-events:auto;  -webkit-overflow-scrolling: touch;}
 .layui-m-layerchild{-webkit-animation-fill-mode: both; animation-fill-mode: both; -webkit-animation-duration: .2s; animation-duration: .2s;}
-
 
 /* 弹出动画 */
 @-webkit-keyframes layui-m-anim-scale { /* 默认 */
@@ -34,7 +32,6 @@
   100%{opacity: 1; -webkit-transform: translateY(0); transform: translateY(0)}
 }
 .layui-m-anim-up{-webkit-animation-name: layui-m-anim-up;animation-name: layui-m-anim-up}
-
 
 .layui-m-layer0 .layui-m-layerchild{width: 90%; max-width: 640px;}
 .layui-m-layer1 .layui-m-layerchild{border:none; border-radius:0;}
@@ -82,6 +79,3 @@ body .layui-m-layer .layui-m-layer-footer{position: fixed; width: 95%; max-width
 /* 通用提示 */
 body .layui-m-layer .layui-m-layer-msg{width: auto; max-width: 90%; margin: 0 auto; bottom: -150px; background-color: rgba(0,0,0,.7); color: #fff;}
 .layui-m-layer-msg .layui-m-layercont{padding: 10px 20px;}
-
-
-

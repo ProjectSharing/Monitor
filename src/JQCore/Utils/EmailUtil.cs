@@ -16,7 +16,6 @@ namespace JQCore.Utils
     /// </summary>
     public static class EmailUtil
     {
-
         /// <summary>
         /// 发送邮件(smtp协议)
         /// </summary>

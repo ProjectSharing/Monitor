@@ -1,35 +1,44 @@
-body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+/* 验证样式开始 */
+.tableTip {
+    display: none;
+    filter: alpha(opacity=90);
+    overflow: hidden;
+    position: absolute;
+    border-collapse: collapse;
+    empty-cells: hide;
+    opacity: 0.9;
 }
 
-/* Wrapping element */
-/* Set some basic padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+.leftImage {
+    background: url("../images/x1.gif") no-repeat right top;
+    width: 14px;
+    height: 33px;
 }
 
-/* Carousel */
-.carousel-caption p {
-    font-size: 20px;
-    line-height: 1.4;
+.contenImage {
+    padding-right: 10px;
+    font-size: 12px;
+    background: url("../images/x2.gif") 50% top;
+    text-indent: 5px;
+    line-height: 36px;
+    padding-top: 3px;
+    font-family: Arial;
+    height: 33px;
 }
 
-/* Make .svg files in the carousel display properly in older browsers */
-.carousel-inner .item img[src$=".svg"] {
-    width: 100%;
+.rightImage {
+    background: url("../images/x3.gif") no-repeat left top;
+    width: 6px;
+    height: 33px;
 }
 
-/* QR code generator */
-#qrCode {
-    margin: 15px;
+.validateError {
+    background: #FFF7E3;
+    border: 1px solid #CB8D5C;
 }
 
-/* Hide/rearrange for smaller screens */
-@media screen and (max-width: 767px) {
-    /* Hide captions */
-    .carousel-caption {
-        display: none;
-    }
+.validateSuccess {
+    border: 1px solid #A8A8A8;
+    font: Verdana, Geneva, sans-serif,宋体;
 }
+/* 验证样式结束 */

@@ -1,8 +1,6 @@
 ﻿using JQCore.Dependency;
 using JQCore.Lock;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace JQCore.Utils
@@ -68,7 +66,7 @@ namespace JQCore.Utils
         /// <returns></returns>
         public static T ExecuteWithLock<T>(string key, string value, TimeSpan span, Func<T> executeAction, T defaultValue = default(T))
         {
-            return LockProvider().ExecuteWithLock(key, value, span, executeAction,defaultValue: defaultValue);
+            return LockProvider().ExecuteWithLock(key, value, span, executeAction, defaultValue: defaultValue);
         }
 
         /// <summary>

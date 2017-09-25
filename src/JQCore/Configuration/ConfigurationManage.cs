@@ -45,6 +45,7 @@ namespace JQCore.Configuration
             Instance.Configuration = configuration;
             return Instance;
         }
+
         /// <summary>
         /// 获取配置连接的值
         /// </summary>
@@ -58,6 +59,7 @@ namespace JQCore.Configuration
             }
             return Instance.Configuration.GetConnectionString(key);
         }
+
         /// <summary>
         /// 获取option的值
         /// </summary>

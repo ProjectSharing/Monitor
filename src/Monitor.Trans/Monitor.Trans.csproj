@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Monitor.Constant\Monitor.Constant.csproj" />
     <ProjectReference Include="..\Monitor.Infrastructure\Monitor.Infrastructure.csproj" />
   </ItemGroup>

@@ -102,6 +102,7 @@ namespace JQCore.DataAccess.Expressions
         }
 
         #region ExpressionVisitor
+
         protected override DataMember VisitBinary(BinaryExpression exp)
         {
             if (exp.NodeType == ExpressionType.ArrayIndex)
@@ -290,8 +291,9 @@ namespace JQCore.DataAccess.Expressions
             }
             var memberValue = Expression.Lambda(exp).Compile().DynamicInvoke();
             return Resolve(Expression.Constant(memberValue));
-        } 
-        #endregion
+        }
+
+        #endregion ExpressionVisitor
 
         #region 需要重写的一些方法
 

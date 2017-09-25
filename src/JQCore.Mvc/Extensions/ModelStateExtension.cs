@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -39,6 +37,7 @@ namespace JQCore.Mvc.Extensions
             }
             return string.Empty;
         }
+
         /// <summary>
         /// 获取全部错误信息(没有返回空)
         /// </summary>

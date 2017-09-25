@@ -1,0 +1,68 @@
+﻿@model LoginModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="监控管理-登录">
+    <meta name="author" content="yjq">
+    <title>登录- 监控管理</title>
+    <link href="~/lib/SBAdmin2/vendor/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/lib/SBAdmin2/dist/css/sb-admin-2.css" rel="stylesheet" />
+    <link href="~/lib/SBAdmin2/vendor/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="~/lib/layer/src/skin/default/layer.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <div class="login-panel panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">请登录</h3>
+                    </div>
+                    <div class="panel-body">
+                        <form asp-controller="Account" asp-action="Login" method="post" id="LoginForm">
+                            <fieldset>
+                                <div class="form-group">
+                                    <input class="form-control" placeholder="邮箱" asp-for="UserName" type="email" autofocus>
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control" placeholder="密码" asp-for="Pwd" type="password">
+                                </div>
+                                <div class="form-group">
+                                    <input asp-for="ValidateCode" class="form-control" placeholder="验证码" type="text" style="width:60%;display:inline;" />
+                                    <img src="/Account/ValidatorCode" data-src="/Account/ValidatorCode" style="height:34px;width:100px;float:right;cursor:pointer;" alt="验证码" title="点我刷新" id="validatorImg" />
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" class="btn btn-lg btn-success btn-block" value="登录" />
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/lib/SBAdmin2/vendor/jquery/jquery.js"></script>
+    <script src="~/lib/SBAdmin2/vendor/bootstrap/js/bootstrap.js"></script>
+    <script src="~/lib/SBAdmin2/dist/js/sb-admin-2.js"></script>
+    <script src="~/lib/SBAdmin2/vendor/metisMenu/metisMenu.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validation.message.zh.js"></script>
+    <script src="~/lib/layer/src/layer.js"></script>
+    <script src="~/js/utils/publicUtil.js"></script>
+    <script src="~/js/domain/Account.js"></script>
+</body>
+</html>

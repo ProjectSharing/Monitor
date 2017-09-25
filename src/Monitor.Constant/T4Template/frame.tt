@@ -16,7 +16,7 @@
    // and you will have intellisense for all namespaces in the full edition
 #>
 <# string solutionDir=Host.ResolveAssemblyReference("$(SolutionDir)"); #>
-<# string prefix="T_";#>
+<# string prefix="M_";#>
 	<# var tableList= T4Helper.GetTableList();#>
 	<# 
     foreach (var item in tableList)

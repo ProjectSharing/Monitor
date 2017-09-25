@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Monitor.Constant
+﻿namespace Monitor.Constant
 {
     /// <summary>
     /// Copyright (C) 2017 yjq 版权所有。
@@ -13,5 +9,44 @@ namespace Monitor.Constant
     /// </summary>
     public class TableConstant
     {
+        /// <summary>
+        /// 管理员详情信息表名
+        /// </summary>
+        public const string TABLE_NAME_ADMINDETAIL = "M_AdminDetail";
+
+        /// <summary>
+        /// 管理员表名
+        /// </summary>
+        public const string TABLE_NAME_ADMIN = "M_Admin";
+
+        /// <summary>
+        /// 管理员操作记录表名
+        /// </summary>
+        public const string TABLE_NAME_OPERATELOG = "M_OperateLog";
+
+        /// <summary>
+        /// 项目信息表名
+        /// </summary>
+        public const string TABLE_NAME_PROJECT = "M_Project";
+
+        /// <summary>
+        /// 运行日志信息表名
+        /// </summary>
+        public const string TABLE_NAME_RUNTIMELOG = "M_RuntimeLog";
+
+        /// <summary>
+        /// 服务器信息表名
+        /// </summary>
+        public const string TABLE_NAME_SERVCER = "M_Servcer";
+
+        /// <summary>
+        /// 预警信息操作记录表名
+        /// </summary>
+        public const string TABLE_NAME_WARNINGINFOOPERATELOG = "M_WarningInfoOperateLog";
+
+        /// <summary>
+        /// 日志预警信息表名
+        /// </summary>
+        public const string TABLE_NAME_WARNINGLOG = "M_WarningLog";
     }
 }

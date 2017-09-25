@@ -18,11 +18,10 @@ var task = {
       compatibility: 'ie7'
     }))
     .pipe(gulp.dest('./build'));
-    
+
     return gulp.src('./src/layer.js').pipe(uglify())
      .pipe(header('/*! <%= pkg.name %>-v<%= pkg.version %> <%= pkg.description %> <%= pkg.license %> License  <%= pkg.homepage %>  By <%= pkg.author %> */\n ;', {pkg: pkg}))
     .pipe(gulp.dest('./build'));
-    
   }
   ,mobile: function() {
     return gulp.src('./src/mobile/layer.js').pipe(uglify())
@@ -34,7 +33,6 @@ var task = {
     .pipe(gulp.dest('./build'));
   }
 };
-
 
 gulp.task('clear', function(cb){ //清理
   return del(['./build/*'], cb);
@@ -49,9 +47,3 @@ gulp.task('default', ['clear'], function(){
     task[key]();
   }
 });
-
-
-
-
-
-

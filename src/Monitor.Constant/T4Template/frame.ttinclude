@@ -83,7 +83,7 @@
         {
             DapperHelper._Conn="Min Pool Size=10;Max Pool Size=500;Connection Timeout=50;Data Source=.;Initial Catalog=Monitor;Persist Security Info=True;User ID=sa;Password=123456";
             DapperHelper._ProjectPrefix="Monitor";
-            return GeneralClassHelper.GetTableList("T_",new string[]{""});
+            return GeneralClassHelper.GetTableList("M_",new string[]{""});
         }
 
         // 生成仓储接口文件，不会覆盖原文件

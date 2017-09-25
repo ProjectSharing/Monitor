@@ -1,7 +1,5 @@
 ﻿using JQCore.DataAccess.DbClient;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace JQCore.DataAccess
 {

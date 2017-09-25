@@ -1,8 +1,8 @@
 /**
- 
+
  @Name: layer
  @Author: 贤心
- 
+
  **/
 
 *html{background-image: url(about:blank); background-attachment: fixed;}
@@ -119,12 +119,10 @@ html #layuicss-skinlayercss{display: none; position: absolute; width: 1989px;}
 .layui-layer-molv .layui-layer-btn a{background:#009f95;}
 .layui-layer-molv .layui-layer-btn .layui-layer-btn1{background:#92B8B1;}
 
-
-
 /**
- 
+
  @Name: layer拓展样式
- 
+
  */
 
 .layui-layer-iconext{background:url(icon-ext.png) no-repeat;}
@@ -179,5 +177,3 @@ html #layuicss-skinlayercss{display: none; position: absolute; width: 1989px;}
 @media screen and (max-width: 1100px) {
   .layui-layer-iframe{overflow-y: auto; -webkit-overflow-scrolling: touch;}
 }
-
-

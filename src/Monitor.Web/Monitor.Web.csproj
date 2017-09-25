@@ -4,7 +4,10 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.6.1" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.4.1" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
@@ -22,5 +25,8 @@
     <ProjectReference Include="..\Monitor.Repository\Monitor.Repository.csproj" />
     <ProjectReference Include="..\Monitor.Trans\Monitor.Trans.csproj" />
     <ProjectReference Include="..\Monitor.UnitOfWork\Monitor.UnitOfWork.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\css\domian\" />
   </ItemGroup>
 </Project>
