@@ -2,6 +2,9 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using JQCore.Configuration;
 using JQCore.Dependency;
+using JQCore.Mvc.Filter;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -38,6 +41,19 @@ namespace Monitor.Web
                     .AddOptions()
                     .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
                     ;
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Permission", policy =>
+                {
+                    policy.Requirements.Add(new LoginRequirement());
+                });
+            })
+            .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(o => o.LoginPath = new PathString("/Account"))
+                ;
+            //×¢ÈëÊÚÈ¨Handler
+            services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
+
             var builder = new ContainerBuilder();
             builder.Populate(services);
             builder.RegisterModule(new AutofacRegisterModule());
@@ -64,9 +80,9 @@ namespace Monitor.Web
 
             //add NLog.Web
             app.AddNLogWeb();
-
-            app.UseStaticFiles();
-            app.UseSession();
+            app.UseStaticFiles()
+               .UseSession()
+               .UseAuthentication();
 
             app.UseMvc(routes =>
             {

@@ -2,11 +2,13 @@
 using JQCore.Mvc.ActionResult;
 using JQCore.Mvc.Extensions;
 using JQCore.Utils;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Monitor.Application;
 using Monitor.Trans;
-using Monitor.Web.Infrastructure;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Monitor.Web.Controllers
@@ -19,6 +21,7 @@ namespace Monitor.Web.Controllers
         {
             _adminApplication = adminApplication;
         }
+
         /// <summary>
         /// 登录页面
         /// </summary>
@@ -47,7 +50,13 @@ namespace Monitor.Web.Controllers
             var operateResult = await _adminApplication.LoginAsync(model);
             if (operateResult.IsSuccess)
             {
-                PublicUtil.SetCurrentUserID(operateResult.Value);
+                ClaimsIdentity identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+                identity.AddClaim(new Claim(ClaimTypes.Sid, operateResult.Value.ToString()));
+                var principal = new ClaimsPrincipal(identity);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, new AuthenticationProperties
+                {
+                    IsPersistent = true
+                });
                 return ResultUtil.Success(null, "登录成功");
             }
             return operateResult.ToJsonResult();

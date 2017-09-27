@@ -42,3 +42,13 @@
     font: Verdana, Geneva, sans-serif,宋体;
 }
 /* 验证样式结束 */
+
+.space-10 {
+    height: 10px;
+}
+.space-20 {
+    height: 20px;
+}
+.space-30 {
+    height: 30px;
+}

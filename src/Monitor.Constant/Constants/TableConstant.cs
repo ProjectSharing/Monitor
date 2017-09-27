@@ -37,7 +37,7 @@
         /// <summary>
         /// 服务器信息表名
         /// </summary>
-        public const string TABLE_NAME_SERVCER = "M_Servcer";
+        public const string TABLE_NAME_SERVCER = "M_Servicer";
 
         /// <summary>
         /// 预警信息操作记录表名
@@ -48,5 +48,15 @@
         /// 日志预警信息表名
         /// </summary>
         public const string TABLE_NAME_WARNINGLOG = "M_WarningLog";
+
+        /// <summary>
+        /// 服务器组信息表名
+        /// </summary>
+        public const string TABLE_NAME_SERVICEGROUP = "M_ServiceGroup";
+
+        /// <summary>
+        /// 服务器所属组关系表名
+        /// </summary>
+        public const string TABLE_NAME_SERVICEGROUPMAP = "M_ServiceGroupMap";
     }
 }
