@@ -27,6 +27,16 @@ namespace JQCore.Result
         int PageIndex { get; }
 
         /// <summary>
+        /// 上一页
+        /// </summary>
+        int PrevPageIndex { get; }
+
+        /// <summary>
+        /// 下一页
+        /// </summary>
+        int NextPageIndex { get; }
+
+        /// <summary>
         /// 页长
         /// </summary>
         int PageSize { get; }
@@ -48,5 +58,9 @@ namespace JQCore.Result
     /// <typeparam name="T">数据类型</typeparam>
     public interface IPageResult<T> : IPageResult, IEnumerable<T>
     {
+        /// <summary>
+        /// 结果集
+        /// </summary>
+        IEnumerable<T> Data { get; }
     }
 }

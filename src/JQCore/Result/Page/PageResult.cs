@@ -97,6 +97,38 @@ namespace JQCore.Result
         }
 
         /// <summary>
+        /// 上一页
+        /// </summary>
+        public int PrevPageIndex
+        {
+            get
+            {
+                int prevPageInex = PageIndex - 1;
+                if (prevPageInex <= 0)
+                {
+                    prevPageInex = 1;
+                }
+                return prevPageInex;
+            }
+        }
+
+        /// <summary>
+        /// 下一页
+        /// </summary>
+        public int NextPageIndex
+        {
+            get
+            {
+                int nextPageIndex = PageIndex + 1;
+                if (nextPageIndex > PageCount)
+                {
+                    nextPageIndex = PageCount;
+                }
+                return nextPageIndex;
+            }
+        }
+
+        /// <summary>
         /// 当前最小位置
         /// </summary>
         public int CurrentMinPosition

@@ -46,9 +46,31 @@
 .space-10 {
     height: 10px;
 }
+
 .space-20 {
     height: 20px;
 }
+
 .space-30 {
     height: 30px;
+}
+
+.center {
+    text-align: center;
+}
+
+.left {
+    text-align: left;
+}
+
+.right {
+    text-align: right;
+}
+
+.ml-15 {
+    margin-left: 15px;
+}
+
+.ml-20 {
+    margin-left: 20px;
 }

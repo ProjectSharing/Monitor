@@ -653,5 +653,23 @@ namespace JQCore.DataAccess.Utils
             }
             return identityScript;
         }
+
+        /// <summary>
+        /// 脏读
+        /// </summary>
+        /// <param name="tableName">表名</param>
+        /// <param name="dbType">数据库类型</param>
+        /// <returns></returns>
+        public static string WithNoLock(this string tableName, DatabaseType dbType)
+        {
+            switch (dbType)
+            {
+                case DatabaseType.MSSQLServer:
+                    return tableName + " WITH(NOLOCK) ";
+
+                default:
+                    return tableName;
+            }
+        }
     }
 }

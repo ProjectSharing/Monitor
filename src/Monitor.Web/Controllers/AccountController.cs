@@ -55,7 +55,7 @@ namespace Monitor.Web.Controllers
                 var principal = new ClaimsPrincipal(identity);
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, new AuthenticationProperties
                 {
-                    IsPersistent = true
+                    //IsPersistent = true
                 });
                 return ResultUtil.Success(null, "登录成功");
             }
