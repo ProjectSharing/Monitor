@@ -29,4 +29,12 @@
   <ItemGroup>
     <Folder Include="wwwroot\css\domian\" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Update="ipdata.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

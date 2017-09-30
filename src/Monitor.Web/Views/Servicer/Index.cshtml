@@ -40,7 +40,9 @@
                                                 <td class="center">@item.FIP</td>
                                                 <td class="center">@item.FComment</td>
                                                 <td class="center">@item.FLastModifyTime</td>
-                                                <td class="center">A</td>
+                                                <td class="center">
+                                                    <a class="btn btn-info btn-sm OpenFrame" href="/Servicer/Edit/(@item.FID.ToString())?w=600&h=500" title="编辑服务器">编辑</a>
+                                                </td>
                                             </tr>
                                         }
                                     }
@@ -54,23 +56,6 @@
                     </div>
                     <div class="row">
                         <pager jqcore-page="Model"></pager>
-                        @*<div class="col-sm-6">
-                                <div class="dataTables_info" id="dataTables-example_info" role="status" aria-live="polite">Showing 1 to 10 of 57 entries</div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="dataTables_paginate paging_simple_numbers">
-                                    <ul class="pagination">
-                                        <li class="paginate_button previous disabled" ><a href="#">Previous</a></li>
-                                        <li class="paginate_button active" ><a href="#">1</a></li>
-                                        <li class="paginate_button" ><a href="#">2</a></li>
-                                        <li class="paginate_button" ><a href="#">3</a></li>
-                                        <li class="paginate_button" ><a href="#">4</a></li>
-                                        <li class="paginate_button" ><a href="#">5</a></li>
-                                        <li class="paginate_button" ><a href="#">6</a></li>
-                                        <li class="paginate_button next"><a href="#">Next</a></li>
-                                    </ul>
-                                </div>
-                            </div>*@
                     </div>
                 </div>
             </div>

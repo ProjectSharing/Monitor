@@ -1,4 +1,8 @@
-﻿namespace Monitor.DomainService
+﻿using Monitor.Domain;
+using Monitor.Trans;
+using System.Threading.Tasks;
+
+namespace Monitor.DomainService
 {
     /// <summary>
     /// 类名：IServicerDomainService.cs
@@ -8,5 +12,18 @@
     /// </summary>
     public interface IServicerDomainService
     {
+        /// <summary>
+        /// 根据Model创建服务器信息
+        /// </summary>
+        /// <param name="servicerModel">Model信息</param>
+        /// <returns>服务器信息</returns>
+        ServicerInfo Create(ServicerModel servicerModel);
+
+        /// <summary>
+        /// 校验服务器信息
+        /// </summary>
+        /// <param name="servicerInfo">服务器信息</param>
+        /// <returns></returns>
+        Task CheckAsync(ServicerInfo servicerInfo);
     }
 }

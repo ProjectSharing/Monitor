@@ -365,5 +365,10 @@
     <script src="~/lib/SBAdmin2/dist/js/sb-admin-2.js"></script>
     <script src="~/js/utils/publicUtil.js"></script>
     @RenderSection("Script", false)
+    <script type="text/javascript">
+        var Refresh = function () {
+            location.href = location.href;
+        };
+    </script>
 </body>
 </html>

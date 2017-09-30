@@ -16,6 +16,12 @@ namespace Monitor.Constant
         /// 用户
         /// </summary>
         [Description("用户")]
-        User = 1
+        User = 1,
+
+        /// <summary>
+        /// 服务器
+        /// </summary>
+        [Description("服务器")]
+        Servicer = 2
     }
 }

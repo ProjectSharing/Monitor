@@ -1,12 +1,13 @@
 ﻿@model ServicerModel
 @{
-    ViewData["Title"] = "添加";
-    Layout = "/Views/Shared/_Layout_Edit.cshtml";
+    ViewData["Title"] = "服务器";
+    Layout = "~/Views/Shared/_Layout_Edit.cshtml";
 }
+
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <form asp-action="Add" method="post" id="EditForm" class="form-horizontal">
+            <form asp-action="E地铁" method="post" id="EditForm">
                 @Html.Partial("_Modify")
             </form>
         </div>

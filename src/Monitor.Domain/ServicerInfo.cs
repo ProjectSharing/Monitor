@@ -59,5 +59,14 @@ namespace Monitor.Domain
         /// 最后修改人ID
         /// </summary>
         public int? FLastModifyUserID { get; set; }
+
+        /// <summary>
+        /// 获取操作信息
+        /// </summary>
+        /// <returns>操作信息</returns>
+        public string GetOperateDesc()
+        {
+            return $"FID:{FID.ToString()}】FMacAddress:{FMacAddress}】FIP:{FIP}】FName:{FName}】FIsDeleted:{(FIsDeleted ? "是" : "否")}】";
+        }
     }
 }

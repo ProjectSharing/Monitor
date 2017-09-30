@@ -1,18 +1,4 @@
-﻿/**
- * 执行最上层方法
- * @param {Function} action 要执行的方法
- */
-var ExecuteTopMethod = function (action) {
-    if (action) {
-        if (window !== top) {
-            top.action();
-        } else {
-            action();
-        }
-    }
-};
-
-//********************************************
+﻿//********************************************
 //* 弹窗的使用方法开始
 //********************************************
 var _index_loading; //加载中层
@@ -21,18 +7,22 @@ var _index_loading; //加载中层
  * 显示加载中
  */
 var ShowLoading = function () {
-    ExecuteTopMethod(function () {
+    if (window !== top) {
+        _index_loading = top.layer.load();
+    } else {
         _index_loading = layer.load();
-    });
+    }
 };
 
 /**
  * 隐藏加载中
  */
 var HidenLoading = function () {
-    ExecuteTopMethod(function () {
+    if (window !== top) {
+        top.layer.close(_index_loading);
+    } else {
         layer.close(_index_loading);
-    });
+    }
 };
 
 /**
@@ -65,7 +55,17 @@ var TopCloseCurrentWindow = function () {
  * @param {Function} callBack 回调方法
  */
 var ShowMsg = function (msg, icon, callBack) {
-    ExecuteTopMethod(function () {
+    if (window !== top) {
+        top.layer.msg(msg, {
+            time: 3000,
+            icon: icon,
+            btn: ["确定"],
+            btnAlign: "c"
+        }, function (index) {
+            callBack && callBack();
+            layer.close(index);
+        });
+    } else {
         layer.msg(msg, {
             time: 3000,
             icon: icon,
@@ -75,7 +75,7 @@ var ShowMsg = function (msg, icon, callBack) {
             callBack && callBack();
             layer.close(index);
         });
-    });
+    }
 };
 
 /**
@@ -113,7 +113,22 @@ var ShowError = function (msg, callBack) {
  * @param {Function} cancelCallBack 取消回调方法
  */
 var ShowNeedConfirmMsg = function (msg, icon, confirmCallBack, cancelCallBack) {
-    ExecuteTopMethod(function () {
+    if (window !== top) {
+        top.layer.msg(msg, {
+            time: 0,
+            icon: icon,
+            btn: ["确定", "取消"],
+            btnAlign: "c",
+            btn1: function (index, layero) {
+                confirmCallBack && confirmCallBack();
+                layer.close(index);
+            },
+            btn2: function (index, layero) {
+                cancelCallBack && cancelCallBack();
+                layer.close(index);
+            }
+        });
+    } else {
         layer.msg(msg, {
             time: 0,
             icon: icon,
@@ -128,7 +143,7 @@ var ShowNeedConfirmMsg = function (msg, icon, confirmCallBack, cancelCallBack) {
                 layer.close(index);
             }
         });
-    });
+    }
 };
 
 /**
@@ -275,9 +290,11 @@ var InitDailog = function (document) {
         event && event.stopPropagation();
         var t = this.title || this.name || null;
         var a = this.href || this.alt;
-        ExecuteTopMethod(function () {
+        if (window !== top) {
+            top.OpenNewFrame(t, a);
+        } else {
             OpenNewFrame(t, a);
-        });
+        }
         this.blur();
         return false;
     });

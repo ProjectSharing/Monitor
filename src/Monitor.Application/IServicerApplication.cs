@@ -18,5 +18,26 @@ namespace Monitor.Application
         /// <param name="queryWhere">查询条件</param>
         /// <returns>服务器列表</returns>
         Task<OperateResult<IPageResult<ServicerListDto>>> GetServiceListAsync(ServicePageQueryWhere queryWhere);
+
+        /// <summary>
+        /// 添加服务器信息
+        /// </summary>
+        /// <param name="servicerModel">服务器信息</param>
+        /// <returns>操作结果</returns>
+        Task<OperateResult> AddServicerAsync(ServicerModel servicerModel);
+
+        /// <summary>
+        /// 获取服务器的编辑信息
+        /// </summary>
+        /// <param name="servicerID">服务器ID</param>
+        /// <returns>服务器的编辑信息</returns>
+        Task<OperateResult<ServicerModel>> GetServicerModelAsync(int servicerID);
+
+        /// <summary>
+        /// 修改服务器信息
+        /// </summary>
+        /// <param name="servicerModel">服务器信息</param>
+        /// <returns>操作结果</returns>
+        Task<OperateResult> EditServicerAsync(ServicerModel servicerModel);
     }
 }
