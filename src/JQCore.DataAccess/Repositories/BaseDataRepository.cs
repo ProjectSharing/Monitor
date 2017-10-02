@@ -352,7 +352,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>传输对象</returns>
         public TDto GetDto<TDto>(Expression<Func<T, bool>> condition, string[] ignoreFields = null, bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQueryTopSqlQuery<TDto>(condition, TableName, topCount: 1, ignoreFields: ignoreFields, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQueryTopSqlQuery<TDto,T>(condition, TableName, topCount: 1, ignoreFields: ignoreFields, dbType: DataType);
             return GetDataAccess(isWrite: isWrite).QuerySingleOrDefault<TDto>(query);
         }
 
@@ -366,7 +366,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>传输对象</returns>
         public Task<TDto> GetDtoAsync<TDto>(Expression<Func<T, bool>> condition, string[] ignoreFields = null, bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQueryTopSqlQuery<TDto>(condition, TableName, topCount: 1, ignoreFields: ignoreFields, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQueryTopSqlQuery<TDto,T>(condition, TableName, topCount: 1, ignoreFields: ignoreFields, dbType: DataType);
             return GetDataAccess(isWrite: isWrite).QuerySingleOrDefaultAsync<TDto>(query);
         }
 
@@ -526,7 +526,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>传输对象列表</returns>
         public IEnumerable<TDto> QueryList<TDto>(Expression<Func<T, bool>> condition, string[] ignoreFields = null, bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery<TDto>(condition, TableName, ignoreFields: ignoreFields, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery<TDto,T>(condition, TableName, ignoreFields: ignoreFields, dbType: DataType);
             return GetDataAccess(isWrite: isWrite).Query<TDto>(query);
         }
 
@@ -540,13 +540,13 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>传输对象列表</returns>
         public Task<IEnumerable<TDto>> QueryListAsync<TDto>(Expression<Func<T, bool>> condition, string[] ignoreFields = null, bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery<TDto>(condition, TableName, ignoreFields: ignoreFields, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery<TDto,T>(condition, TableName, ignoreFields: ignoreFields, dbType: DataType);
             return GetDataAccess(isWrite: isWrite).QueryAsync<TDto>(query);
         }
 
         /// <summary>
         /// 查询数量
-        /// </summary>
+        /// </summary> 
         /// <param name="condition">查询条件</param>
         /// <param name="isWrite">是否为写连接(事务中使用)</param>
         /// <returns>范总数量</returns>

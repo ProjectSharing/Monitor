@@ -369,6 +369,15 @@
         var Refresh = function () {
             location.href = location.href;
         };
+        var RestPageIndex = function () {
+            $("PageIndex").val(1);
+        };
+        $("#PageListForm").submit(function () {
+            ShowLoading();
+        });
+        $(".dataTables_wrapper .paginate_button a[title]").click(function () {
+            ShowLoading();
+        });
     </script>
 </body>
 </html>

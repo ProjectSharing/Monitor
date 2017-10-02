@@ -5,61 +5,65 @@
 <div id="page-wrapper">
     <div class="row">
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="col-sm-2">服务器列表</div>
-                        <div class="col-sm-1 col-sm-offset-9"><a class="btn btn-primary btn-sm OpenFrame" href="/Servicer/Add?w=600&h=500" title="添加服务器">添加</a></div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel-body" style="padding-top:0px;">
-                <div id="dataTables-example_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
-                    @Html.Partial("_QueryWhere", ViewBag.QueryWhere as ServicePageQueryWhere)
+            <form asp-action="Index" method="post" id="PageListForm">
+                <div class="panel-heading">
                     <div class="row">
                         <div class="col-sm-12">
-                            <table class="table table-striped table-bordered table-hover dataTable" id="dataTables-example" style="width: 100%;">
-                                <thead>
-                                    <tr>
-                                        <th class="center">名字</th>
-                                        <th class="center">MAC地址</th>
-                                        <th class="center">服务器IP</th>
-                                        <th class="center">服务器说明</th>
-                                        <th class="center">最后修改时间</th>
-                                        <th class="center">操作</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (Model != null && Model.Data.Any())
-                                    {
-                                        foreach (var item in Model)
-                                        {
-                                            <tr>
-                                                <td class="center">@item.FName</td>
-                                                <td class="center">@item.FMacAddress</td>
-                                                <td class="center">@item.FIP</td>
-                                                <td class="center">@item.FComment</td>
-                                                <td class="center">@item.FLastModifyTime</td>
-                                                <td class="center">
-                                                    <a class="btn btn-info btn-sm OpenFrame" href="/Servicer/Edit/(@item.FID.ToString())?w=600&h=500" title="编辑服务器">编辑</a>
-                                                </td>
-                                            </tr>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <tr><td class="center" colspan="6">暂无记录</td></tr>
-                                    }
-                                </tbody>
-                            </table>
+                            <div class="col-sm-2">服务器列表</div>
+                            <div class="col-sm-1 col-sm-offset-9"><a class="btn btn-primary btn-sm OpenFrame" href="/Servicer/Add?w=600&h=500" title="添加服务器">添加</a></div>
                         </div>
                     </div>
+                </div>
+                <div class="panel-body" style="padding-top:0px;">
+                    <div id="dataTables-example_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                        @Html.Partial("_QueryWhere", ViewBag.QueryWhere as ServicePageQueryWhere)
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table class="table table-striped table-bordered table-hover dataTable" id="dataTables-example" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th class="center">名字</th>
+                                            <th class="center">MAC地址</th>
+                                            <th class="center">服务器IP</th>
+                                            <th class="center">服务器说明</th>
+                                            <th class="center">最后修改时间</th>
+                                            <th class="center">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model != null && Model.Data.Any())
+                                        {
+                                            foreach (var item in Model)
+                                            {
+                                                <tr>
+                                                    <td class="center">@item.FName</td>
+                                                    <td class="center">@item.FMacAddress</td>
+                                                    <td class="center">@item.FIP</td>
+                                                    <td class="center">@item.FComment</td>
+                                                    <td class="center">@item.FLastModifyTime</td>
+                                                    <td class="center">
+                                                        <a class="btn btn-info btn-sm OpenFrame" href="/Servicer/Edit/@item.FID.ToString()?w=600&h=500" title="编辑服务器">编辑</a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr><td class="center" colspan="6">暂无记录</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.panel-body -->
+                <div class="panel-footer dataTables_wrapper">
                     <div class="row">
                         <pager jqcore-page="Model"></pager>
                     </div>
                 </div>
-            </div>
-            <!-- /.panel-body -->
+            </form>
         </div>
     </div>
 </div>

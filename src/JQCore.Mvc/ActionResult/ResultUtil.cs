@@ -87,7 +87,7 @@ namespace JQCore.Mvc.ActionResult
         /// <returns></returns>
         public static IActionResult ViewResult<TController, T>(this TController controller, OperateResult<T> operateResult, string redirectViewName = null) where TController : Controller
         {
-            if (operateResult.SuccessAndValueNotNull)
+            if (!operateResult.SuccessAndValueNotNull)
             {
                 return controller.View(redirectViewName ?? "/Views/Shared/NotFind.cshtml");
             }

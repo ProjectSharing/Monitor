@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Routing;
 using System;
 using System.Collections.Generic;
 using System.Text;
-
+using JQCore.Web;
 namespace JQCore.Mvc.TagHelpers
 {
     /// <summary>
@@ -86,7 +86,7 @@ namespace JQCore.Mvc.TagHelpers
                 {
                     AppendEnablePageButton(htmlBuilder, "...");
                 }
-                for (int i = startPageIndex; i < endPageIndex; i++)
+                for (int i = startPageIndex; i <= endPageIndex; i++)
                 {
                     AppendPageButton(htmlBuilder, i, i.ToString(), i == PageResult.PageIndex, urlFormat, selfClass: i == PageResult.PageIndex ? "active" : "");
                 }
@@ -209,12 +209,15 @@ namespace JQCore.Mvc.TagHelpers
                     routeValueDictionary[item] = queryItems[item];
                 }
             }
-            var formItems = ViewContext.HttpContext.Request.Form;
-            if (formItems != null)
+            if (ViewContext.HttpContext.Request.IsPost())
             {
-                foreach (var item in formItems.Keys)
+                var formItems = ViewContext.HttpContext.Request.Form;
+                if (formItems != null)
                 {
-                    routeValueDictionary[item] = formItems[item];
+                    foreach (var item in formItems.Keys)
+                    {
+                        routeValueDictionary[item] = formItems[item];
+                    }
                 }
             }
             if (RouteValues != null)

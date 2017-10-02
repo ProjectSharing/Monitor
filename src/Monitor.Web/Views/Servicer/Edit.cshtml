@@ -2,13 +2,14 @@
 @{
     ViewData["Title"] = "服务器";
     Layout = "~/Views/Shared/_Layout_Edit.cshtml";
+    var model = Model;
 }
 
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <form asp-action="E地铁" method="post" id="EditForm">
-                @Html.Partial("_Modify")
+            <form asp-action="Edit" method="post" id="EditForm">
+                @Html.Partial("_Modify",Model)
             </form>
         </div>
     </div>

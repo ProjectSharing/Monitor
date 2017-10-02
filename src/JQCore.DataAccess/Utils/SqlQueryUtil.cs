@@ -370,7 +370,7 @@ namespace JQCore.DataAccess.Utils
         /// <returns>查询的SqlQuery</returns>
         public static SqlQuery BuilderQueryTopSqlQuery<TModel, T>(Expression<Func<T, bool>> condition, string tableName, int topCount = 1, string[] ignoreFields = null, DatabaseType dbType = DatabaseType.MSSQLServer)
         {
-            return BuilderQueryTopSqlQuery<TModel>(condition, tableName, string.Empty, topCount: topCount, ignoreFields: ignoreFields, dbType: dbType);
+            return BuilderQueryTopSqlQuery<TModel,T>(condition, tableName, string.Empty, topCount: topCount, ignoreFields: ignoreFields, dbType: dbType);
         }
 
         /// <summary>
@@ -448,7 +448,7 @@ namespace JQCore.DataAccess.Utils
         /// <returns>查询的SqlQuery</returns>
         public static SqlQuery BuilderQuerySqlQuery<TModel, T>(Expression<Func<T, bool>> condition, string tableName, string[] ignoreFields = null, DatabaseType dbType = DatabaseType.MSSQLServer)
         {
-            return BuilderQuerySqlQuery<TModel>(condition, tableName, string.Empty, ignoreFields: ignoreFields, dbType: dbType);
+            return BuilderQuerySqlQuery<TModel,T>(condition, tableName, string.Empty, ignoreFields: ignoreFields, dbType: dbType);
         }
 
         /// <summary>

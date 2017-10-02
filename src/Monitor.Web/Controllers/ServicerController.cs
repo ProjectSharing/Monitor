@@ -45,10 +45,10 @@ namespace Monitor.Web.Controllers
         [HttpPost]
         public Task<IActionResult> Add(ServicerModel model)
         {
-            return this.JsonResultAsync(async () =>
-            {
-                return await _servicerApplication.AddServicerAsync(model);
-            });
+            return this.JsonResultAsync(() =>
+           {
+               return _servicerApplication.AddServicerAsync(model);
+           });
         }
 
         /// <summary>
@@ -59,9 +59,9 @@ namespace Monitor.Web.Controllers
         public Task<IActionResult> Edit(int id)
         {
             return this.ViewResultAsync(() =>
-            {
-                return _servicerApplication.GetServicerModelAsync(id);
-            });
+          {
+              return _servicerApplication.GetServicerModelAsync(id);
+          });
         }
 
         /// <summary>
@@ -73,9 +73,9 @@ namespace Monitor.Web.Controllers
         public Task<IActionResult> Edit(ServicerModel model)
         {
             return this.JsonResultAsync(() =>
-           {
-               return _servicerApplication.EditServicerAsync(model);
-           });
+          {
+              return _servicerApplication.EditServicerAsync(model);
+          });
         }
     }
 }

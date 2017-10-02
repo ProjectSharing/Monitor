@@ -133,5 +133,16 @@ namespace JQCore.Web
                 return string.Empty;
             }
         }
+
+        /// <summary>
+        /// 判断是不是post请求
+        /// </summary>
+        /// <param name="httpRequest"></param>
+        /// <returns></returns>
+        public static bool IsPost(this HttpRequest httpRequest)
+        {
+            if (httpRequest == null) return false;
+            return string.Equals(httpRequest.Method, "POST", StringComparison.OrdinalIgnoreCase);
+        }
     }
 }
