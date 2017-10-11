@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Monitor.Constant;
+using System;
+using JQCore.Utils;
 
 namespace Monitor.Domain
 {
@@ -18,7 +20,7 @@ namespace Monitor.Domain
         /// <summary>
         /// 日志级别
         /// </summary>
-        public int FLogLevel { get; set; }
+        public LogLevel FLogLevel { get; set; }
 
         /// <summary>
         /// 所属项目
@@ -33,12 +35,12 @@ namespace Monitor.Domain
         /// <summary>
         /// 部署服务器ID
         /// </summary>
-        public int FServerID { get; set; }
+        public int FServicerID { get; set; }
 
         /// <summary>
         /// 服务器Mac地址
         /// </summary>
-        public string FServerMac { get; set; }
+        public string FServicerMac { get; set; }
 
         /// <summary>
         /// 调用方法名字
@@ -51,9 +53,14 @@ namespace Monitor.Domain
         public string FContent { get; set; }
 
         /// <summary>
-        /// 日志来源【1:前端,2:后台,3:IOS,4:Android,5:API,6:其它】
+        /// 日志来源
         /// </summary>
-        public int FSource { get; set; }
+        public Source FSource { get; set; }
+
+        /// <summary>
+        /// 请求的GUID标识，同一个GUID表明是同一次请求
+        /// </summary>
+        public string FRequestGuid { get; set; }
 
         /// <summary>
         /// 日志生成时间
@@ -69,5 +76,23 @@ namespace Monitor.Domain
         /// 是否删除
         /// </summary>
         public bool FIsDeleted { get; set; }
+
+        /// <summary>
+        /// 判断是否需要警告
+        /// </summary>
+        /// <returns>true表示需要提示</returns>
+        public bool IsNeedWarning()
+        {
+            return FLogLevel == LogLevel.Error || FLogLevel == LogLevel.Warn || FLogLevel == LogLevel.Fatal;
+        }
+
+        public int GetSafeHashID()
+        {
+            if (string.IsNullOrWhiteSpace(FContent))
+            {
+                return 0;
+            }
+            return FContent.GetSafeHashCode();
+        }
     }
 }

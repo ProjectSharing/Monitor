@@ -58,5 +58,15 @@
         /// 服务器所属组关系表名
         /// </summary>
         public const string TABLE_NAME_SERVICEGROUPMAP = "M_ServiceGroupMap";
+
+        /// <summary>
+        /// 邮件发送记录表名
+        /// </summary>
+        public const string TABLE_NAME_EMAILSENDEDRECORD = "M_EmailSendedRecord";
+
+        /// <summary>
+        /// 系统配置信息表名
+        /// </summary>
+        public const string TABLE_NAME_SYSCONFIG = "M_SysConfig";
     }
 }

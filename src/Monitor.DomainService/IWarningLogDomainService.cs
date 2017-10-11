@@ -1,4 +1,6 @@
-﻿namespace Monitor.DomainService
+﻿using Monitor.Domain;
+
+namespace Monitor.DomainService
 {
     /// <summary>
     /// 类名：IWarningLogDomainService.cs
@@ -8,5 +10,11 @@
     /// </summary>
     public interface IWarningLogDomainService
     {
+        /// <summary>
+        /// 创建警告提示信息
+        /// </summary>
+        /// <param name="runtimeLogInfo">运行日志信息</param>
+        /// <returns>警告提示信息</returns>
+        WarningLogInfo Create(RuntimeLogInfo runtimeLogInfo);
     }
 }

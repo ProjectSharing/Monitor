@@ -38,6 +38,17 @@ namespace JQCore.Lock
         }
 
         /// <summary>
+        /// 异步获取一个锁(需要自己释放)
+        /// </summary>
+        /// <param name="key">锁的键</param>
+        /// <param name="value">当前占用值</param>
+        /// <param name="span">耗时时间</param>
+        /// <returns>成功返回true</returns>
+        public Task<bool> LockTakeAsync(string key, string value, TimeSpan span)
+        {
+            return Task.FromResult(LockTake(key, value, span));
+        }
+        /// <summary>
         /// 释放一个锁
         /// </summary>
         /// <param name="key">锁的键</param>
@@ -59,6 +70,16 @@ namespace JQCore.Lock
                 return false;
             }
             return true;
+        }
+        /// <summary>
+        /// 异步释放一个锁
+        /// </summary>
+        /// <param name="key">锁的键</param>
+        /// <param name="value">当前占用值</param>
+        /// <returns>成功返回true</returns>
+        public Task<bool> LockReleaseAsync(string key, string value)
+        {
+            return Task.FromResult(LockRelease(key, value));
         }
 
         /// <summary>
@@ -121,7 +142,7 @@ namespace JQCore.Lock
         public async Task ExecuteWithLockAsync(string key, string value, TimeSpan span, Func<Task> executeAction)
         {
             if (executeAction == null) return;
-            if (LockTake(key, value, span))
+            if (await LockTakeAsync(key, value, span))
             {
                 try
                 {
@@ -148,7 +169,7 @@ namespace JQCore.Lock
         public async Task<T> ExecuteWithLockAsync<T>(string key, string value, TimeSpan span, Func<Task<T>> executeAction, T defaultValue = default(T))
         {
             if (executeAction == null) return defaultValue;
-            if (LockTake(key, value, span))
+            if (await LockTakeAsync(key, value, span))
             {
                 try
                 {

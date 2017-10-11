@@ -32,6 +32,18 @@ namespace JQCore.Utils
         }
 
         /// <summary>
+        /// 异步获取一个锁(需要自己释放)
+        /// </summary>
+        /// <param name="key">锁的键</param>
+        /// <param name="value">当前占用值</param>
+        /// <param name="span">耗时时间</param>
+        /// <returns>成功返回true</returns>
+        public static Task<bool> LockTakeAsync(string key, string value, TimeSpan span)
+        {
+            return LockProvider().LockTakeAsync(key, value, span);
+        }
+
+        /// <summary>
         /// 释放一个锁
         /// </summary>
         /// <param name="key">锁的键</param>
@@ -40,6 +52,17 @@ namespace JQCore.Utils
         public static bool LockRelease(string key, string value)
         {
             return LockProvider().LockRelease(key, value);
+        }
+
+        /// <summary>
+        /// 异步释放一个锁
+        /// </summary>
+        /// <param name="key">锁的键</param>
+        /// <param name="value">当前占用值</param>
+        /// <returns>成功返回true</returns>
+        public static Task<bool> LockReleaseAsync(string key, string value)
+        {
+            return LockProvider().LockReleaseAsync(key, value);
         }
 
         /// <summary>

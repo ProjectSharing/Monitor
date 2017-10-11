@@ -2,6 +2,7 @@
 using MailKit.Net.Smtp;
 using MimeKit;
 using MimeKit.Text;
+using System;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,10 +25,11 @@ namespace JQCore.Utils
         /// <param name="content">发送内容</param>
         /// <param name="serviceMailAddress">服务器邮箱账号</param>
         /// <param name="serviceMailPwd">服务器邮箱密码</param>
+        /// <param name="mailboxAddressName">服务端邮箱名字</param>
         /// <returns></returns>
-        public static bool SendEmail(string to, string subject, string content, string serviceMailAddress, string serviceMailPwd)
+        public static ValueTuple<bool, string> SendEmail(string to, string subject, string content, string serviceMailAddress, string serviceMailPwd, string mailboxAddressName = null)
         {
-            return SendEmail(new string[] { to }, subject, content, serviceMailAddress, serviceMailPwd);
+            return SendEmail(new string[] { to }, subject, content, serviceMailAddress, serviceMailPwd, mailboxAddressName: mailboxAddressName);
         }
 
         /// <summary>
@@ -38,10 +40,11 @@ namespace JQCore.Utils
         /// <param name="content">发送内容</param>
         /// <param name="serviceMailAddress">服务器邮箱账号</param>
         /// <param name="serviceMailPwd">服务器邮箱密码</param>
+        /// <param name="mailboxAddressName">服务端邮箱名字</param>
         /// <returns></returns>
-        public static async Task<bool> SendEmailAsync(string to, string subject, string content, string serviceMailAddress, string serviceMailPwd)
+        public static async Task<ValueTuple<bool, string>> SendEmailAsync(string to, string subject, string content, string serviceMailAddress, string serviceMailPwd, string mailboxAddressName = null)
         {
-            return await SendEmailAsync(new string[] { to }, subject, content, serviceMailAddress, serviceMailPwd);
+            return await SendEmailAsync(new string[] { to }, subject, content, serviceMailAddress, serviceMailPwd, mailboxAddressName: mailboxAddressName);
         }
 
         /// <summary>
@@ -52,10 +55,11 @@ namespace JQCore.Utils
         /// <param name="content">发送内容</param>
         /// <param name="serviceMailAddress">服务端地址</param>
         /// <param name="serviceMailPwd">服务端密码</param>
+        /// <param name="mailboxAddressName">服务端邮箱名字</param>
         /// <returns></returns>
-        public static Task<bool> SendEmailAsync(string[] toList, string subject, string content, string serviceMailAddress, string serviceMailPwd)
+        public static Task<ValueTuple<bool, string>> SendEmailAsync(string[] toList, string subject, string content, string serviceMailAddress, string serviceMailPwd, string mailboxAddressName = null)
         {
-            return Task.FromResult(SendEmail(toList, subject, content, serviceMailAddress, serviceMailPwd));
+            return Task.FromResult(SendEmail(toList, subject, content, serviceMailAddress, serviceMailPwd, mailboxAddressName: mailboxAddressName));
         }
 
         /// <summary>
@@ -66,13 +70,14 @@ namespace JQCore.Utils
         /// <param name="content">发送内容</param>
         /// <param name="serviceMailAddress">服务端地址</param>
         /// <param name="serviceMailPwd">服务端密码</param>
+        /// <param name="mailboxAddressName">服务端邮箱名字</param>
         /// <returns></returns>
-        public static bool SendEmail(string[] toList, string subject, string content, string serviceMailAddress, string serviceMailPwd)
+        public static ValueTuple<bool, string> SendEmail(string[] toList, string subject, string content, string serviceMailAddress, string serviceMailPwd, string mailboxAddressName = null)
         {
-            return ExceptionUtil.LogException(() =>
+            try
             {
                 var message = new MimeMessage();
-                message.From.Add(new MailboxAddress("理财管理", serviceMailAddress));
+                message.From.Add(new MailboxAddress(mailboxAddressName ?? "系统邮件", serviceMailAddress));
                 toList.ForEach(to =>
                 {
                     message.To.Add(new MailboxAddress(to));
@@ -97,8 +102,13 @@ namespace JQCore.Utils
                     client.Send(message);
                     client.Disconnect(true);
                 }
-                return true;
-            });
+                return ValueTuple.Create(true, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                LogUtil.Error(ex, memberName: "SendEmail");
+                return ValueTuple.Create(false, ex.Message);
+            }
         }
     }
 }

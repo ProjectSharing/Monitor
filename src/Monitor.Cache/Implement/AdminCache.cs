@@ -27,7 +27,7 @@ namespace Monitor.Cache.Implement
         /// <returns>尝试登录次数</returns>
         public int GetTryLoginCount(string userName)
         {
-            string key = $"{Admin_TryLoginCount}{userName}";
+            string key = $"{Cache_Admin_TryLoginCount}{userName}";
             _memoryCache.TryGetValue(key, out int tryCount);
             _memoryCache.Set(key, tryCount + 1, TimeSpan.FromMinutes(2));
             return tryCount;
@@ -39,7 +39,7 @@ namespace Monitor.Cache.Implement
         /// <param name="userName">用户名</param>
         public void ClearLoginCount(string userName)
         {
-            string key = $"{Admin_TryLoginCount}{userName}";
+            string key = $"{Cache_Admin_TryLoginCount}{userName}";
             _memoryCache.Remove(key);
         }
     }

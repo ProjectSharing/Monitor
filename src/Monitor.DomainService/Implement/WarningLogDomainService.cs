@@ -1,4 +1,8 @@
-﻿namespace Monitor.DomainService.Implement
+﻿using JQCore.Utils;
+using Monitor.Constant;
+using Monitor.Domain;
+
+namespace Monitor.DomainService.Implement
 {
     /// <summary>
     /// 类名：WarningLogDomainService.cs
@@ -8,5 +12,23 @@
     /// </summary>
     public sealed class WarningLogDomainService : IWarningLogDomainService
     {
+        /// <summary>
+        /// 创建警告提示信息
+        /// </summary>
+        /// <param name="runtimeLogInfo">运行日志信息</param>
+        /// <returns>警告提示信息</returns>
+        public WarningLogInfo Create(RuntimeLogInfo runtimeLogInfo)
+        {
+            return new WarningLogInfo
+            {
+                FCreateTime = DateTimeUtil.Now,
+                FCreateUserID = -1,
+                FDealState = DealState.WaitDeal,
+                FIsDeleted = false,
+                FNoticeState = NoticeState.WaitNotice,
+                FRunTimeLogID = runtimeLogInfo.FID,
+                FLogSign = runtimeLogInfo.GetSafeHashID()
+            };
+        }
     }
 }

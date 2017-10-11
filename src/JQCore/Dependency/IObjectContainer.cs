@@ -7,7 +7,7 @@
     /// 类功能描述：IObjectContainer接口
     /// 创建标识：yjq 2017/9/4 11:18:00
     /// </summary>
-    public interface IObjectContainer : IIocResolve
+    public interface IObjectContainer : IIocResolve, IIocRegister
     {
         /// <summary>
         /// 开始一个作用域请求，与其它请求相互独立

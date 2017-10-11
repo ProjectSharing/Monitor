@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Monitor.Constant;
+using System;
 
 namespace Monitor.Domain
 {
@@ -33,12 +34,12 @@ namespace Monitor.Domain
         /// <summary>
         /// 通知状态(1:未通知 2:已通知 3:通知失败)
         /// </summary>
-        public int FNoticeState { get; set; }
+        public NoticeState FNoticeState { get; set; }
 
         /// <summary>
         /// 处理状态(1:待处理,2:已处理,3:不处理)
         /// </summary>
-        public int FDealState { get; set; }
+        public DealState FDealState { get; set; }
 
         /// <summary>
         /// 处理方案

@@ -1,17 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.10
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitor.Web", "Monitor.Web\Monitor.Web.csproj", "{42BBFC78-740B-4E18-B694-18B7A06A9C60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monitor.Web", "Monitor.Web\Monitor.Web.csproj", "{42BBFC78-740B-4E18-B694-18B7A06A9C60}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "999_JQCore", "999_JQCore", "{E347DF10-D1DA-4A45-8C7B-16DE6DE79CB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JQCore", "JQCore\JQCore.csproj", "{605A389E-2FC3-492D-937D-62CCF4EAE2A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JQCore", "JQCore\JQCore.csproj", "{605A389E-2FC3-492D-937D-62CCF4EAE2A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JQCore.DataAccess", "JQCore.DataAccess\JQCore.DataAccess.csproj", "{5C893C03-8174-48A4-91A2-F396865EE1C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JQCore.DataAccess", "JQCore.DataAccess\JQCore.DataAccess.csproj", "{5C893C03-8174-48A4-91A2-F396865EE1C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JQCore.Mvc", "JQCore.Mvc\JQCore.Mvc.csproj", "{2DEA6B57-1549-493F-A588-49419BD3855B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JQCore.Mvc", "JQCore.Mvc\JQCore.Mvc.csproj", "{2DEA6B57-1549-493F-A588-49419BD3855B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5_Infrastructure", "5_Infrastructure", "{D38C6800-7C81-493C-A117-D3C6099581A8}"
 EndProject
@@ -25,23 +25,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2_Application", "2_Applicat
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1_UserInterface", "1_UserInterface", "{443E35C3-8F85-4367-B5E2-B0F313F9C312}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitor.Infrastructure", "Monitor.Infrastructure\Monitor.Infrastructure.csproj", "{04BB4061-58CF-4983-B37E-FB85B00595CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monitor.Infrastructure", "Monitor.Infrastructure\Monitor.Infrastructure.csproj", "{04BB4061-58CF-4983-B37E-FB85B00595CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitor.Constant", "Monitor.Constant\Monitor.Constant.csproj", "{4B5AF6DB-8604-4423-8C8A-2A58199821E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monitor.Constant", "Monitor.Constant\Monitor.Constant.csproj", "{4B5AF6DB-8604-4423-8C8A-2A58199821E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitor.Trans", "Monitor.Trans\Monitor.Trans.csproj", "{6DFFD682-1AE3-4FF3-BE6F-3CEDEB485621}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monitor.Trans", "Monitor.Trans\Monitor.Trans.csproj", "{6DFFD682-1AE3-4FF3-BE6F-3CEDEB485621}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitor.UnitOfWork", "Monitor.UnitOfWork\Monitor.UnitOfWork.csproj", "{FDF112C7-73CB-4CC7-B76D-AAA8FE748DE7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monitor.UnitOfWork", "Monitor.UnitOfWork\Monitor.UnitOfWork.csproj", "{FDF112C7-73CB-4CC7-B76D-AAA8FE748DE7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitor.Repository", "Monitor.Repository\Monitor.Repository.csproj", "{C9F2F7EC-A1FA-413E-B999-0E5EAE5312FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monitor.Repository", "Monitor.Repository\Monitor.Repository.csproj", "{C9F2F7EC-A1FA-413E-B999-0E5EAE5312FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitor.DomainService", "Monitor.DomainService\Monitor.DomainService.csproj", "{1B80D620-13C3-49C0-9D69-294B652B0069}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monitor.DomainService", "Monitor.DomainService\Monitor.DomainService.csproj", "{1B80D620-13C3-49C0-9D69-294B652B0069}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitor.Domain", "Monitor.Domain\Monitor.Domain.csproj", "{65B2FD69-8535-467B-98E3-091A0CDBE55F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monitor.Domain", "Monitor.Domain\Monitor.Domain.csproj", "{65B2FD69-8535-467B-98E3-091A0CDBE55F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitor.Cache", "Monitor.Cache\Monitor.Cache.csproj", "{9A396B35-A58B-48DA-ACAC-ABB21D54C7E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monitor.Cache", "Monitor.Cache\Monitor.Cache.csproj", "{9A396B35-A58B-48DA-ACAC-ABB21D54C7E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitor.Application", "Monitor.Application\Monitor.Application.csproj", "{D6F4669B-5577-41D0-9954-49B23D82B424}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monitor.Application", "Monitor.Application\Monitor.Application.csproj", "{D6F4669B-5577-41D0-9954-49B23D82B424}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JQCore.Redis", "JQCore.Redis\JQCore.Redis.csproj", "{CB002BAC-2845-4656-8BF4-100D3E7A1C67}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,6 +103,10 @@ Global
 		{D6F4669B-5577-41D0-9954-49B23D82B424}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6F4669B-5577-41D0-9954-49B23D82B424}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6F4669B-5577-41D0-9954-49B23D82B424}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB002BAC-2845-4656-8BF4-100D3E7A1C67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB002BAC-2845-4656-8BF4-100D3E7A1C67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB002BAC-2845-4656-8BF4-100D3E7A1C67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB002BAC-2845-4656-8BF4-100D3E7A1C67}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -119,6 +125,7 @@ Global
 		{65B2FD69-8535-467B-98E3-091A0CDBE55F} = {5A37816E-AC26-4B96-9B58-3F5EA108737B}
 		{9A396B35-A58B-48DA-ACAC-ABB21D54C7E0} = {5A37816E-AC26-4B96-9B58-3F5EA108737B}
 		{D6F4669B-5577-41D0-9954-49B23D82B424} = {B4220C6A-F3A8-4C90-BA45-523744C72679}
+		{CB002BAC-2845-4656-8BF4-100D3E7A1C67} = {E347DF10-D1DA-4A45-8C7B-16DE6DE79CB3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {91341587-871F-40E9-9438-5329D67D95B8}

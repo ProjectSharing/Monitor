@@ -1,4 +1,5 @@
-﻿using JQCore.Extensions;
+﻿using JQCore.Configuration;
+using JQCore.Extensions;
 using JQCore.Mvc.ActionResult;
 using JQCore.Mvc.Extensions;
 using JQCore.Utils;
@@ -28,6 +29,7 @@ namespace Monitor.Web.Controllers
         /// <returns></returns>
         public IActionResult Index()
         {
+            LogUtil.Debug(ConfigurationManage.GetValue("ConnectionStrings"));
             return View();
         }
 

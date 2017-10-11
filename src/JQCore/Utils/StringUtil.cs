@@ -30,5 +30,24 @@ namespace JQCore.Utils
         {
             return strs.Where(m => string.IsNullOrWhiteSpace(m)).Any();
         }
+
+
+        /// <summary>
+        /// 获取安全的Hash值
+        /// </summary>
+        /// <param name="str">字符串信息</param>
+        /// <returns>安全的Hash值</returns>
+        public static int GetSafeHashCode(this string str)
+        {
+            unchecked
+            {
+                int hash = 23;
+                foreach (char c in str)
+                {
+                    hash = hash * 31 + c;
+                }
+                return hash;
+            }
+        }
     }
 }

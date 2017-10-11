@@ -35,16 +35,6 @@ namespace JQCore.Dependency
         public static ContainerManager Instance { get; private set; }
 
         /// <summary>
-        /// 使用Injection
-        /// </summary>
-        /// <param name="provider">服务提供者</param>
-        /// <returns></returns>
-        public static ContainerManager UseInjectionContainer(IServiceProvider provider)
-        {
-            return SetContainer(new InjectionContainer(provider));
-        }
-
-        /// <summary>
         /// 使用autofac作为容器
         /// </summary>
         /// <param name="container">autofac容器</param>
@@ -54,11 +44,68 @@ namespace JQCore.Dependency
             return SetContainer(new AutofacObjectContainer(container));
         }
 
+        /// <summary>
+        /// 使用autofac作为容器
+        /// </summary>
+        /// <param name="containerBuilder">容器构建类</param>
+        /// <returns></returns>
+        public static ContainerManager UseAutofacContainer(ContainerBuilder containerBuilder)
+        {
+            return SetContainer(new AutofacObjectContainer(containerBuilder));
+        }
+
         private static ContainerManager SetContainer(IObjectContainer container)
         {
             Instance.Container = container;
             return Instance;
         }
+
+        #region 注册
+
+        /// <summary>
+        /// 注册单例
+        /// </summary>
+        /// <typeparam name="TService">接口类</typeparam>
+        /// <typeparam name="TImplementer">实现类</typeparam>
+        /// <param name="containerManager"></param>
+        /// <returns></returns>
+        public ContainerManager AddSingleton<TService, TImplementer>()
+           where TService : class
+           where TImplementer : class, TService
+        {
+            Container.RegisterType<TService, TImplementer>();
+            return this;
+        }
+
+        /// <summary>
+        /// 生命周期里同一个实例
+        /// </summary>
+        /// <typeparam name="TService">接口类</typeparam>
+        /// <typeparam name="TImplementer">实现类</typeparam>
+        /// <returns></returns>
+        public ContainerManager AddScoped<TService, TImplementer>()
+           where TService : class
+           where TImplementer : class, TService
+        {
+            Container.RegisterType<TService, TImplementer>(lifeStyle: LifeStyle.PerLifetimeScope);
+            return this;
+        }
+
+        /// <summary>
+        /// 默认
+        /// </summary>
+        /// <typeparam name="TService">接口类</typeparam>
+        /// <typeparam name="TImplementer">实现类</typeparam>
+        /// <returns></returns>
+        public ContainerManager AddTransient<TService, TImplementer>()
+           where TService : class
+           where TImplementer : class, TService
+        {
+            Container.RegisterType<TService, TImplementer>(lifeStyle: LifeStyle.Transient);
+            return this;
+        }
+
+        #endregion 注册
 
         #region 解析获取
 

@@ -47,6 +47,7 @@ namespace Monitor.Web.Controllers
         {
             return this.JsonResultAsync(() =>
            {
+               model.OperateUserID = AdminID;
                return _servicerApplication.AddServicerAsync(model);
            });
         }
@@ -74,6 +75,7 @@ namespace Monitor.Web.Controllers
         {
             return this.JsonResultAsync(() =>
           {
+              model.OperateUserID = AdminID;
               return _servicerApplication.EditServicerAsync(model);
           });
         }

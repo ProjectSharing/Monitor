@@ -3,6 +3,7 @@ using Autofac.Extensions.DependencyInjection;
 using JQCore.Configuration;
 using JQCore.Dependency;
 using JQCore.Mvc.Filter;
+using JQCore.Redis;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -40,6 +41,7 @@ namespace Monitor.Web
                     .AddMemoryCache()
                     .AddOptions()
                     .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
+                    //.Configure<RedisCacheOption>(Configuration)
                     ;
             services.AddAuthorization(options =>
             {
@@ -57,13 +59,16 @@ namespace Monitor.Web
             var builder = new ContainerBuilder();
             builder.Populate(services);
             builder.RegisterModule(new AutofacRegisterModule());
-            ApplicationContainer = builder.Build();
-            ContainerManager.UseAutofacContainer(ApplicationContainer);
+            ContainerManager.UseAutofacContainer(builder)
+                            .UseRedis()
+                            .UseRedisLock()
+                            ;
+            ApplicationContainer = ContainerManager.Instance.Container as IContainer;
             return new AutofacServiceProvider(ApplicationContainer);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime applicationLifetime)
         {
             if (env.IsDevelopment())
             {
@@ -90,6 +95,8 @@ namespace Monitor.Web
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            applicationLifetime.RegisterRedisShutDown();
         }
     }
 }

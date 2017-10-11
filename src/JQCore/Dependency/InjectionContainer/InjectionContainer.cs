@@ -11,7 +11,7 @@ namespace JQCore.Dependency
     /// 类功能描述：Injection容器
     /// 创建标识：yjq 2017/9/4 11:28:00
     /// </summary>
-    internal sealed class InjectionContainer : IObjectContainer
+    internal sealed class InjectionContainer //: IObjectContainer
     {
         private readonly IServiceProvider _serviceProvider;
 

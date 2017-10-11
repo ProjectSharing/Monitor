@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\JQCore.DataAccess\JQCore.DataAccess.csproj" />
     <ProjectReference Include="..\JQCore.Mvc\JQCore.Mvc.csproj" />
+    <ProjectReference Include="..\JQCore.Redis\JQCore.Redis.csproj" />
     <ProjectReference Include="..\JQCore\JQCore.csproj" />
     <ProjectReference Include="..\Monitor.Application\Monitor.Application.csproj" />
     <ProjectReference Include="..\Monitor.Cache\Monitor.Cache.csproj" />

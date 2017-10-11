@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      Microsoft SQL Server 2008                    */
-/* Created on:     2017/9/27 16:48:02                           */
+/* Created on:     2017/10/10 13:26:35                          */
 /*==============================================================*/
 
 
@@ -16,6 +16,13 @@ if exists (select 1
            where  id = object_id('M_AdminDetail')
             and   type = 'U')
    drop table M_AdminDetail
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('M_EmailSendedRecord')
+            and   type = 'U')
+   drop table M_EmailSendedRecord
 go
 
 if exists (select 1
@@ -58,6 +65,13 @@ if exists (select 1
            where  id = object_id('M_Servicer')
             and   type = 'U')
    drop table M_Servicer
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('M_SysConfig')
+            and   type = 'U')
+   drop table M_SysConfig
 go
 
 if exists (select 1
@@ -542,6 +556,271 @@ select @CurrentUser = user_name()
 execute sp_addextendedproperty 'MS_Description', 
    '最后修改人ID',
    'user', @CurrentUser, 'table', 'M_AdminDetail', 'column', 'FLastModifyUserID'
+go
+
+/*==============================================================*/
+/* Table: M_EmailSendedRecord                                   */
+/*==============================================================*/
+create table M_EmailSendedRecord (
+   FID                  int                  identity(1,1),
+   FReceiveEmail        varchar(128)         null,
+   FTheme               nvarchar(256)        null,
+   FContent             nvarchar(4000)       null,
+   FSendEmail           varchar(128)         null,
+   FSendState           int                  not null,
+   FStateRemark         varchar(256)         null,
+   FIsDeleted           bit                  not null,
+   FCreateTime          datetime             not null,
+   FCreateUserID        int                  not null,
+   FLastModifyTime      datetime             null,
+   FLastModifyUserID    int                  null,
+   constraint PK_M_EMAILSENDEDRECORD primary key (FID)
+)
+go
+
+if exists (select 1 from  sys.extended_properties
+           where major_id = object_id('M_EmailSendedRecord') and minor_id = 0)
+begin 
+   declare @CurrentUser sysname 
+select @CurrentUser = user_name() 
+execute sp_dropextendedproperty 'MS_Description',  
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord' 
+ 
+end 
+
+
+select @CurrentUser = user_name() 
+execute sp_addextendedproperty 'MS_Description',  
+   '邮件发送记录', 
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_EmailSendedRecord')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FID')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FID'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '主键、自增',
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FID'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_EmailSendedRecord')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FReceiveEmail')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FReceiveEmail'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '接收账号',
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FReceiveEmail'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_EmailSendedRecord')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FTheme')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FTheme'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '主题',
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FTheme'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_EmailSendedRecord')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FContent')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FContent'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '内容',
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FContent'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_EmailSendedRecord')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FSendEmail')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FSendEmail'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '发送账号',
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FSendEmail'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_EmailSendedRecord')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FSendState')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FSendState'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '发送状态【1:待发送，2:已发送,3:发送失败,4:不发送】',
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FSendState'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_EmailSendedRecord')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FStateRemark')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FStateRemark'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '发送状态备注',
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FStateRemark'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_EmailSendedRecord')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FIsDeleted')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FIsDeleted'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '是否删除',
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FIsDeleted'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_EmailSendedRecord')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FCreateTime')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FCreateTime'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '创建时间',
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FCreateTime'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_EmailSendedRecord')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FCreateUserID')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FCreateUserID'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '创建人ID',
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FCreateUserID'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_EmailSendedRecord')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FLastModifyTime')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FLastModifyTime'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '最后修改时间',
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FLastModifyTime'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_EmailSendedRecord')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FLastModifyUserID')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FLastModifyUserID'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '最后修改人ID',
+   'user', @CurrentUser, 'table', 'M_EmailSendedRecord', 'column', 'FLastModifyUserID'
 go
 
 /*==============================================================*/
@@ -1062,8 +1341,8 @@ create table M_RuntimeLog (
    FLogLevel            int                  not null,
    FProjectID           int                  not null,
    FProjectName         varchar(128)         null,
-   FServerID            int                  not null,
-   FServerMac           varchar(128)         null,
+   FServicerID          int                  not null,
+   FServicerMac         varchar(128)         null,
    FCallMemberName      varchar(128)         null,
    FContent             varchar(max)         null,
    FSource              int                  not null,
@@ -1170,13 +1449,13 @@ go
 
 if exists(select 1 from sys.extended_properties p where
       p.major_id = object_id('M_RuntimeLog')
-  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FServerID')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FServicerID')
 )
 begin
    declare @CurrentUser sysname
 select @CurrentUser = user_name()
 execute sp_dropextendedproperty 'MS_Description', 
-   'user', @CurrentUser, 'table', 'M_RuntimeLog', 'column', 'FServerID'
+   'user', @CurrentUser, 'table', 'M_RuntimeLog', 'column', 'FServicerID'
 
 end
 
@@ -1184,18 +1463,18 @@ end
 select @CurrentUser = user_name()
 execute sp_addextendedproperty 'MS_Description', 
    '部署服务器ID',
-   'user', @CurrentUser, 'table', 'M_RuntimeLog', 'column', 'FServerID'
+   'user', @CurrentUser, 'table', 'M_RuntimeLog', 'column', 'FServicerID'
 go
 
 if exists(select 1 from sys.extended_properties p where
       p.major_id = object_id('M_RuntimeLog')
-  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FServerMac')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FServicerMac')
 )
 begin
    declare @CurrentUser sysname
 select @CurrentUser = user_name()
 execute sp_dropextendedproperty 'MS_Description', 
-   'user', @CurrentUser, 'table', 'M_RuntimeLog', 'column', 'FServerMac'
+   'user', @CurrentUser, 'table', 'M_RuntimeLog', 'column', 'FServicerMac'
 
 end
 
@@ -1203,7 +1482,7 @@ end
 select @CurrentUser = user_name()
 execute sp_addextendedproperty 'MS_Description', 
    '服务器Mac地址',
-   'user', @CurrentUser, 'table', 'M_RuntimeLog', 'column', 'FServerMac'
+   'user', @CurrentUser, 'table', 'M_RuntimeLog', 'column', 'FServicerMac'
 go
 
 if exists(select 1 from sys.extended_properties p where
@@ -1952,6 +2231,191 @@ select @CurrentUser = user_name()
 execute sp_addextendedproperty 'MS_Description', 
    '最后修改人ID',
    'user', @CurrentUser, 'table', 'M_Servicer', 'column', 'FLastModifyUserID'
+go
+
+/*==============================================================*/
+/* Table: M_SysConfig                                           */
+/*==============================================================*/
+create table M_SysConfig (
+   FID                  int                  identity(1,1),
+   FKey                 varchar(128)         null,
+   FValue               varchar(512)         null,
+   FIsDeleted           bit                  not null,
+   FCreateTime          datetime             not null,
+   FCreateUserID        int                  not null,
+   FLastModifyTime      datetime             null,
+   FLastModifyUserID    int                  null,
+   constraint PK_M_SYSCONFIG primary key (FID)
+)
+go
+
+if exists (select 1 from  sys.extended_properties
+           where major_id = object_id('M_SysConfig') and minor_id = 0)
+begin 
+   declare @CurrentUser sysname 
+select @CurrentUser = user_name() 
+execute sp_dropextendedproperty 'MS_Description',  
+   'user', @CurrentUser, 'table', 'M_SysConfig' 
+ 
+end 
+
+
+select @CurrentUser = user_name() 
+execute sp_addextendedproperty 'MS_Description',  
+   '系统配置信息', 
+   'user', @CurrentUser, 'table', 'M_SysConfig'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_SysConfig')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FID')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_SysConfig', 'column', 'FID'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '主键、自增',
+   'user', @CurrentUser, 'table', 'M_SysConfig', 'column', 'FID'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_SysConfig')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FKey')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_SysConfig', 'column', 'FKey'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '键名(唯一不重复)',
+   'user', @CurrentUser, 'table', 'M_SysConfig', 'column', 'FKey'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_SysConfig')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FValue')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_SysConfig', 'column', 'FValue'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '值',
+   'user', @CurrentUser, 'table', 'M_SysConfig', 'column', 'FValue'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_SysConfig')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FIsDeleted')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_SysConfig', 'column', 'FIsDeleted'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '是否删除',
+   'user', @CurrentUser, 'table', 'M_SysConfig', 'column', 'FIsDeleted'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_SysConfig')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FCreateTime')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_SysConfig', 'column', 'FCreateTime'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '创建时间',
+   'user', @CurrentUser, 'table', 'M_SysConfig', 'column', 'FCreateTime'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_SysConfig')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FCreateUserID')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_SysConfig', 'column', 'FCreateUserID'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '创建人ID',
+   'user', @CurrentUser, 'table', 'M_SysConfig', 'column', 'FCreateUserID'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_SysConfig')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FLastModifyTime')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_SysConfig', 'column', 'FLastModifyTime'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '最后修改时间',
+   'user', @CurrentUser, 'table', 'M_SysConfig', 'column', 'FLastModifyTime'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_SysConfig')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FLastModifyUserID')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_SysConfig', 'column', 'FLastModifyUserID'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '最后修改人ID',
+   'user', @CurrentUser, 'table', 'M_SysConfig', 'column', 'FLastModifyUserID'
 go
 
 /*==============================================================*/

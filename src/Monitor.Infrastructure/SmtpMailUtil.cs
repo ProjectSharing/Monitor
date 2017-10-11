@@ -1,5 +1,6 @@
 ﻿using JQCore.Configuration;
 using JQCore.Utils;
+using System;
 using System.Threading.Tasks;
 
 namespace Monitor.Infrastructure
@@ -24,7 +25,7 @@ namespace Monitor.Infrastructure
         /// <param name="subject">发送主题</param>
         /// <param name="content">发送内容</param>
         /// <returns></returns>
-        public static bool SendEmail(string to, string subject, string content)
+        public static ValueTuple<bool, string> SendEmail(string to, string subject, string content)
         {
             return EmailUtil.SendEmail(new string[] { to }, subject, content, ConfigurationManage.GetValue(_ConfigKey_ServiceMailAddress), ConfigurationManage.GetValue(_ConfigKey_ServiceMailPwd));
         }
@@ -36,7 +37,7 @@ namespace Monitor.Infrastructure
         /// <param name="subject">发送主题</param>
         /// <param name="content">发送内容</param>
         /// <returns></returns>
-        public static Task<bool> SendEmailAsync(string to, string subject, string content)
+        public static Task<ValueTuple<bool, string>> SendEmailAsync(string to, string subject, string content)
         {
             return EmailUtil.SendEmailAsync(new string[] { to }, subject, content, ConfigurationManage.GetValue(_ConfigKey_ServiceMailAddress), ConfigurationManage.GetValue(_ConfigKey_ServiceMailPwd));
         }

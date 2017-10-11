@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using JQCore.DataAccess;
 using JQCore.Dependency;
-using JQCore.Lock;
 using JQCore.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Monitor.UnitOfWork;
@@ -36,7 +35,6 @@ namespace Monitor.Web
                 .AddScoped<IMonitorUnitOfWork, MonitorUnitOfWork>()
                 .AddSingleton<IJsonSerializer, NewtonsoftJsonSerializer>()
                 .AddSingleton<IBinarySerializer, DefaultBinarySerializer>()
-                .UseLocalLock()
                 ;
 
             builder.RegisterAssemblyTypes(typeof(AutofacRegisterModule).GetTypeInfo().Assembly)

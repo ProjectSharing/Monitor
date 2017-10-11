@@ -1,9 +1,13 @@
 ﻿using JQCore;
+using JQCore.Extensions;
 using JQCore.Utils;
+using Monitor.Constant;
 using Monitor.Domain;
 using Monitor.Repository;
 using Monitor.Trans;
+using System;
 using System.Threading.Tasks;
+using static Monitor.Constant.LockKeyConstant;
 
 namespace Monitor.DomainService.Implement
 {
@@ -16,6 +20,7 @@ namespace Monitor.DomainService.Implement
     public sealed class ServicerDomainService : IServicerDomainService
     {
         private readonly IServicerRepository _servicerRepository;
+
         public ServicerDomainService(IServicerRepository servicerRepository)
         {
             _servicerRepository = servicerRepository;
@@ -73,6 +78,50 @@ namespace Monitor.DomainService.Implement
                     throw new BizException("名字已存在");
                 }
             }
+        }
+
+        /// <summary>
+        /// 创建服务器，当名字不存在时
+        /// </summary>
+        /// <param name="servicerMac">Mac地址</param>
+        /// <returns>项目信息</returns>
+        public Task<ServicerInfo> AddWhenNotExistAsync(string servicerMac)
+        {
+            servicerMac.NotNull("Mac地址不能为空");
+            var servicerInfo = new ServicerInfo
+            {
+                FCreateTime = DateTimeUtil.Now,
+                FIsDeleted = false,
+                FMacAddress = servicerMac,
+                FCreateUserID = -1
+            };
+            return LockUtil.ExecuteWithLockAsync(Lock_ServicerModify, servicerMac, TimeSpan.FromMinutes(2), async () =>
+            {
+                var existServicerInfo = await _servicerRepository.GetInfoAsync(m => m.FIsDeleted == false && m.FMacAddress == servicerMac);
+                if (existServicerInfo != null)
+                {
+                    return existServicerInfo;
+                }
+                else
+                {
+                    int servicerID = (await _servicerRepository.InsertOneAsync(servicerInfo, keyName: "FID", ignoreFields: IgnoreConstant.FID)).ToSafeInt32(0);
+                    servicerInfo.FID = servicerID;
+                    await ServicerChangedAsync(OperateType.Add, servicerID);
+                    return servicerInfo;
+                }
+            });
+        }
+
+        /// <summary>
+        /// 服务器更改
+        /// </summary>
+        /// <param name="operateType">更改类型</param>
+        /// <param name="servicerID">服务器ID</param>
+        /// <returns></returns>
+        public Task ServicerChangedAsync(OperateType operateType, int servicerID)
+        {
+            //TODO 更新服务器缓存
+            return Task.Delay(1);
         }
     }
 }

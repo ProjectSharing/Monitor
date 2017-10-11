@@ -1,10 +1,15 @@
-﻿using JQCore.Result;
+﻿using JQCore;
+using JQCore.Extensions;
+using JQCore.Result;
+using JQCore.Utils;
 using Monitor.Constant;
 using Monitor.DomainService;
 using Monitor.Repository;
 using Monitor.Trans;
+using System;
 using System.Threading.Tasks;
 using static Monitor.Constant.IgnoreConstant;
+using static Monitor.Constant.LockKeyConstant;
 
 namespace Monitor.Application.Implement
 {
@@ -50,9 +55,18 @@ namespace Monitor.Application.Implement
             return OperateUtil.ExecuteAsync(async () =>
             {
                 var servicerInfo = _servcerDomainService.Create(servicerModel);
-                await _servcerDomainService.CheckAsync(servicerInfo);
-                await _servcerRepository.InsertOneAsync(servicerInfo, keyName: "FID", ignoreFields: FID);
-                _operateLogDomainService.AddOperateLog(servicerModel.OperateUserID, OperateModule.Servicer, OperateModuleNode.Add, $"添加:{servicerInfo.GetOperateDesc()}");
+                int id = await LockUtil.ExecuteWithLockAsync(Lock_ServicerModify, servicerInfo.FMacAddress, TimeSpan.FromMinutes(2), async () =>
+                   {
+                       await _servcerDomainService.CheckAsync(servicerInfo);
+                       int servicerID = (await _servcerRepository.InsertOneAsync(servicerInfo, keyName: "FID", ignoreFields: FID)).ToSafeInt32(0);
+                       _operateLogDomainService.AddOperateLog(servicerModel.OperateUserID, OperateModule.Servicer, OperateModuleNode.Add, $"添加:{servicerInfo.GetOperateDesc()}");
+                       await _servcerDomainService.ServicerChangedAsync(OperateType.Add, servicerID);
+                       return servicerID;
+                   }, defaultValue: -1);
+                if (id <= 0)
+                {
+                    throw new BizException("添加失败");
+                }
             }, callMemberName: "ServicerApplication-AddServicerAsync");
         }
 
@@ -79,9 +93,18 @@ namespace Monitor.Application.Implement
             return OperateUtil.ExecuteAsync(async () =>
             {
                 var servicerInfo = _servcerDomainService.Create(servicerModel);
-                await _servcerDomainService.CheckAsync(servicerInfo);
-                await _servcerRepository.UpdateAsync(servicerInfo, m => m.FID == servicerInfo.FID, ignoreFields: IDAndCreate);
-                _operateLogDomainService.AddOperateLog(servicerModel.OperateUserID, OperateModule.Servicer, OperateModuleNode.Edit, $"修改:{servicerInfo.GetOperateDesc()}");
+                var flag = await LockUtil.ExecuteWithLockAsync(Lock_ServicerModify, servicerInfo.FMacAddress, TimeSpan.FromMinutes(2), async () =>
+                 {
+                     await _servcerDomainService.CheckAsync(servicerInfo);
+                     await _servcerRepository.UpdateAsync(servicerInfo, m => m.FID == servicerInfo.FID, ignoreFields: IDAndCreate);
+                     _operateLogDomainService.AddOperateLog(servicerModel.OperateUserID, OperateModule.Servicer, OperateModuleNode.Edit, $"修改:{servicerInfo.GetOperateDesc()}");
+                     await _servcerDomainService.ServicerChangedAsync(OperateType.Modify, servicerInfo.FID);
+                     return true;
+                 }, defaultValue: false);
+                if (!flag)
+                {
+                    throw new BizException("修改失败");
+                }
             }, callMemberName: "ServicerApplication-AddServicerAsync");
         }
     }

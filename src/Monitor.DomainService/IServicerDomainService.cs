@@ -1,4 +1,5 @@
-﻿using Monitor.Domain;
+﻿using Monitor.Constant;
+using Monitor.Domain;
 using Monitor.Trans;
 using System.Threading.Tasks;
 
@@ -25,5 +26,20 @@ namespace Monitor.DomainService
         /// <param name="servicerInfo">服务器信息</param>
         /// <returns></returns>
         Task CheckAsync(ServicerInfo servicerInfo);
+
+        /// <summary>
+        /// 创建服务器，当名字不存在时
+        /// </summary>
+        /// <param name="servicerMac">Mac地址</param>
+        /// <returns>项目信息</returns>
+        Task<ServicerInfo> AddWhenNotExistAsync(string servicerMac);
+
+        /// <summary>
+        /// 服务器更改
+        /// </summary>
+        /// <param name="operateType">更改类型</param>
+        /// <param name="servicerID">服务器ID</param>
+        /// <returns></returns>
+        Task ServicerChangedAsync(OperateType operateType, int servicerID);
     }
 }
