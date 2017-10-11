@@ -63,7 +63,7 @@ namespace Monitor.Web
                             .UseRedis()
                             .UseRedisLock()
                             ;
-            ApplicationContainer = ContainerManager.Instance.Container as IContainer;
+            ApplicationContainer = (ContainerManager.Instance.Container as AutofacObjectContainer).Container;
             return new AutofacServiceProvider(ApplicationContainer);
         }
 
