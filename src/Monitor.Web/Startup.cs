@@ -1,5 +1,8 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Hangfire;
+using Hangfire.Dashboard;
+using Hangfire.Redis;
 using JQCore.Configuration;
 using JQCore.Dependency;
 using JQCore.Mvc.Filter;
@@ -15,6 +18,7 @@ using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using NLog.Web;
 using System;
+using System.Security.Claims;
 
 namespace Monitor.Web
 {
@@ -43,6 +47,15 @@ namespace Monitor.Web
                     .AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
                     //.Configure<RedisCacheOption>(Configuration)
                     ;
+            services.AddHangfire(m =>
+            {
+                string connectionString = Configuration.GetValue<string>("Redis:Hangfire:TaskShedule");
+                m.UseRedisStorage(connectionString, new RedisStorageOptions
+                {
+                    Prefix = "Monitor:TaskShedule"
+                });
+            });
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("Permission", policy =>
@@ -89,6 +102,13 @@ namespace Monitor.Web
                .UseSession()
                .UseAuthentication();
 
+            app.UseHangfireServer();
+            app.UseHangfireDashboard("/TaskScheduling", options: new DashboardOptions
+            {
+                AppPath = "/Home",
+                Authorization = new[] { new HangfireAuthorizationFilter() }
+            });
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -97,6 +117,16 @@ namespace Monitor.Web
             });
 
             applicationLifetime.RegisterRedisShutDown();
+        }
+    }
+    public class HangfireAuthorizationFilter : IDashboardAuthorizationFilter
+    {
+        public bool Authorize(DashboardContext context)
+        {
+            var httpContext = context.GetHttpContext();
+
+            // Allow all authenticated users to see the Dashboard (potentially dangerous).
+            return httpContext.User.HasClaim(c => c.Type == ClaimTypes.Sid);
         }
     }
 }
