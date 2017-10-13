@@ -18,5 +18,10 @@
         /// FID和创建信息和是否删除
         /// </summary>
         public static readonly string[] IDAndCreate = new string[] { "FID", "FCreateTime", "FCreateUserID", "FIsDeleted" };
+
+        /// <summary>
+        /// 操作人ID
+        /// </summary>
+        public static readonly string[] OperaterUserID = new string[] { "OperateUserID" };
     }
 }

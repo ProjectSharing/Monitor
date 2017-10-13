@@ -5,5 +5,5 @@ SET @AdminID=(SELECT @@IDENTITY);
 INSERT INTO M_AdminDetail(FAdminID,FIsDeleted,FCreateTime,FCreateUserID) VALUES(@AdminID,0,GETDATE(),@AdminID);
 
 --设置发送邮箱的账号密码
-INSERT INTO M_SysConfig(FKey,FValue,FCreateUserID,FCreateTime,FIsDeleted)VALUES('SendEmailAccount','18268932376@163.com',1,GETDATE(),0);
-INSERT INTO M_SysConfig(FKey,FValue,FCreateUserID,FCreateTime,FIsDeleted)VALUES('SendEmailAccountPwd','qwggmm1314',1,GETDATE(),0);
+INSERT INTO M_SysConfig(FKey,FValue,FCreateUserID,FCreateTime,FIsDeleted,FComment)VALUES('SendEmailAccount','18268932376@163.com',1,GETDATE(),0,'系统邮件发送账号');
+INSERT INTO M_SysConfig(FKey,FValue,FCreateUserID,FCreateTime,FIsDeleted,FComment)VALUES('SendEmailAccountPwd','qwggmm1314',1,GETDATE(),0,'系统邮件发送密码');

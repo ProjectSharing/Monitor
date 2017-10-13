@@ -22,6 +22,12 @@ namespace Monitor.Constant
         /// 服务器
         /// </summary>
         [Description("服务器")]
-        Servicer = 2
+        Servicer = 2,
+
+        /// <summary>
+        /// 系统配置
+        /// </summary>
+        [Description("系统配置")]
+        SysConfig = 3
     }
 }

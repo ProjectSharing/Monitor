@@ -1,0 +1,24 @@
+﻿@model SysConfigModel
+<div class="row">
+    <div class="col-md-offset-1 col-sm-offset-1 col-xs-offset-1 col-md-10 col-sm-10 col-xs-10">
+        <div class="form-group input-group">
+            <input type="hidden" asp-for="FID" />
+        </div>
+        <div class="form-group input-group col-md-12 col-sm-12 col-xs-12">
+            <span class=" input-group-addon width-100"><code>*</code>配置Key</span>
+            <input class="form-control" type="text" placeholder="配置Key" asp-for="FKey" />
+        </div>
+        <div class="form-group input-group col-md-12 col-sm-12 col-xs-12">
+            <span class="input-group-addon width-100">配置值</span>
+            <input class="form-control" type="text" placeholder="配置值" asp-for="FValue" />
+        </div>
+        <div class="form-group input-group col-md-12 col-sm-12 col-xs-12">
+            <span class="input-group-addon width-100">说明</span>
+            <textarea class="form-control" asp-for="FComment"></textarea>
+        </div>
+    </div>
+    <div class="btn-group col-md-offset-3 col-sm-offset-3 col-xs-offset-3 col-md-8 col-sm-8 col-xs-8">
+        <input class="btn btn-primary" type="submit" style="margin-right:15px;" value="保 存" />
+        <input class="btn btn-default" type="button" style="margin-right:15px;" value="返 回" onclick="CloseCurrentWindow()" />
+    </div>
+</div>

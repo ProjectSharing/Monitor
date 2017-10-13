@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      Microsoft SQL Server 2008                    */
-/* Created on:     2017/10/10 13:26:35                          */
+/* Created on:     2017/10/12 15:03:26                          */
 /*==============================================================*/
 
 
@@ -2240,6 +2240,7 @@ create table M_SysConfig (
    FID                  int                  identity(1,1),
    FKey                 varchar(128)         null,
    FValue               varchar(512)         null,
+   FComment             varchar(512)         null,
    FIsDeleted           bit                  not null,
    FCreateTime          datetime             not null,
    FCreateUserID        int                  not null,
@@ -2321,6 +2322,25 @@ select @CurrentUser = user_name()
 execute sp_addextendedproperty 'MS_Description', 
    '值',
    'user', @CurrentUser, 'table', 'M_SysConfig', 'column', 'FValue'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_SysConfig')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FComment')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_SysConfig', 'column', 'FComment'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '备注',
+   'user', @CurrentUser, 'table', 'M_SysConfig', 'column', 'FComment'
 go
 
 if exists(select 1 from sys.extended_properties p where
