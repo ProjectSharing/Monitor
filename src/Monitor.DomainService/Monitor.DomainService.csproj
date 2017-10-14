@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\JQCore.DataAccess\JQCore.DataAccess.csproj" />
+    <ProjectReference Include="..\JQCore.Hangfire\JQCore.Hangfire.csproj" />
     <ProjectReference Include="..\JQCore\JQCore.csproj" />
     <ProjectReference Include="..\Monitor.Cache\Monitor.Cache.csproj" />
     <ProjectReference Include="..\Monitor.Constant\Monitor.Constant.csproj" />

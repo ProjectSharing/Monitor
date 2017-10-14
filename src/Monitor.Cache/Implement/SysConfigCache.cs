@@ -1,5 +1,8 @@
 ﻿using JQCore.Redis;
+using Monitor.Domain;
 using Monitor.Repository;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 using static Monitor.Constant.CacheKeyConstant;
 
@@ -30,12 +33,64 @@ namespace Monitor.Cache.Implement
         {
             return GetValueAsync(async () =>
             {
-                return await RedisClient.HashGetAsync<string>(Cache_SysConfigList, key);
+                var configList = await RedisClient.HashValuesAsync<SysConfigInfo>(Cache_SysConfigList);
+                return configList?.Where(m => m.FKey == key).FirstOrDefault()?.FValue;
             }, async () =>
             {
                 var sysConfigInfo = await _sysConfigRepository.GetInfoAsync(m => m.FIsDeleted == false && m.FKey == key);
                 return sysConfigInfo?.FValue;
             }, memberName: "SysConfigCache-GetValueAsync");
+        }
+
+        /// <summary>
+        /// 修改配置文件到redis缓存
+        /// </summary>
+        /// <param name="configID">配置ID</param>
+        /// <returns></returns>
+        public Task SysConfigModifyAsync(int configID)
+        {
+            return SetValueAsync(async () =>
+            {
+                var sysConfigInfo = await _sysConfigRepository.GetInfoAsync(m => m.FID == configID && m.FIsDeleted == false);
+                if (sysConfigInfo != null)
+                {
+                    await RedisClient.HashSetAsync(Cache_SysConfigList, configID.ToString(), sysConfigInfo);
+                }
+                else
+                {
+                    if (await RedisClient.HashExistsAsync(Cache_SysConfigList, configID.ToString()))
+                    {
+                        await RedisClient.HashDeleteAsync(Cache_SysConfigList, configID.ToString());
+                    }
+                }
+            }, memberName: "SysConfigCache-AddSysConfig");
+        }
+
+        /// <summary>
+        /// 同步系统配置
+        /// </summary>
+        /// <returns></returns>
+        public Task SynchroConfigAsync()
+        {
+            return SetValueAsync(async () =>
+            {
+                var lastSynchroTime = await GetLastSynchroTimeAsync(Cache_Synchro_SysConfig);
+                var sysConfigList = await _sysConfigRepository.QueryListAsync(m => m.FCreateTime >= lastSynchroTime || m.FLastModifyTime >= lastSynchroTime);
+                foreach (var sysConfigInfo in sysConfigList)
+                {
+                    if (!sysConfigInfo.FIsDeleted)
+                    {
+                        await RedisClient.HashSetAsync(Cache_SysConfigList, sysConfigInfo.FID.ToString(), sysConfigInfo);
+                    }
+                    else
+                    {
+                        if (await RedisClient.HashExistsAsync(Cache_SysConfigList, sysConfigInfo.FID.ToString()))
+                        {
+                            await RedisClient.HashDeleteAsync(Cache_SysConfigList, sysConfigInfo.FID.ToString());
+                        }
+                    }
+                }
+            }, memberName: "SysConfigCache-AddSysConfig");
         }
     }
 }

@@ -17,5 +17,18 @@ namespace Monitor.Cache
         /// <param name="key">配置的Key</param>
         /// <returns>配置值</returns>
         Task<string> GetValueAsync(string key);
+
+        /// <summary>
+        /// 修改配置文件到redis缓存
+        /// </summary>
+        /// <param name="configID">配置ID</param>
+        /// <returns></returns>
+        Task SysConfigModifyAsync(int configID);
+
+        /// <summary>
+        /// 同步系统配置
+        /// </summary>
+        /// <returns></returns>
+        Task SynchroConfigAsync();
     }
 }

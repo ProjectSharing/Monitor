@@ -52,7 +52,7 @@ namespace Monitor.Web
                 string connectionString = Configuration.GetValue<string>("Redis:Hangfire:TaskShedule");
                 m.UseRedisStorage(connectionString, new RedisStorageOptions
                 {
-                    Prefix = "Monitor:TaskShedule"
+                    Prefix = "Monitor:TaskShedule:"
                 });
             });
 

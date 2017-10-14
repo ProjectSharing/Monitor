@@ -271,5 +271,33 @@ namespace JQCore.Redis
                 return await dbGetActionAsync();
             }
         }
+
+        /// <summary>
+        /// 获取业务上次同步时间
+        /// </summary>
+        /// <param name="key">业务对应的Key</param>
+        /// <returns>上次同步时间</returns>
+        protected Task<DateTime> GetLastSynchroTimeAsync(string key)
+        {
+            return GetValueAsync(async () =>
+            {
+                var lastSynchroTime = (await RedisClient.HashGetAsync<DateTime?>("CacheSynchroList", key)) ?? DateTime.MinValue;
+                return lastSynchroTime;
+            }, defaultValue: DateTime.MinValue, memberName: "GetLastSynchroTime");
+        }
+
+        /// <summary>
+        /// 获取业务上次同步时间
+        /// </summary>
+        /// <param name="key">业务对应的Key</param>
+        /// <returns>上次同步时间</returns>
+        protected DateTime GetLastSynchroTime(string key)
+        {
+            return GetValue(() =>
+           {
+               var lastSynchroTime = (RedisClient.HashGet<DateTime?>("CacheSynchroList", key)) ?? DateTime.MinValue;
+               return lastSynchroTime;
+           }, defaultValue: DateTime.MinValue, memberName: "GetLastSynchroTime");
+        }
     }
 }

@@ -5,6 +5,8 @@ using Monitor.Domain;
 using Monitor.Repository;
 using Monitor.Trans;
 using System.Threading.Tasks;
+using JQCore.Hangfire;
+using Monitor.Cache;
 
 namespace Monitor.DomainService.Implement
 {
@@ -17,10 +19,12 @@ namespace Monitor.DomainService.Implement
     public sealed class SysConfigDomainService : ISysConfigDomainService
     {
         private readonly ISysConfigRepository _sysConfigRepository;
+        private readonly ISysConfigCache _sysConfigCache;
 
-        public SysConfigDomainService(ISysConfigRepository sysConfigRepository)
+        public SysConfigDomainService(ISysConfigRepository sysConfigRepository, ISysConfigCache sysConfigCache)
         {
             _sysConfigRepository = sysConfigRepository;
+            _sysConfigCache = sysConfigCache;
         }
 
         /// <summary>
@@ -78,6 +82,7 @@ namespace Monitor.DomainService.Implement
         public Task ConfigChangedAsync(OperateType operateType, int configID)
         {
             //TODO 更新服务器缓存
+            TaskScheldulingUtil.BackGroundJob(() => _sysConfigCache.SysConfigModifyAsync(configID));
             return Task.Delay(1);
         }
     }
