@@ -17,7 +17,7 @@ namespace Monitor.Application
         /// </summary>
         /// <param name="queryWhere">查询条件</param>
         /// <returns>配置列表</returns>
-        Task<OperateResult<IPageResult<SysConfigDto>>> GetConfigListAsync(SysConfigPageQueryWhere queryWhere);
+        Task<OperateResult<IPageResult<SysConfigListDto>>> GetConfigListAsync(SysConfigPageQueryWhere queryWhere);
 
         /// <summary>
         /// 添加配置信息
@@ -39,5 +39,11 @@ namespace Monitor.Application
         /// <param name="sysConfigModel">配置信息</param>
         /// <returns>操作结果</returns>
         Task<OperateResult> EditConfigAsync(SysConfigModel sysConfigModel);
+
+        /// <summary>
+        /// 同步配置信息
+        /// </summary>
+        /// <returns>操作结果</returns>
+        Task<OperateResult> SynchroConfigAsync();
     }
 }

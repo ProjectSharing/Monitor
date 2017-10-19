@@ -281,7 +281,7 @@ namespace JQCore.Redis
         {
             return GetValueAsync(async () =>
             {
-                var lastSynchroTime = (await RedisClient.HashGetAsync<DateTime?>("CacheSynchroList", key)) ?? DateTime.MinValue;
+                var lastSynchroTime = (await RedisClient.HashGetAsync<DateTime?>("CacheSynchroList", key)) ?? DateTime.Parse("1970-01-01");
                 return lastSynchroTime;
             }, defaultValue: DateTime.MinValue, memberName: "GetLastSynchroTime");
         }
@@ -295,9 +295,34 @@ namespace JQCore.Redis
         {
             return GetValue(() =>
            {
-               var lastSynchroTime = (RedisClient.HashGet<DateTime?>("CacheSynchroList", key)) ?? DateTime.MinValue;
+               var lastSynchroTime = (RedisClient.HashGet<DateTime?>("CacheSynchroList", key)) ?? DateTime.Parse("1970-01-01");
                return lastSynchroTime;
            }, defaultValue: DateTime.MinValue, memberName: "GetLastSynchroTime");
+        }
+
+        /// <summary>
+        /// 更新上次同步时间
+        /// </summary>
+        /// <param name="key">业务对应的Key</param>
+        /// <returns></returns>
+        protected Task UpdateLastSynchroTimeAsync(string key)
+        {
+            return SetValueAsync(async () =>
+            {
+                await RedisClient.HashSetAsync("CacheSynchroList", key, DateTime.Now);
+            }, memberName: "UpdateLastSynchroTimeAsync");
+        }
+
+        /// <summary>
+        /// 更新上次同步时间
+        /// </summary>
+        /// <param name="key">业务对应的Key</param>
+        protected void UpdateLastSynchroTime(string key)
+        {
+            SetValue(() =>
+           {
+               RedisClient.HashSet("CacheSynchroList", key, DateTime.Now);
+           }, memberName: "UpdateLastSynchroTime");
         }
     }
 }

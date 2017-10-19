@@ -1,5 +1,8 @@
 ﻿using JQCore.DataAccess.Repositories;
+using JQCore.Result;
 using Monitor.Domain;
+using Monitor.Trans;
+using System.Threading.Tasks;
 
 namespace Monitor.Repository
 {
@@ -11,5 +14,11 @@ namespace Monitor.Repository
     /// </summary>
     public interface IProjectRepository : IBaseDataRepository<ProjectInfo>
     {
+        /// <summary>
+        /// 分页获取项目列表
+        /// </summary>
+        /// <param name="queryWhere">查询条件</param>
+        /// <returns>项目列表</returns>
+        Task<IPageResult<ProjectListDto>> GetProjectListAsync(ProjectPageQueryWhere queryWhere);
     }
 }

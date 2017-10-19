@@ -2,6 +2,7 @@
 using JQCore.Extensions;
 using JQCore.Result;
 using JQCore.Utils;
+using Monitor.Cache;
 using Monitor.Constant;
 using Monitor.DomainService;
 using Monitor.Repository;
@@ -24,12 +25,14 @@ namespace Monitor.Application.Implement
         private readonly ISysConfigRepository _sysConfigRepository;
         private readonly ISysConfigDomainService _sysConfigDomainService;
         private readonly IOperateLogDomainService _operateLogDomainService;
+        private readonly ISysConfigCache _sysConfigCache;
 
-        public SysConfigApplication(ISysConfigRepository sysConfigRepository, ISysConfigDomainService sysConfigDomainService, IOperateLogDomainService operateLogDomainService)
+        public SysConfigApplication(ISysConfigRepository sysConfigRepository, ISysConfigDomainService sysConfigDomainService, IOperateLogDomainService operateLogDomainService, ISysConfigCache sysConfigCache)
         {
             _sysConfigRepository = sysConfigRepository;
             _sysConfigDomainService = sysConfigDomainService;
             _operateLogDomainService = operateLogDomainService;
+            _sysConfigCache = sysConfigCache;
         }
 
         /// <summary>
@@ -37,7 +40,7 @@ namespace Monitor.Application.Implement
         /// </summary>
         /// <param name="queryWhere">查询条件</param>
         /// <returns>配置列表</returns>
-        public Task<OperateResult<IPageResult<SysConfigDto>>> GetConfigListAsync(SysConfigPageQueryWhere queryWhere)
+        public Task<OperateResult<IPageResult<SysConfigListDto>>> GetConfigListAsync(SysConfigPageQueryWhere queryWhere)
         {
             return OperateUtil.ExecuteAsync(() =>
             {
@@ -60,7 +63,7 @@ namespace Monitor.Application.Implement
                     await _sysConfigDomainService.CheckAsync(sysConfigInfo);
                     var configID = (await _sysConfigRepository.InsertOneAsync(sysConfigInfo, keyName: "FID", ignoreFields: FID)).ToSafeInt32(0);
                     _operateLogDomainService.AddOperateLog(sysConfigModel.OperateUserID.Value, OperateModule.SysConfig, OperateModuleNode.Add, $"{sysConfigInfo.GetOperateDesc()}");
-                    await _sysConfigDomainService.ConfigChangedAsync(OperateType.Add, configID);
+                    _sysConfigDomainService.ConfigChanged(OperateType.Add, configID);
                     return configID;
                 }, defaultValue: -1);
                 if (id <= 0)
@@ -98,7 +101,7 @@ namespace Monitor.Application.Implement
                     await _sysConfigDomainService.CheckAsync(sysConfigInfo);
                     await _sysConfigRepository.UpdateAsync(sysConfigInfo, m => m.FID == sysConfigInfo.FID, ignoreFields: IDAndCreate);
                     _operateLogDomainService.AddOperateLog(sysConfigModel.OperateUserID.Value, OperateModule.SysConfig, OperateModuleNode.Edit, $"{sysConfigInfo.GetOperateDesc()}");
-                    await _sysConfigDomainService.ConfigChangedAsync(OperateType.Modify, sysConfigInfo.FID);
+                    _sysConfigDomainService.ConfigChanged(OperateType.Modify, sysConfigInfo.FID);
                     return true;
                 }, defaultValue: false);
                 if (!flag)
@@ -106,6 +109,18 @@ namespace Monitor.Application.Implement
                     throw new BizException("修改失败");
                 }
             }, callMemberName: "SysConfigApplication-EditConfigAsync");
+        }
+
+        /// <summary>
+        /// 同步配置信息
+        /// </summary>
+        /// <returns>操作结果</returns>
+        public Task<OperateResult> SynchroConfigAsync()
+        {
+            return OperateUtil.ExecuteAsync(async () =>
+            {
+                await _sysConfigCache.SynchroConfigAsync();
+            }, callMemberName: "SysConfigApplication-SynchroConfigAsync");
         }
     }
 }

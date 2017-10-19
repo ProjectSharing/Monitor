@@ -40,6 +40,6 @@ namespace Monitor.DomainService
         /// <param name="operateType">更改类型</param>
         /// <param name="servicerID">服务器ID</param>
         /// <returns></returns>
-        Task ServicerChangedAsync(OperateType operateType, int servicerID);
+        void ServicerChanged(OperateType operateType, int servicerID);
     }
 }

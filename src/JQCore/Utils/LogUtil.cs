@@ -25,7 +25,7 @@ namespace JQCore.Utils
 
             if (string.IsNullOrWhiteSpace(loggerName))
             {
-                loggerName = "JQCore.Public.*";
+                loggerName = "JQCore.Public.RunLog";
             }
             return loggerFactory.CreateLogger(loggerName);
         }

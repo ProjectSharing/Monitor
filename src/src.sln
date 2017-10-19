@@ -45,7 +45,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monitor.Application", "Moni
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JQCore.Redis", "JQCore.Redis\JQCore.Redis.csproj", "{CB002BAC-2845-4656-8BF4-100D3E7A1C67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JQCore.Hangfire", "JQCore.Hangfire\JQCore.Hangfire.csproj", "{3B115DB8-48A7-4E0B-BDB3-69ED5F74512E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JQCore.Hangfire", "JQCore.Hangfire\JQCore.Hangfire.csproj", "{3B115DB8-48A7-4E0B-BDB3-69ED5F74512E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitor.TaskSchedule", "Monitor.TaskSchedule\Monitor.TaskSchedule.csproj", "{5E6A53FE-B8D0-46ED-9974-D2F84AA07271}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -113,6 +115,10 @@ Global
 		{3B115DB8-48A7-4E0B-BDB3-69ED5F74512E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B115DB8-48A7-4E0B-BDB3-69ED5F74512E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B115DB8-48A7-4E0B-BDB3-69ED5F74512E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E6A53FE-B8D0-46ED-9974-D2F84AA07271}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E6A53FE-B8D0-46ED-9974-D2F84AA07271}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E6A53FE-B8D0-46ED-9974-D2F84AA07271}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E6A53FE-B8D0-46ED-9974-D2F84AA07271}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -133,6 +139,7 @@ Global
 		{D6F4669B-5577-41D0-9954-49B23D82B424} = {B4220C6A-F3A8-4C90-BA45-523744C72679}
 		{CB002BAC-2845-4656-8BF4-100D3E7A1C67} = {E347DF10-D1DA-4A45-8C7B-16DE6DE79CB3}
 		{3B115DB8-48A7-4E0B-BDB3-69ED5F74512E} = {E347DF10-D1DA-4A45-8C7B-16DE6DE79CB3}
+		{5E6A53FE-B8D0-46ED-9974-D2F84AA07271} = {443E35C3-8F85-4367-B5E2-B0F313F9C312}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {91341587-871F-40E9-9438-5329D67D95B8}

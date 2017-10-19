@@ -103,11 +103,6 @@ namespace Monitor.Web
                .UseAuthentication();
 
             app.UseHangfireServer();
-            app.UseHangfireDashboard("/TaskScheduling", options: new DashboardOptions
-            {
-                AppPath = "/Home",
-                Authorization = new[] { new HangfireAuthorizationFilter() }
-            });
 
             app.UseMvc(routes =>
             {
@@ -117,16 +112,6 @@ namespace Monitor.Web
             });
 
             applicationLifetime.RegisterRedisShutDown();
-        }
-    }
-    public class HangfireAuthorizationFilter : IDashboardAuthorizationFilter
-    {
-        public bool Authorize(DashboardContext context)
-        {
-            var httpContext = context.GetHttpContext();
-
-            // Allow all authenticated users to see the Dashboard (potentially dangerous).
-            return httpContext.User.HasClaim(c => c.Type == ClaimTypes.Sid);
         }
     }
 }

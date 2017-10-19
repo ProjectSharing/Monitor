@@ -39,5 +39,11 @@ namespace Monitor.Application
         /// <param name="servicerModel">服务器信息</param>
         /// <returns>操作结果</returns>
         Task<OperateResult> EditServicerAsync(ServicerModel servicerModel);
+
+        /// <summary>
+        /// 同步服务器信息
+        /// </summary>
+        /// <returns>操作结果</returns>
+        Task<OperateResult> SynchroServiceAsync();
     }
 }

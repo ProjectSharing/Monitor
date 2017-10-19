@@ -13,5 +13,15 @@
         /// 配置同步Key
         /// </summary>
         public static readonly string Cache_Synchro_SysConfig = "SynchroSysConfig";
+
+        /// <summary>
+        /// 服务器同步Key
+        /// </summary>
+        public static readonly string Cache_Synchro_Service = "SynchroService";
+
+        /// <summary>
+        /// 项目同步Key
+        /// </summary>
+        public static readonly string Cache_Synchro_Project = "SynchroProject";
     }
 }

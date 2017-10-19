@@ -1,9 +1,12 @@
-﻿using JQCore.Extensions;
+﻿using JQCore;
+using JQCore.Extensions;
+using JQCore.Hangfire;
 using JQCore.Utils;
 using Monitor.Cache;
 using Monitor.Constant;
 using Monitor.Domain;
 using Monitor.Repository;
+using Monitor.Trans;
 using System;
 using System.Threading.Tasks;
 using static Monitor.Constant.LockKeyConstant;
@@ -25,6 +28,31 @@ namespace Monitor.DomainService.Implement
         {
             _projectCache = projectCache;
             _projectRepository = projectRepository;
+        }
+
+        /// <summary>
+        /// 创建项目信息
+        /// </summary>
+        /// <param name="projectModel">项目信息</param>
+        /// <returns>项目信息</returns>
+        public ProjectInfo Create(ProjectModel projectModel)
+        {
+            projectModel.NotNull("项目信息不能为空");
+            var projectInfo = new ProjectInfo
+            {
+                FComment = projectModel.FComment,
+                FIsDeleted = false,
+                FName = projectModel.FName,
+                FID = projectModel.FID ?? 0,
+                FCreateTime = DateTimeUtil.Now,
+                FCreateUserID = projectModel.OperateUserID.Value
+            };
+            if (projectInfo.FID > 0)
+            {
+                projectInfo.FLastModifyTime = DateTimeUtil.Now;
+                projectInfo.FLastModifyUserID = projectModel.OperateUserID.Value;
+            }
+            return projectInfo;
         }
 
         /// <summary>
@@ -53,7 +81,7 @@ namespace Monitor.DomainService.Implement
                  {
                      int projectID = (await _projectRepository.InsertOneAsync(projectInfo, keyName: "FID", ignoreFields: IgnoreConstant.FID)).ToSafeInt32(0);
                      projectInfo.FID = projectID;
-                     await ProjectChangedAsync(OperateType.Add, projectID);
+                     ProjectChanged(OperateType.Add, projectID);
                      return projectInfo;
                  }
              });
@@ -65,10 +93,29 @@ namespace Monitor.DomainService.Implement
         /// <param name="operateType">更改类型</param>
         /// <param name="projectID">项目ID</param>
         /// <returns></returns>
-        public Task ProjectChangedAsync(OperateType operateType, int projectID)
+        public void ProjectChanged(OperateType operateType, int projectID)
         {
             //TODO 更新项目缓存
-            return Task.Delay(1);
+            TaskScheldulingUtil.BackGroundJob(() => _projectCache.ProjectModifyAsync(projectID));
+        }
+
+        /// <summary>
+        /// 校验
+        /// </summary>
+        /// <param name="projectInfo">项目信息</param>
+        /// <returns></returns>
+        public async Task CheckAsync(ProjectInfo projectInfo)
+        {
+            projectInfo.NotNull("项目信息不能为空");
+            //判断是否有存在相同的Mac地址
+            var existNameInfo = await _projectRepository.GetInfoAsync(m => m.FName == projectInfo.FName && m.FIsDeleted == false);
+            if (existNameInfo != null)
+            {
+                if (existNameInfo.FID != projectInfo.FID)
+                {
+                    throw new BizException("名字已存在");
+                }
+            }
         }
     }
 }

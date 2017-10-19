@@ -1,12 +1,11 @@
 ﻿using JQCore.Redis;
+using JQCore.Utils;
 using Monitor.Domain;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Monitor.Repository;
+using System.Linq;
 using System.Threading.Tasks;
 using static Monitor.Constant.CacheKeyConstant;
-using System.Linq;
-using Monitor.Repository;
+using JQCore.Extensions;
 
 namespace Monitor.Cache.Implement
 {
@@ -40,7 +39,64 @@ namespace Monitor.Cache.Implement
              }, async () =>
              {
                  return await _projectRepository.GetInfoAsync(m => m.FName == projectName);
-             }, memberName: "ProjectCache-GetProjectInfo");
+             }, memberName: "ProjectCache-GetProjectInfoAsync");
+        }
+
+        /// <summary>
+        /// 项目信息发生变化
+        /// </summary>
+        /// <param name="projectID">项目ID</param>
+        /// <returns></returns>
+        public Task ProjectModifyAsync(int projectID)
+        {
+            return SetValueAsync(async () =>
+            {
+                var projectInfo = await _projectRepository.GetInfoAsync(m => m.FID == projectID && m.FIsDeleted == false);
+                if (projectInfo != null)
+                {
+                    await RedisClient.HashSetAsync(Cache_ProjectList, projectID.ToString(), projectInfo);
+                }
+                else
+                {
+                    if (await RedisClient.HashExistsAsync(Cache_ProjectList, projectID.ToString()))
+                    {
+                        await RedisClient.HashDeleteAsync(Cache_ProjectList, projectID.ToString());
+                    }
+                }
+            }, memberName: "ProjectCache-ProjectModifyAsync");
+        }
+
+        /// <summary>
+        /// 同步项目信息
+        /// </summary>
+        /// <returns></returns>
+        public Task SynchroProjectAsync()
+        {
+            return SetValueAsync(async () =>
+            {
+                LogUtil.Info("开始同步项目信息");
+                var lastSynchroTime = await GetLastSynchroTimeAsync(Cache_Synchro_Project);
+                LogUtil.Info($"项目信息上次同步时间;{lastSynchroTime.ToDefaultFormat()}");
+                var projectList = await _projectRepository.QueryListAsync(m => m.FCreateTime >= lastSynchroTime || m.FLastModifyTime >= lastSynchroTime);
+                LogUtil.Info($"共{(projectList?.Count().ToString()) ?? "0"}条信息需要同步");
+                foreach (var projectInfo in projectList)
+                {
+                    if (!projectInfo.FIsDeleted)
+                    {
+                        await RedisClient.HashSetAsync(Cache_ProjectList, projectInfo.FID.ToString(), projectInfo);
+                    }
+                    else
+                    {
+                        if (await RedisClient.HashExistsAsync(Cache_ProjectList, projectInfo.FID.ToString()))
+                        {
+                            await RedisClient.HashDeleteAsync(Cache_ProjectList, projectInfo.FID.ToString());
+                        }
+                    }
+                    LogUtil.Info($"项目信息【{projectInfo.FID.ToString()}】同步成功");
+                }
+                await UpdateLastSynchroTimeAsync(Cache_Synchro_Project);
+                LogUtil.Info("同步项目信息完成");
+            }, memberName: "ProjectCache-SynchroConfigAsync");
         }
     }
 }

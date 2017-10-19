@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Monitor.Application;
 using Monitor.Trans;
-using Monitor.Web.Infrastructure;
 using System.Threading.Tasks;
 
 namespace Monitor.Web.Controllers

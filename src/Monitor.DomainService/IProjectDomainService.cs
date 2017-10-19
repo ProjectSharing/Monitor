@@ -1,5 +1,6 @@
 ﻿using Monitor.Constant;
 using Monitor.Domain;
+using Monitor.Trans;
 using System.Threading.Tasks;
 
 namespace Monitor.DomainService
@@ -25,6 +26,20 @@ namespace Monitor.DomainService
         /// <param name="operateType">更改类型</param>
         /// <param name="projectID">项目ID</param>
         /// <returns></returns>
-        Task ProjectChangedAsync(OperateType operateType, int projectID);
+        void ProjectChanged(OperateType operateType, int projectID);
+
+        /// <summary>
+        /// 创建项目信息
+        /// </summary>
+        /// <param name="projectModel">项目信息</param>
+        /// <returns>项目信息</returns>
+        ProjectInfo Create(ProjectModel projectModel);
+
+        /// <summary>
+        /// 校验
+        /// </summary>
+        /// <param name="projectInfo">项目信息</param>
+        /// <returns></returns>
+        Task CheckAsync(ProjectInfo projectInfo);
     }
 }

@@ -28,6 +28,12 @@ namespace Monitor.Constant
         /// 系统配置
         /// </summary>
         [Description("系统配置")]
-        SysConfig = 3
+        SysConfig = 3,
+
+        /// <summary>
+        /// 项目信息
+        /// </summary>
+        [Description("项目信息")]
+        Project = 4
     }
 }

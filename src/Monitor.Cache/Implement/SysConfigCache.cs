@@ -1,10 +1,11 @@
 ﻿using JQCore.Redis;
+using JQCore.Utils;
 using Monitor.Domain;
 using Monitor.Repository;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using static Monitor.Constant.CacheKeyConstant;
+using JQCore.Extensions;
 
 namespace Monitor.Cache.Implement
 {
@@ -63,7 +64,7 @@ namespace Monitor.Cache.Implement
                         await RedisClient.HashDeleteAsync(Cache_SysConfigList, configID.ToString());
                     }
                 }
-            }, memberName: "SysConfigCache-AddSysConfig");
+            }, memberName: "SysConfigCache-SysConfigModifyAsync");
         }
 
         /// <summary>
@@ -74,8 +75,11 @@ namespace Monitor.Cache.Implement
         {
             return SetValueAsync(async () =>
             {
+                LogUtil.Info("开始同步系统信息");
                 var lastSynchroTime = await GetLastSynchroTimeAsync(Cache_Synchro_SysConfig);
+                LogUtil.Info($"系统信息上次同步时间;{lastSynchroTime.ToDefaultFormat()}");
                 var sysConfigList = await _sysConfigRepository.QueryListAsync(m => m.FCreateTime >= lastSynchroTime || m.FLastModifyTime >= lastSynchroTime);
+                LogUtil.Info($"共{(sysConfigList?.Count().ToString()) ?? "0"}条信息需要同步");
                 foreach (var sysConfigInfo in sysConfigList)
                 {
                     if (!sysConfigInfo.FIsDeleted)
@@ -89,8 +93,11 @@ namespace Monitor.Cache.Implement
                             await RedisClient.HashDeleteAsync(Cache_SysConfigList, sysConfigInfo.FID.ToString());
                         }
                     }
+                    LogUtil.Info($"系统信息【{sysConfigInfo.FID.ToString()}】同步成功");
                 }
-            }, memberName: "SysConfigCache-AddSysConfig");
+                await UpdateLastSynchroTimeAsync(Cache_Synchro_SysConfig);
+                LogUtil.Info("系统信息完成");
+            }, memberName: "SysConfigCache-SynchroConfigAsync");
         }
     }
 }

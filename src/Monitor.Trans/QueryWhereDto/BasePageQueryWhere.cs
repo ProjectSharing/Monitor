@@ -42,6 +42,10 @@
                 {
                     return 30;
                 }
+                if (_pageSize > 500)
+                {
+                    return 500;
+                }
                 return _pageSize ?? 30;
             }
             set

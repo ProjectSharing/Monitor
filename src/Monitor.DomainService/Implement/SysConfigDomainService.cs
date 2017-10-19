@@ -79,11 +79,10 @@ namespace Monitor.DomainService.Implement
         /// <param name="operateType">更改类型</param>
         /// <param name="servicerID">配置ID</param>
         /// <returns></returns>
-        public Task ConfigChangedAsync(OperateType operateType, int configID)
+        public void ConfigChanged(OperateType operateType, int configID)
         {
             //TODO 更新服务器缓存
             TaskScheldulingUtil.BackGroundJob(() => _sysConfigCache.SysConfigModifyAsync(configID));
-            return Task.Delay(1);
         }
     }
 }

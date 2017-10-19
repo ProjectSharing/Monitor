@@ -33,6 +33,6 @@ namespace Monitor.DomainService
         /// <param name="operateType">更改类型</param>
         /// <param name="servicerID">配置ID</param>
         /// <returns></returns>
-        Task ConfigChangedAsync(OperateType operateType, int configID);
+        void ConfigChanged(OperateType operateType, int configID);
     }
 }

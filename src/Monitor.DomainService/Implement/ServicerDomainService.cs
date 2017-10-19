@@ -1,6 +1,8 @@
 ﻿using JQCore;
 using JQCore.Extensions;
+using JQCore.Hangfire;
 using JQCore.Utils;
+using Monitor.Cache;
 using Monitor.Constant;
 using Monitor.Domain;
 using Monitor.Repository;
@@ -20,10 +22,12 @@ namespace Monitor.DomainService.Implement
     public sealed class ServicerDomainService : IServicerDomainService
     {
         private readonly IServicerRepository _servicerRepository;
+        private readonly IServicerCache _servicerCache;
 
-        public ServicerDomainService(IServicerRepository servicerRepository)
+        public ServicerDomainService(IServicerRepository servicerRepository, IServicerCache servicerCache)
         {
             _servicerRepository = servicerRepository;
+            _servicerCache = servicerCache;
         }
 
         /// <summary>
@@ -106,7 +110,7 @@ namespace Monitor.DomainService.Implement
                 {
                     int servicerID = (await _servicerRepository.InsertOneAsync(servicerInfo, keyName: "FID", ignoreFields: IgnoreConstant.FID)).ToSafeInt32(0);
                     servicerInfo.FID = servicerID;
-                    await ServicerChangedAsync(OperateType.Add, servicerID);
+                    ServicerChanged(OperateType.Add, servicerID);
                     return servicerInfo;
                 }
             });
@@ -118,10 +122,10 @@ namespace Monitor.DomainService.Implement
         /// <param name="operateType">更改类型</param>
         /// <param name="servicerID">服务器ID</param>
         /// <returns></returns>
-        public Task ServicerChangedAsync(OperateType operateType, int servicerID)
+        public void ServicerChanged(OperateType operateType, int servicerID)
         {
             //TODO 更新服务器缓存
-            return Task.Delay(1);
+            TaskScheldulingUtil.BackGroundJob(() => _servicerCache.ServicerModifyAsync(servicerID));
         }
     }
 }

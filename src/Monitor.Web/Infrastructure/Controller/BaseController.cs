@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Security.Claims;
 
-namespace Monitor.Web.Infrastructure
+namespace Monitor.Web
 {
     /// <summary>
     /// Copyright (C) 2017 yjq 版权所有。

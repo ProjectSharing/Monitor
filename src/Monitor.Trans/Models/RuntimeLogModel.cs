@@ -1,20 +1,17 @@
 ﻿using Monitor.Constant;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Monitor.Trans
 {
-	/// <summary>
-	/// Copyright (C) 2017 yjq 版权所有。
+    /// <summary>
+    /// Copyright (C) 2017 yjq 版权所有。
     /// 类名：RuntimeLogModel.cs
     /// 类属性：公共类（非静态）
     /// 类功能描述：运行日志对象
     /// 创建标识：yjq 2017/10/2 19:58:08
     /// </summary>
-    public  class RuntimeLogModel
+    public class RuntimeLogModel
     {
-
         /// <summary>
         /// 日志级别
         /// </summary>

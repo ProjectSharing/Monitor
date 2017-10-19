@@ -18,5 +18,18 @@ namespace Monitor.Cache
         /// <param name="projectName">项目名字</param>
         /// <returns>项目信息</returns>
         Task<ProjectInfo> GetProjectInfoAsync(string projectName);
+
+        /// <summary>
+        /// 项目信息发生变化
+        /// </summary>
+        /// <param name="projectID">项目ID</param>
+        /// <returns></returns>
+        Task ProjectModifyAsync(int projectID);
+
+        /// <summary>
+        /// 同步项目信息
+        /// </summary>
+        /// <returns></returns>
+        Task SynchroProjectAsync();
     }
 }

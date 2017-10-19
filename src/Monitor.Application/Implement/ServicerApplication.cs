@@ -2,6 +2,7 @@
 using JQCore.Extensions;
 using JQCore.Result;
 using JQCore.Utils;
+using Monitor.Cache;
 using Monitor.Constant;
 using Monitor.DomainService;
 using Monitor.Repository;
@@ -24,12 +25,14 @@ namespace Monitor.Application.Implement
         private readonly IServicerRepository _servcerRepository;
         private readonly IServicerDomainService _servcerDomainService;
         private readonly IOperateLogDomainService _operateLogDomainService;
+        private readonly IServicerCache _servicerCache;
 
-        public ServicerApplication(IServicerRepository servcerRepository, IServicerDomainService servcerDomainService, IOperateLogDomainService operateLogDomainService)
+        public ServicerApplication(IServicerRepository servcerRepository, IServicerDomainService servcerDomainService, IOperateLogDomainService operateLogDomainService, IServicerCache servicerCache)
         {
             _servcerRepository = servcerRepository;
             _servcerDomainService = servcerDomainService;
             _operateLogDomainService = operateLogDomainService;
+            _servicerCache = servicerCache;
         }
 
         /// <summary>
@@ -60,7 +63,7 @@ namespace Monitor.Application.Implement
                        await _servcerDomainService.CheckAsync(servicerInfo);
                        int servicerID = (await _servcerRepository.InsertOneAsync(servicerInfo, keyName: "FID", ignoreFields: FID)).ToSafeInt32(0);
                        _operateLogDomainService.AddOperateLog(servicerModel.OperateUserID, OperateModule.Servicer, OperateModuleNode.Add, $"添加:{servicerInfo.GetOperateDesc()}");
-                       await _servcerDomainService.ServicerChangedAsync(OperateType.Add, servicerID);
+                       _servcerDomainService.ServicerChanged(OperateType.Add, servicerID);
                        return servicerID;
                    }, defaultValue: -1);
                 if (id <= 0)
@@ -98,7 +101,7 @@ namespace Monitor.Application.Implement
                      await _servcerDomainService.CheckAsync(servicerInfo);
                      await _servcerRepository.UpdateAsync(servicerInfo, m => m.FID == servicerInfo.FID, ignoreFields: IDAndCreate);
                      _operateLogDomainService.AddOperateLog(servicerModel.OperateUserID, OperateModule.Servicer, OperateModuleNode.Edit, $"修改:{servicerInfo.GetOperateDesc()}");
-                     await _servcerDomainService.ServicerChangedAsync(OperateType.Modify, servicerInfo.FID);
+                     _servcerDomainService.ServicerChanged(OperateType.Modify, servicerInfo.FID);
                      return true;
                  }, defaultValue: false);
                 if (!flag)
@@ -106,6 +109,18 @@ namespace Monitor.Application.Implement
                     throw new BizException("修改失败");
                 }
             }, callMemberName: "ServicerApplication-AddServicerAsync");
+        }
+
+        /// <summary>
+        /// 同步服务器信息
+        /// </summary>
+        /// <returns>操作结果</returns>
+        public Task<OperateResult> SynchroServiceAsync()
+        {
+            return OperateUtil.ExecuteAsync(async () =>
+            {
+                await _servicerCache.SynchroServiceAsync();
+            }, callMemberName: "ServicerApplication-SynchroConfigAsync");
         }
     }
 }

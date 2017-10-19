@@ -1,0 +1,33 @@
+﻿@model ProjectModel
+@{
+    ViewData["Title"] = "添加项目";
+    Layout = "/Views/Shared/_Layout_Edit.cshtml";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <form asp-action="Add" method="post" id="EditForm" class="form-horizontal">
+                @Html.Partial("_Modify")
+            </form>
+        </div>
+    </div>
+</div>
+@section Script{
+    <script type="text/javascript">
+        $("#EditForm").submit(function () {
+            if (!$("#EditForm").valid()) { return false; }
+            AjaxRequest({
+                type: this.method,
+                url: this.action,
+                data: $(this).serialize()
+            }, function (successData) {
+                ShowSuccess("操作成功", function () {
+                    top.Refresh();
+                    CloseWinSelf();
+                });
+            }, function (failData) {
+            });
+            return false;
+        })
+    </script>
+}

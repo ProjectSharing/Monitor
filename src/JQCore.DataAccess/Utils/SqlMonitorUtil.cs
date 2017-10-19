@@ -19,7 +19,7 @@ namespace JQCore.DataAccess.Utils
         /// <summary>
         /// sql的日志记录器名字
         /// </summary>
-        private const string _LOGGER_SQL = "JQCore.Sql.Monitor";
+        private const string _LOGGER_SQL = "JQCore.Public.SqlMonitor";
 
         /// <summary>
         /// 监控消耗时间

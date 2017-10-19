@@ -19,6 +19,6 @@ namespace Monitor.Repository
         /// </summary>
         /// <param name="queryWhere">查询条件</param>
         /// <returns>配置列表</returns>
-        Task<IPageResult<SysConfigDto>> GetConfigListAsync(SysConfigPageQueryWhere queryWhere);
+        Task<IPageResult<SysConfigListDto>> GetConfigListAsync(SysConfigPageQueryWhere queryWhere);
     }
 }

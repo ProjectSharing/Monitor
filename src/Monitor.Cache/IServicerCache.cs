@@ -18,5 +18,18 @@ namespace Monitor.Cache
         /// <param name="servicerMac">服务器Mac地址</param>
         /// <returns>服务器信息</returns>
         Task<ServicerInfo> GetServicerInfoAsync(string servicerMac);
+
+        /// <summary>
+        /// 修改服务器到redis缓存
+        /// </summary>
+        /// <param name="serviserID">服务器ID</param>
+        /// <returns></returns>
+        Task ServicerModifyAsync(int serviserID);
+
+        /// <summary>
+        /// 同步服务器信息
+        /// </summary>
+        /// <returns></returns>
+        Task SynchroServiceAsync();
     }
 }

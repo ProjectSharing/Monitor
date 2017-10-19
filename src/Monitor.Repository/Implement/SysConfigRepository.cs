@@ -28,7 +28,7 @@ namespace Monitor.Repository.Implement
         /// </summary>
         /// <param name="queryWhere">查询条件</param>
         /// <returns>配置列表</returns>
-        public Task<IPageResult<SysConfigDto>> GetConfigListAsync(SysConfigPageQueryWhere queryWhere)
+        public Task<IPageResult<SysConfigListDto>> GetConfigListAsync(SysConfigPageQueryWhere queryWhere)
         {
             SqlWhereBuilder whereBuilder = new SqlWhereBuilder("FIsDeleted=0", DataType);
             whereBuilder.AppendLike("FKey", queryWhere.ConfigKey, paramKey: nameof(queryWhere.ConfigKey));
@@ -36,7 +36,7 @@ namespace Monitor.Repository.Implement
             const string selectTable = TABLE_NAME_SYSCONFIG + SQLSERVER_WITHNOLOCK;
             const string selectColumn = "FID,FKey,FValue,FComment,ISNULL(FLastModifyTime,FCreateTime) AS FLastModifyTime";
             const string order = "ISNULL(FLastModifyTime,FCreateTime) DESC";
-            return QueryPageListAsync<SysConfigDto>(selectColumn, selectTable, whereBuilder.ToString(), order, queryWhere.PageIndex, queryWhere.PageSize, cmdParms: queryWhere);
+            return QueryPageListAsync<SysConfigListDto>(selectColumn, selectTable, whereBuilder.ToString(), order, queryWhere.PageIndex, queryWhere.PageSize, cmdParms: queryWhere);
         }
 
     }
