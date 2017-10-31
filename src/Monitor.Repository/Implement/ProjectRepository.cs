@@ -30,7 +30,7 @@ namespace Monitor.Repository.Implement
         /// <returns>项目列表</returns>
         public Task<IPageResult<ProjectListDto>> GetProjectListAsync(ProjectPageQueryWhere queryWhere)
         {
-            SqlWhereBuilder whereBuilder = new SqlWhereBuilder("FIsDeleted=0", DataType);
+            SqlWhereBuilder whereBuilder = new SqlWhereBuilder("FIsDeleted=0", ReaderDataType);
             whereBuilder.AppendLike("FName", queryWhere.Name, paramKey: nameof(queryWhere.Name));
 
             const string selectTable = TABLE_NAME_PROJECT + SQLSERVER_WITHNOLOCK;

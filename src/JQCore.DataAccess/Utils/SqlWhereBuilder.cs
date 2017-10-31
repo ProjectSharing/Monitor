@@ -123,7 +123,14 @@ namespace JQCore.DataAccess.Utils
             }
             if (obj.IsNotNullAndNotEmptyWhiteSpace())
             {
-                AddWhereInfo(string.Format(" {0} LIKE '%'+{1}{2}+'%' ", key, "{0}", Clean(paramKey ?? key)), isFormat: true);
+                if (_dbType == DatabaseType.MySql)
+                {
+                    AddWhereInfo(string.Format(" {0} LIKE CONCAT('%',{1}{2},'%') ", key, "{0}", Clean(paramKey ?? key)), isFormat: true);
+                }
+                else
+                {
+                    AddWhereInfo(string.Format(" {0} LIKE '%'+{1}{2}+'%' ", key, "{0}", Clean(paramKey ?? key)), isFormat: true);
+                }
             }
             return this;
         }
@@ -143,7 +150,14 @@ namespace JQCore.DataAccess.Utils
             }
             if (obj.IsNotNullAndNotEmptyWhiteSpace())
             {
-                AddWhereInfo(string.Format(" {0} LIKE {1}{2}+'%' ", key, "{0}", Clean(paramKey ?? key)));
+                if (_dbType == DatabaseType.MySql)
+                {
+                    AddWhereInfo(string.Format(" {0} LIKE CONCAT({1}{2},'%') ", key, "{0}", Clean(paramKey ?? key)));
+                }
+                else
+                {
+                    AddWhereInfo(string.Format(" {0} LIKE {1}{2}+'%' ", key, "{0}", Clean(paramKey ?? key)));
+                }
             }
             return this;
         }
@@ -163,7 +177,14 @@ namespace JQCore.DataAccess.Utils
             }
             if (obj.IsNotNullAndNotEmptyWhiteSpace())
             {
-                AddWhereInfo(string.Format(" {0} LIKE '%'+{1}{2} ", key, "{0}", Clean(paramKey ?? key)));
+                if (_dbType == DatabaseType.MySql)
+                {
+                    AddWhereInfo(string.Format(" {0} LIKE CONCAT('%',{1}{2}) ", key, "{0}", Clean(paramKey ?? key)));
+                }
+                else
+                {
+                    AddWhereInfo(string.Format(" {0} LIKE '%'+{1}{2} ", key, "{0}", Clean(paramKey ?? key)));
+                }
             }
             return this;
         }

@@ -30,7 +30,7 @@ namespace Monitor.Repository.Implement
         /// <returns>服务器列表</returns>
         public Task<IPageResult<ServicerListDto>> GetServiceListAsync(ServicePageQueryWhere queryWhere)
         {
-            SqlWhereBuilder whereBuilder = new SqlWhereBuilder("FIsDeleted=0", DataType);
+            SqlWhereBuilder whereBuilder = new SqlWhereBuilder("FIsDeleted=0", ReaderDataType);
             whereBuilder.AppendEqual("FMacAddress", queryWhere.MacAddress, paramKey: nameof(queryWhere.MacAddress))
                         .AppendLike("FIP", queryWhere.IP, paramKey: nameof(queryWhere.IP))
                         .AppendLike("FName", queryWhere.Name, paramKey: nameof(queryWhere.Name))

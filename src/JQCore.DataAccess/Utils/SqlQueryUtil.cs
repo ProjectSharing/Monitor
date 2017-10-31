@@ -1,12 +1,15 @@
-﻿using JQCore.DataAccess.DbClient;
+﻿using JQCore.DataAccess.Attributes;
+using JQCore.DataAccess.DbClient;
 using JQCore.DataAccess.Expressions;
 using JQCore.Extensions;
 using JQCore.Utils;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 
 namespace JQCore.DataAccess.Utils
@@ -33,11 +36,11 @@ namespace JQCore.DataAccess.Utils
         /// <returns>单个插入的SqlQuery</returns>
         public static SqlQuery BuilderInsertOneSqlQuery<T>(T entity, string tableName, string keyName = null, string[] ignoreFields = null, bool isIdentity = true, DatabaseType dbType = DatabaseType.MSSQLServer) where T : new()
         {
-            var propertyList = PropertyUtil.GetPropertyInfos(entity, ignoreFields);
+            var propertyList = GetInsertPropertyList(entity, ignoreFields);
             var proNameList = propertyList.Select(m => m.Name);
             var columns = string.Join(",", proNameList);
             var values = string.Join(",", proNameList.Select(p => GetSign(dbType) + p));
-            string commandText = string.Format("INSERT INTO {0} ({1}) VALUES ({2}){3};", tableName, columns, values, isIdentity ? GetIdentityKeyScript(keyName, dbType) : string.Empty);
+            string commandText = string.Format("INSERT INTO {0} ({1}) VALUES ({2});{3};", tableName, columns, values, isIdentity ? GetIdentityKeyScript(keyName, dbType) : string.Empty);
             SqlQuery sqlQuery = new SqlQuery();
             sqlQuery.CommandText = commandText;
             sqlQuery.AddObjectParam(entity, ignoreFields: ignoreFields);
@@ -64,7 +67,7 @@ namespace JQCore.DataAccess.Utils
             {
                 throw new ArgumentNullException("entityList");
             }
-            var propertyList = PropertyUtil.GetPropertyInfos(entity, ignoreFields);
+            var propertyList = GetInsertPropertyList(entity, ignoreFields);
             var proNameList = propertyList.Select(m => m.Name);
             var columns = string.Join(",", proNameList);
             StringBuilder builder = new StringBuilder();
@@ -72,11 +75,40 @@ namespace JQCore.DataAccess.Utils
             for (int i = 0; i < entityList.Count; i++)
             {
                 var values = string.Join(",", proNameList.Select(p => GetSign(dbType) + i.ToString() + p));
-                builder.AppendFormat("INSERT INTO {0} ({1}) VALUES ({2}){3};", tableName, columns, values, isIdentity ? GetIdentityKeyScript(keyName, dbType) : string.Empty);
+                builder.AppendFormat("INSERT INTO {0} ({1}) VALUES ({2});{3};", tableName, columns, values, isIdentity ? GetIdentityKeyScript(keyName, dbType) : string.Empty);
                 sqlQuery.AddObjectParam(entityList[i], i.ToString(), ignoreFields: ignoreFields);
             }
             sqlQuery.CommandText = builder.ToString();
             return sqlQuery;
+        }
+
+        /// <summary>
+        /// 获取新增属性字段
+        /// </summary>
+        /// <typeparam name="T">字段类型</typeparam>
+        /// <param name="entity"></param>
+        /// <param name="ignoreFields">需要忽略的字段</param>
+        /// <returns>新增属性字段</returns>
+        private static IEnumerable<PropertyInfo> GetInsertPropertyList<T>(T entity, string[] ignoreFields = null)
+        {
+            return PropertyUtil.GetPropertyInfos(entity, ignoreFields, new Type[] { typeof(IdentityAttribute) });
+        }
+
+        private static readonly ConcurrentDictionary<RuntimeTypeHandle, bool> _IdentityCache = new ConcurrentDictionary<RuntimeTypeHandle, bool>();
+
+        /// <summary>
+        /// 判断是否是自增
+        /// </summary>
+        /// <param name="type">要判断你的类型</param>
+        /// <returns>有自增字段返回true</returns>
+        public static bool IsIdentity(Type type)
+        {
+            if (type == null) return false;
+            var typeHandle = type.TypeHandle;
+            return _IdentityCache.GetValue(typeHandle, () =>
+            {
+                return PropertyUtil.GetTypeProperties(type).Where(m => m.GetCustomAttribute(typeof(IdentityAttribute), false) != null).Any();
+            });
         }
 
         /// <summary>
@@ -90,7 +122,7 @@ namespace JQCore.DataAccess.Utils
         /// <returns>修改的SqlQuery</returns>
         public static SqlQuery BuilderUpdateSqlQuery(object data, object condition, string tableName, string[] ignoreFields = null, DatabaseType dbType = DatabaseType.MSSQLServer)
         {
-            var updatePropertyInfos = PropertyUtil.GetPropertyInfos(data, ignoreFields);
+            var updatePropertyInfos = GetUpdatePropertyList(data, ignoreFields);
             var wherePropertyInfos = PropertyUtil.GetPropertyInfos(condition);
 
             var updateProperties = updatePropertyInfos.Select(p => p.Name);
@@ -106,7 +138,7 @@ namespace JQCore.DataAccess.Utils
             SqlQuery sqlQuery = new SqlQuery()
                                 .AddObjectParam(data, ignoreFields: ignoreFields)
                                 .AddObjectParam(condition, "W_")
-                                .ChangeCommandText(string.Format("UPDATE {0} SET {1}{2}", tableName, updateFields, whereFields));
+                                .ChangeCommandText(string.Format("UPDATE {0} SET {1}{2};", tableName, updateFields, whereFields));
             return sqlQuery;
         }
 
@@ -122,7 +154,7 @@ namespace JQCore.DataAccess.Utils
         /// <returns>修改的SqlQuery</returns>
         public static SqlQuery BuilderUpdateSqlQuery<T>(object data, Expression<Func<T, bool>> condition, string tableName, string[] ignoreFields = null, DatabaseType dbType = DatabaseType.MSSQLServer)
         {
-            var updatePropertyInfos = PropertyUtil.GetPropertyInfos(data, ignoreFields);
+            var updatePropertyInfos = GetUpdatePropertyList(data, ignoreFields);
             var updateProperties = updatePropertyInfos.Select(p => p.Name);
 
             var updateFields = string.Join(",", updateProperties.Select(p => p + " =" + GetSign(dbType) + p));
@@ -135,8 +167,19 @@ namespace JQCore.DataAccess.Utils
             SqlQuery sqlQuery = new SqlQuery()
                                .AddObjectParam(data, ignoreFields: ignoreFields)
                                .AddObjectParam(whereInfo.Item2)
-                               .ChangeCommandText(string.Format("UPDATE {0} SET {1}{2}", tableName, updateFields, whereFields));
+                               .ChangeCommandText(string.Format("UPDATE {0} SET {1}{2};", tableName, updateFields, whereFields));
             return sqlQuery;
+        }
+
+        /// <summary>
+        /// 获取修改的属性列表（自动排除主键和自增）
+        /// </summary>
+        /// <param name="data">修改的内容</param>
+        /// <param name="ignoreFields">需要忽略的字段</param>
+        /// <returns>修改的属性列表</returns>
+        public static IEnumerable<PropertyInfo> GetUpdatePropertyList(object data, string[] ignoreFields = null)
+        {
+            return PropertyUtil.GetPropertyInfos(data, ignoreFields, new Type[] { typeof(IdentityAttribute), typeof(KeyAttribute) });
         }
 
         /// <summary>
@@ -210,7 +253,15 @@ namespace JQCore.DataAccess.Utils
             {
                 whereFields = " WHERE " + string.Join(" AND ", whereFieldNames.Select(p => p + " = " + GetSign(dbType) + p));
             }
-            var sql = string.Format("SELECT TOP {0} * FROM {1}{2} {3};", topCount.ToString(), tableName, whereFields, string.IsNullOrWhiteSpace(order) ? string.Empty : "ORDER BY " + order);
+            string sql = string.Empty;
+            if (dbType == DatabaseType.MySql)
+            {
+                sql = string.Format("SELECT * FROM {1}{2} {3} LIMIT 0,{0};", topCount.ToString(), tableName, whereFields, string.IsNullOrWhiteSpace(order) ? string.Empty : "ORDER BY " + order);
+            }
+            else
+            {
+                sql = string.Format("SELECT TOP {0} * FROM {1}{2} {3};", topCount.ToString(), tableName, whereFields, string.IsNullOrWhiteSpace(order) ? string.Empty : "ORDER BY " + order);
+            }
             return new SqlQuery(sql, condition);
         }
 
@@ -246,7 +297,15 @@ namespace JQCore.DataAccess.Utils
             {
                 whereFields = $" WHERE {whereInfo.Item1}";
             }
-            var sql = string.Format("SELECT TOP {0} * FROM {1}{2} {3};", topCount.ToString(), tableName, whereFields, string.IsNullOrWhiteSpace(order) ? string.Empty : "ORDER BY " + order);
+            string sql = string.Empty;
+            if (dbType == DatabaseType.MySql)
+            {
+                sql = string.Format("SELECT * FROM {1}{2} {3} LIMIT 0,{0};", topCount.ToString(), tableName, whereFields, string.IsNullOrWhiteSpace(order) ? string.Empty : "ORDER BY " + order);
+            }
+            else
+            {
+                sql = string.Format("SELECT TOP {0} * FROM {1}{2} {3};", topCount.ToString(), tableName, whereFields, string.IsNullOrWhiteSpace(order) ? string.Empty : "ORDER BY " + order);
+            }
             return new SqlQuery(sql, whereInfo.Item2);
         }
 
@@ -353,7 +412,15 @@ namespace JQCore.DataAccess.Utils
             {
                 whereFields = " WHERE " + string.Join(" AND ", whereFieldNames.Select(p => p + " = " + GetSign(dbType) + p));
             }
-            var sql = string.Format("SELECT TOP {0} {1} FROM {2}{3} {4};", topCount.ToString(), string.Join(",", selectProperties.Select(m => m.Name)), tableName, whereFields, string.IsNullOrWhiteSpace(order) ? string.Empty : "ORDER BY " + order);
+            string sql = string.Empty;
+            if (dbType == DatabaseType.MySql)
+            {
+                sql = string.Format("SELECT {1} FROM {2}{3} {4} LIMIT 0,{0};", topCount.ToString(), string.Join(",", selectProperties.Select(m => m.Name)), tableName, whereFields, string.IsNullOrWhiteSpace(order) ? string.Empty : "ORDER BY " + order);
+            }
+            else
+            {
+                sql = string.Format("SELECT TOP {0} {1} FROM {2}{3} {4};", topCount.ToString(), string.Join(",", selectProperties.Select(m => m.Name)), tableName, whereFields, string.IsNullOrWhiteSpace(order) ? string.Empty : "ORDER BY " + order);
+            }
             return new SqlQuery(sql, condition);
         }
 
@@ -370,7 +437,7 @@ namespace JQCore.DataAccess.Utils
         /// <returns>查询的SqlQuery</returns>
         public static SqlQuery BuilderQueryTopSqlQuery<TModel, T>(Expression<Func<T, bool>> condition, string tableName, int topCount = 1, string[] ignoreFields = null, DatabaseType dbType = DatabaseType.MSSQLServer)
         {
-            return BuilderQueryTopSqlQuery<TModel,T>(condition, tableName, string.Empty, topCount: topCount, ignoreFields: ignoreFields, dbType: dbType);
+            return BuilderQueryTopSqlQuery<TModel, T>(condition, tableName, string.Empty, topCount: topCount, ignoreFields: ignoreFields, dbType: dbType);
         }
 
         /// <summary>
@@ -394,7 +461,15 @@ namespace JQCore.DataAccess.Utils
                 whereFields = $" WHERE {whereInfo.Item1}";
             }
             var selectProperties = PropertyUtil.GetTypeProperties(typeof(TModel), ignoreFields);
-            var sql = string.Format("SELECT TOP {0} {1} FROM {2}{3} {4};", topCount.ToString(), string.Join(",", selectProperties.Select(m => m.Name)), tableName, whereFields, string.IsNullOrWhiteSpace(order) ? string.Empty : "ORDER BY " + order);
+            string sql = string.Empty;
+            if (dbType == DatabaseType.MySql)
+            {
+                sql = string.Format("SELECT {1} FROM {2}{3} {4} LIMIT 0,{0};", topCount.ToString(), string.Join(",", selectProperties.Select(m => m.Name)), tableName, whereFields, string.IsNullOrWhiteSpace(order) ? string.Empty : "ORDER BY " + order);
+            }
+            else
+            {
+                sql = string.Format("SELECT TOP {0} {1} FROM {2}{3} {4};", topCount.ToString(), string.Join(",", selectProperties.Select(m => m.Name)), tableName, whereFields, string.IsNullOrWhiteSpace(order) ? string.Empty : "ORDER BY " + order);
+            }
             return new SqlQuery(sql, whereInfo.Item2);
         }
 
@@ -448,7 +523,7 @@ namespace JQCore.DataAccess.Utils
         /// <returns>查询的SqlQuery</returns>
         public static SqlQuery BuilderQuerySqlQuery<TModel, T>(Expression<Func<T, bool>> condition, string tableName, string[] ignoreFields = null, DatabaseType dbType = DatabaseType.MSSQLServer)
         {
-            return BuilderQuerySqlQuery<TModel,T>(condition, tableName, string.Empty, ignoreFields: ignoreFields, dbType: dbType);
+            return BuilderQuerySqlQuery<TModel, T>(condition, tableName, string.Empty, ignoreFields: ignoreFields, dbType: dbType);
         }
 
         /// <summary>
@@ -529,7 +604,7 @@ namespace JQCore.DataAccess.Utils
             sqlBuilder.AppendFormat("SELECT {0} FROM {1} ", selectColumn, selectTable)
                       .AppendFormatIf(where.IsNotNullAndNotEmptyWhiteSpace(), " WHERE {0}", where)
                       ;
-            return new SqlQuery(sqlBuilder.ToString(), cmdParms);
+            return new SqlQuery(sqlBuilder.ToString() + ";", cmdParms);
         }
 
         /// <summary>
@@ -548,7 +623,7 @@ namespace JQCore.DataAccess.Utils
                       .AppendFormatIf(where.IsNotNullAndNotEmptyWhiteSpace(), " WHERE {0}", where)
                       .AppendFormatIf(order.IsNotNullAndNotEmptyWhiteSpace(), " ORDER BY {0}", order)
                       ;
-            return new SqlQuery(sqlBuilder.ToString(), cmdParms);
+            return new SqlQuery(sqlBuilder.ToString() + ";", cmdParms);
         }
 
         /// <summary>
@@ -572,29 +647,44 @@ namespace JQCore.DataAccess.Utils
                 switch (dbType)
                 {
                     case DatabaseType.PostgreSqlClient:
-                        sql = string.Format(@"SELECT {0} FROM {1} {2} ORDER BY {3} limit @NUM", string.IsNullOrWhiteSpace(selectColumn) ? "*" : selectColumn, selectTable, string.IsNullOrWhiteSpace(where) ? string.Empty : string.Format(" WHERE {0} ", where), order);
+                        sql = string.Format(@"SELECT {0} FROM {1} {2} ORDER BY {3} limit 0," + GetSign(dbType) + "NUM;", string.IsNullOrWhiteSpace(selectColumn) ? "*" : selectColumn, selectTable, string.IsNullOrWhiteSpace(where) ? string.Empty : string.Format(" WHERE {0} ", where), order);
+                        break;
+
+                    case DatabaseType.MySql:
+                        sql = string.Format(@"SELECT {0} FROM {1} {2} ORDER BY {3} limit 0," + GetSign(dbType) + "NUM;", string.IsNullOrWhiteSpace(selectColumn) ? "*" : selectColumn, selectTable, string.IsNullOrWhiteSpace(where) ? string.Empty : string.Format(" WHERE {0} ", where), order);
                         break;
 
                     default:
-                        sql = string.Format(@"SELECT TOP(@NUM) {0} FROM {1} {2} ORDER BY {3}", string.IsNullOrWhiteSpace(selectColumn) ? "*" : selectColumn, selectTable, string.IsNullOrWhiteSpace(where) ? string.Empty : string.Format(" WHERE {0} ", where), order);
+                        sql = string.Format(@"SELECT TOP(" + GetSign(dbType) + "NUM) {0} FROM {1} {2} ORDER BY {3};", string.IsNullOrWhiteSpace(selectColumn) ? "*" : selectColumn, selectTable, string.IsNullOrWhiteSpace(where) ? string.Empty : string.Format(" WHERE {0} ", where), order);
                         break;
                 }
-                query.AddParameter("@NUM", pageSize.ToString(), DbType.Int32, 4);
+                query.AddParameter(GetSign(dbType) + "NUM", pageSize.ToString(), DbType.Int32, 4);
             }
             else
             {
                 switch (dbType)
                 {
                     case DatabaseType.PostgreSqlClient:
-                        sql = string.Format(@"SELECT * FROM ( SELECT {0},row_number() over(ORDER BY {3}) as [num] FROM {1} {2} ) as [tab] WHERE NUM BETWEEN @NumStart and @NumEnd", string.IsNullOrWhiteSpace(selectColumn) ? "*" : selectColumn, selectTable, string.IsNullOrWhiteSpace(where) ? string.Empty : string.Format(" WHERE {0} ", where), order);
+                        sql = string.Format(@"SELECT * FROM ( SELECT {0},row_number() over(ORDER BY {3}) as [num] FROM {1} {2} ) as [tab] WHERE NUM BETWEEN " + GetSign(dbType) + "NumStart and " + GetSign(dbType) + "NumEnd;", string.IsNullOrWhiteSpace(selectColumn) ? "*" : selectColumn, selectTable, string.IsNullOrWhiteSpace(where) ? string.Empty : string.Format(" WHERE {0} ", where), order);
+                        break;
+
+                    case DatabaseType.MySql:
+                        sql = string.Format("SELECT {0} FROM {1} {2} ORDER BY {3} LIMIT {4},{5};", string.IsNullOrWhiteSpace(selectColumn) ? "*" : selectColumn, selectTable, string.IsNullOrWhiteSpace(where) ? string.Empty : string.Format(" WHERE {0} ", where), order, GetSign(dbType) + "NumStart", GetSign(dbType) + "PageSize");
                         break;
 
                     default:
-                        sql = string.Format(@"SELECT * FROM ( SELECT {0},row_number() over(ORDER BY {3}) as [num] FROM {1} {2} ) as [tab] WHERE NUM BETWEEN @NumStart and @NumEnd", string.IsNullOrWhiteSpace(selectColumn) ? "*" : selectColumn, selectTable, string.IsNullOrWhiteSpace(where) ? string.Empty : string.Format(" WHERE {0} ", where), order);
+                        sql = string.Format(@"SELECT * FROM ( SELECT {0},row_number() over(ORDER BY {3}) as [num] FROM {1} {2} ) as [tab] WHERE NUM BETWEEN " + GetSign(dbType) + "NumStart and " + GetSign(dbType) + "NumEnd;", string.IsNullOrWhiteSpace(selectColumn) ? "*" : selectColumn, selectTable, string.IsNullOrWhiteSpace(where) ? string.Empty : string.Format(" WHERE {0} ", where), order);
                         break;
                 }
-                query.AddParameter("@NumStart", ((pageIndex - 1) * pageSize + 1), DbType.Int32, 4);
-                query.AddParameter("@NumEnd", (pageIndex * pageSize).ToString(), DbType.Int32, 4);
+                query.AddParameter(GetSign(dbType) + "NumStart", ((pageIndex - 1) * pageSize + 1), DbType.Int32, 4);
+                if (dbType == DatabaseType.MySql)
+                {
+                    query.AddParameter(GetSign(dbType) + "PageSize", pageSize, DbType.Int32, 4);
+                }
+                else
+                {
+                    query.AddParameter(GetSign(dbType) + "NumEnd", (pageIndex * pageSize).ToString(), DbType.Int32, 4);
+                }
             }
             if (cmdParms != null)
             {
@@ -643,6 +733,9 @@ namespace JQCore.DataAccess.Utils
             switch (dbType)
             {
                 case DatabaseType.MySql:
+                    identityScript = " SELECT @@IDENTITY ";
+                    break;
+
                 case DatabaseType.MSSQLServer:
                     identityScript = " SELECT scope_identity() ";
                     break;

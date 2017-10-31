@@ -20,10 +20,12 @@ namespace JQCore.DataAccess.Expressions
     {
         private List<T> _paramList = new List<T>();
         private readonly string _prefix = null;
+        private DatabaseType _dbType;
 
-        public BaseParamExpressionVisitor(string prefix = "")
+        public BaseParamExpressionVisitor(string prefix = "", DatabaseType dbType = DatabaseType.MSSQLServer)
         {
             _prefix = prefix;
+            _dbType = dbType;
         }
 
         public ValueTuple<string, List<T>> GetSqlWhere(Expression exp)
@@ -306,15 +308,32 @@ namespace JQCore.DataAccess.Expressions
                 nameBuilder.Append(dataMember.Name);
                 AddParam(dataMember);
             }
-            nameBuilder.Append(" LIKE '%'+ ");
-            if (exp.Arguments != null)
+            if (_dbType != DatabaseType.MySql)
             {
-                foreach (var item in exp.Arguments)
+                nameBuilder.Append(" LIKE '%'+ ");
+                if (exp.Arguments != null)
                 {
-                    DataMember dataMember = ToParamMember(Resolve(item));
-                    nameBuilder.Append(dataMember.Name);
-                    AddParam(dataMember);
+                    foreach (var item in exp.Arguments)
+                    {
+                        DataMember dataMember = ToParamMember(Resolve(item));
+                        nameBuilder.Append(dataMember.Name);
+                        AddParam(dataMember);
+                    }
                 }
+            }
+            else
+            {
+                nameBuilder.Append(" LIKE CONCAT('%',");
+                if (exp.Arguments != null)
+                {
+                    foreach (var item in exp.Arguments)
+                    {
+                        DataMember dataMember = ToParamMember(Resolve(item));
+                        nameBuilder.Append(dataMember.Name);
+                        AddParam(dataMember);
+                    }
+                }
+                nameBuilder.Append(")");
             }
             return new DataMember(nameBuilder.ToString(), null, DataMemberType.None);
         }
@@ -328,17 +347,35 @@ namespace JQCore.DataAccess.Expressions
                 nameBuilder.Append(dataMember.Name);
                 AddParam(dataMember);
             }
-            nameBuilder.Append(" LIKE  ");
-            if (exp.Arguments != null)
+            if (_dbType != DatabaseType.MySql)
             {
-                foreach (var item in exp.Arguments)
+
+                nameBuilder.Append(" LIKE  ");
+                if (exp.Arguments != null)
                 {
-                    DataMember dataMember = ToParamMember(Resolve(item));
-                    nameBuilder.Append(dataMember.Name);
-                    AddParam(dataMember);
+                    foreach (var item in exp.Arguments)
+                    {
+                        DataMember dataMember = ToParamMember(Resolve(item));
+                        nameBuilder.Append(dataMember.Name);
+                        AddParam(dataMember);
+                    }
                 }
+                nameBuilder.Append(" +'%' ");
             }
-            nameBuilder.Append(" +'%' ");
+            else
+            {
+                nameBuilder.Append(" LIKE  CONCAT(");
+                if (exp.Arguments != null)
+                {
+                    foreach (var item in exp.Arguments)
+                    {
+                        DataMember dataMember = ToParamMember(Resolve(item));
+                        nameBuilder.Append(dataMember.Name);
+                        AddParam(dataMember);
+                    }
+                }
+                nameBuilder.Append(",'%') ");
+            }
             return new DataMember(nameBuilder.ToString(), null, DataMemberType.None);
         }
 
@@ -368,7 +405,15 @@ namespace JQCore.DataAccess.Expressions
             }
             else
             {
-                nameBuilder.AppendFormat(" {0} LIKE '%'+{1}+'%' ", leftSqlMember.Name, rightSqlMEember.Name);
+                if (_dbType != DatabaseType.MySql)
+                {
+                    nameBuilder.AppendFormat(" {0} LIKE '%'+{1}+'%' ", leftSqlMember.Name, rightSqlMEember.Name);
+                }
+                else
+                {
+                    nameBuilder.AppendFormat(" {0} LIKE CONCAT('%',{1},'%') ", leftSqlMember.Name, rightSqlMEember.Name);
+                }
+
             }
             AddParam(leftSqlMember, rightSqlMEember);
             return new DataMember(nameBuilder.ToString(), null, DataMemberType.None);

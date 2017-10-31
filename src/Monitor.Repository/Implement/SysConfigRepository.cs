@@ -30,7 +30,7 @@ namespace Monitor.Repository.Implement
         /// <returns>配置列表</returns>
         public Task<IPageResult<SysConfigListDto>> GetConfigListAsync(SysConfigPageQueryWhere queryWhere)
         {
-            SqlWhereBuilder whereBuilder = new SqlWhereBuilder("FIsDeleted=0", DataType);
+            SqlWhereBuilder whereBuilder = new SqlWhereBuilder("FIsDeleted=0", ReaderDataType);
             whereBuilder.AppendLike("FKey", queryWhere.ConfigKey, paramKey: nameof(queryWhere.ConfigKey));
 
             const string selectTable = TABLE_NAME_SYSCONFIG + SQLSERVER_WITHNOLOCK;

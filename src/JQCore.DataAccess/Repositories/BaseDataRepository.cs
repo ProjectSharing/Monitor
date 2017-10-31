@@ -22,6 +22,8 @@ namespace JQCore.DataAccess.Repositories
         private readonly IDataAccessFactory _dataAccessFactory;
         private readonly string _configName;
         private readonly string _tableName;
+        private readonly DatabaseType _readDateType;
+        private readonly DatabaseType _writerDataType;
 
         /// <summary>
         /// .ctor
@@ -34,12 +36,32 @@ namespace JQCore.DataAccess.Repositories
             _dataAccessFactory = dataAccessFactory;
             _tableName = tableName;
             _configName = configName;
+            var dataProperty = DBSettings.GetDatabaseProperty(ConfigName);
+            if (dataProperty != null)
+            {
+                _readDateType = dataProperty.Reader.DatabaseType;
+                _writerDataType = dataProperty.Writer.DatabaseType;
+            }
         }
 
         /// <summary>
         /// 数据库类型
         /// </summary>
-        protected virtual DatabaseType DataType { get { return DatabaseType.MSSQLServer; } }
+        protected virtual DatabaseType ReaderDataType
+        {
+            get
+            {
+                return _readDateType;
+            }
+        }
+
+        protected virtual DatabaseType WriterDataType
+        {
+            get
+            {
+                return _writerDataType;
+            }
+        }
 
         /// <summary>
         /// 表名
@@ -75,7 +97,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>如果是自增则返回自增值，不是返回新增行数</returns>
         public object InsertOne(T info, string keyName = null, string[] ignoreFields = null, bool isIdentity = true)
         {
-            SqlQuery query = SqlQueryUtil.BuilderInsertOneSqlQuery(info, TableName, keyName: keyName, ignoreFields: ignoreFields, isIdentity: isIdentity, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderInsertOneSqlQuery(info, TableName, keyName: keyName, ignoreFields: ignoreFields, isIdentity: isIdentity, dbType: WriterDataType);
             if (isIdentity)
             {
                 return GetDataAccess().ExecuteScalar<object>(query);
@@ -93,7 +115,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>如果是自增则返回自增值，不是返回新增行数</returns>
         public async Task<object> InsertOneAsync(T info, string keyName = null, string[] ignoreFields = null, bool isIdentity = true)
         {
-            SqlQuery query = SqlQueryUtil.BuilderInsertOneSqlQuery(info, TableName, keyName: keyName, ignoreFields: ignoreFields, isIdentity: isIdentity, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderInsertOneSqlQuery(info, TableName, keyName: keyName, ignoreFields: ignoreFields, isIdentity: isIdentity, dbType: WriterDataType);
             if (isIdentity)
             {
                 return await GetDataAccess().ExecuteScalarAsync<object>(query);
@@ -110,7 +132,7 @@ namespace JQCore.DataAccess.Repositories
         /// <param name="isIdentity">是否自增</param>
         public void InsertMany(List<T> infoList, string keyName = null, string[] ignoreFields = null, bool isIdentity = true)
         {
-            SqlQuery query = SqlQueryUtil.BuilderInsertManySqlQuery(infoList, TableName, keyName: keyName, ignoreFields: ignoreFields, isIdentity: isIdentity, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderInsertManySqlQuery(infoList, TableName, keyName: keyName, ignoreFields: ignoreFields, isIdentity: isIdentity, dbType: WriterDataType);
             GetDataAccess().ExecuteNonQuery(query);
         }
 
@@ -124,7 +146,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns></returns>
         public Task InsertManyAsync(List<T> infoList, string keyName = null, string[] ignoreFields = null, bool isIdentity = true)
         {
-            SqlQuery query = SqlQueryUtil.BuilderInsertManySqlQuery(infoList, TableName, keyName: keyName, ignoreFields: ignoreFields, isIdentity: isIdentity, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderInsertManySqlQuery(infoList, TableName, keyName: keyName, ignoreFields: ignoreFields, isIdentity: isIdentity, dbType: WriterDataType);
             return GetDataAccess().ExecuteNonQueryAsync(query);
         }
 
@@ -175,7 +197,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>受影响行数</returns>
         public int Update(object data, object condition, string[] ignoreFields = null)
         {
-            SqlQuery query = SqlQueryUtil.BuilderUpdateSqlQuery(data, condition, TableName, ignoreFields: ignoreFields, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderUpdateSqlQuery(data, condition, TableName, ignoreFields: ignoreFields, dbType: WriterDataType);
             return GetDataAccess().ExecuteNonQuery(query);
         }
 
@@ -188,7 +210,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>受影响行数</returns>
         public Task<int> UpdateAsync(object data, object condition, string[] ignoreFields = null)
         {
-            SqlQuery query = SqlQueryUtil.BuilderUpdateSqlQuery(data, condition, TableName, ignoreFields: ignoreFields, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderUpdateSqlQuery(data, condition, TableName, ignoreFields: ignoreFields, dbType: WriterDataType);
             return GetDataAccess().ExecuteNonQueryAsync(query);
         }
 
@@ -201,7 +223,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>受影响行数</returns>
         public int Update(object data, Expression<Func<T, bool>> condition, string[] ignoreFields = null)
         {
-            SqlQuery query = SqlQueryUtil.BuilderUpdateSqlQuery(data, condition, TableName, ignoreFields: ignoreFields, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderUpdateSqlQuery(data, condition, TableName, ignoreFields: ignoreFields, dbType: WriterDataType);
             return GetDataAccess().ExecuteNonQuery(query);
         }
 
@@ -214,7 +236,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>受影响行数</returns>
         public Task<int> UpdateAsync(object data, Expression<Func<T, bool>> condition, string[] ignoreFields = null)
         {
-            SqlQuery query = SqlQueryUtil.BuilderUpdateSqlQuery(data, condition, TableName, ignoreFields: ignoreFields, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderUpdateSqlQuery(data, condition, TableName, ignoreFields: ignoreFields, dbType: WriterDataType);
             return GetDataAccess().ExecuteNonQueryAsync(query);
         }
 
@@ -225,7 +247,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>受影响的行数</returns>
         public int Delete(object condition)
         {
-            SqlQuery query = SqlQueryUtil.BuilderDeleteSqlQuery(condition, TableName, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderDeleteSqlQuery(condition, TableName, dbType: WriterDataType);
             return GetDataAccess().ExecuteNonQuery(query);
         }
 
@@ -236,7 +258,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>受影响的行数</returns>
         public Task<int> DeleteAsync(object condition)
         {
-            SqlQuery query = SqlQueryUtil.BuilderDeleteSqlQuery(condition, TableName, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderDeleteSqlQuery(condition, TableName, dbType: WriterDataType);
             return GetDataAccess().ExecuteNonQueryAsync(query);
         }
 
@@ -247,7 +269,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>受影响的行数</returns>
         public int Delete(Expression<Func<T, bool>> condition)
         {
-            SqlQuery query = SqlQueryUtil.BuilderDeleteSqlQuery(condition, TableName, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderDeleteSqlQuery(condition, TableName, dbType: WriterDataType);
             return GetDataAccess().ExecuteNonQuery(query);
         }
 
@@ -258,7 +280,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>受影响的行数</returns>
         public Task<int> DeleteAsync(Expression<Func<T, bool>> condition)
         {
-            SqlQuery query = SqlQueryUtil.BuilderDeleteSqlQuery(condition, TableName, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderDeleteSqlQuery(condition, TableName, dbType: WriterDataType);
             return GetDataAccess().ExecuteNonQueryAsync(query);
         }
 
@@ -271,7 +293,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>传输对象</returns>
         public T GetInfo(object condition, string[] ignoreFields = null, bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQueryTopSqlQuery(condition, TableName, topCount: 1, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQueryTopSqlQuery(condition, TableName, topCount: 1, dbType: WriterDataType);
             return GetDataAccess(isWrite: isWrite).QuerySingleOrDefault<T>(query);
         }
 
@@ -284,7 +306,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>传输对象</returns>
         public Task<T> GetInfoAsync(object condition, string[] ignoreFields = null, bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQueryTopSqlQuery(condition, TableName, topCount: 1, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQueryTopSqlQuery(condition, TableName, topCount: 1, dbType: isWrite ? WriterDataType : ReaderDataType);
             return GetDataAccess(isWrite: isWrite).QuerySingleOrDefaultAsync<T>(query);
         }
 
@@ -297,7 +319,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>传输对象</returns>
         public T GetInfo(Expression<Func<T, bool>> condition, string[] ignoreFields = null, bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQueryTopSqlQuery(condition, TableName, topCount: 1, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQueryTopSqlQuery(condition, TableName, topCount: 1, dbType: isWrite ? WriterDataType : ReaderDataType);
             return GetDataAccess(isWrite: isWrite).QuerySingleOrDefault<T>(query);
         }
 
@@ -310,7 +332,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>传输对象</returns>
         public Task<T> GetInfoAsync(Expression<Func<T, bool>> condition, string[] ignoreFields = null, bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQueryTopSqlQuery(condition, TableName, topCount: 1, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQueryTopSqlQuery(condition, TableName, topCount: 1, dbType: isWrite ? WriterDataType : ReaderDataType);
             return GetDataAccess(isWrite: isWrite).QuerySingleOrDefaultAsync<T>(query);
         }
 
@@ -324,7 +346,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>传输对象</returns>
         public TDto GetDto<TDto>(object condition, string[] ignoreFields = null, bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQueryTopSqlQuery<TDto>(condition, TableName, topCount: 1, ignoreFields: ignoreFields, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQueryTopSqlQuery<TDto>(condition, TableName, topCount: 1, ignoreFields: ignoreFields, dbType: isWrite ? WriterDataType : ReaderDataType);
             return GetDataAccess(isWrite: isWrite).QuerySingleOrDefault<TDto>(query);
         }
 
@@ -338,7 +360,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>传输对象</returns>
         public Task<TDto> GetDtoAsync<TDto>(object condition, string[] ignoreFields = null, bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQueryTopSqlQuery<TDto>(condition, TableName, topCount: 1, ignoreFields: ignoreFields, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQueryTopSqlQuery<TDto>(condition, TableName, topCount: 1, ignoreFields: ignoreFields, dbType: isWrite ? WriterDataType : ReaderDataType);
             return GetDataAccess(isWrite: isWrite).QuerySingleOrDefaultAsync<TDto>(query);
         }
 
@@ -352,7 +374,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>传输对象</returns>
         public TDto GetDto<TDto>(Expression<Func<T, bool>> condition, string[] ignoreFields = null, bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQueryTopSqlQuery<TDto,T>(condition, TableName, topCount: 1, ignoreFields: ignoreFields, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQueryTopSqlQuery<TDto, T>(condition, TableName, topCount: 1, ignoreFields: ignoreFields, dbType: isWrite ? WriterDataType : ReaderDataType);
             return GetDataAccess(isWrite: isWrite).QuerySingleOrDefault<TDto>(query);
         }
 
@@ -366,7 +388,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>传输对象</returns>
         public Task<TDto> GetDtoAsync<TDto>(Expression<Func<T, bool>> condition, string[] ignoreFields = null, bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQueryTopSqlQuery<TDto,T>(condition, TableName, topCount: 1, ignoreFields: ignoreFields, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQueryTopSqlQuery<TDto, T>(condition, TableName, topCount: 1, ignoreFields: ignoreFields, dbType: isWrite ? WriterDataType : ReaderDataType);
             return GetDataAccess(isWrite: isWrite).QuerySingleOrDefaultAsync<TDto>(query);
         }
 
@@ -401,7 +423,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>列表</returns>
         public IEnumerable<T> QueryList(bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery(null, TableName, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery(null, TableName, dbType: isWrite ? WriterDataType : ReaderDataType);
             return GetDataAccess(isWrite: isWrite).Query<T>(query);
         }
 
@@ -423,7 +445,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>列表</returns>
         public IEnumerable<T> QueryList(object condition, bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery(condition, TableName, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery(condition, TableName, dbType: isWrite ? WriterDataType : ReaderDataType);
             return GetDataAccess(isWrite: isWrite).Query<T>(query);
         }
 
@@ -435,7 +457,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>列表</returns>
         public Task<IEnumerable<T>> QueryListAsync(object condition, bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery(condition, TableName, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery(condition, TableName, dbType: isWrite ? WriterDataType : ReaderDataType);
             return GetDataAccess(isWrite: isWrite).QueryAsync<T>(query);
         }
 
@@ -447,7 +469,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>列表</returns>
         public IEnumerable<T> QueryList(Expression<Func<T, bool>> condition, bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery(condition, TableName, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery(condition, TableName, dbType: isWrite ? WriterDataType : ReaderDataType);
             return GetDataAccess(isWrite: isWrite).Query<T>(query);
         }
 
@@ -459,7 +481,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>列表</returns>
         public Task<IEnumerable<T>> QueryListAsync(Expression<Func<T, bool>> condition, bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery(condition, TableName, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery(condition, TableName, dbType: isWrite ? WriterDataType : ReaderDataType);
             return GetDataAccess(isWrite: isWrite).QueryAsync<T>(query);
         }
 
@@ -472,7 +494,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>传输对象列表</returns>
         public IEnumerable<TDto> QueryList<TDto>(string[] ignoreFields = null, bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery<TDto>(null, TableName, ignoreFields: ignoreFields, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery<TDto>(null, TableName, ignoreFields: ignoreFields, dbType: isWrite ? WriterDataType : ReaderDataType);
             return GetDataAccess(isWrite: isWrite).Query<TDto>(query);
         }
 
@@ -498,7 +520,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>传输对象列表</returns>
         public IEnumerable<TDto> QueryList<TDto>(object condition, string[] ignoreFields = null, bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery<TDto>(condition, TableName, ignoreFields: ignoreFields, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery<TDto>(condition, TableName, ignoreFields: ignoreFields, dbType: isWrite ? WriterDataType : ReaderDataType);
             return GetDataAccess(isWrite: isWrite).Query<TDto>(query);
         }
 
@@ -512,7 +534,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>传输对象列表</returns>
         public Task<IEnumerable<TDto>> QueryListAsync<TDto>(object condition, string[] ignoreFields = null, bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery<TDto>(condition, TableName, ignoreFields: ignoreFields, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery<TDto>(condition, TableName, ignoreFields: ignoreFields, dbType: isWrite ? WriterDataType : ReaderDataType);
             return GetDataAccess(isWrite: isWrite).QueryAsync<TDto>(query);
         }
 
@@ -526,7 +548,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>传输对象列表</returns>
         public IEnumerable<TDto> QueryList<TDto>(Expression<Func<T, bool>> condition, string[] ignoreFields = null, bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery<TDto,T>(condition, TableName, ignoreFields: ignoreFields, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery<TDto, T>(condition, TableName, ignoreFields: ignoreFields, dbType: isWrite ? WriterDataType : ReaderDataType);
             return GetDataAccess(isWrite: isWrite).Query<TDto>(query);
         }
 
@@ -540,7 +562,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>传输对象列表</returns>
         public Task<IEnumerable<TDto>> QueryListAsync<TDto>(Expression<Func<T, bool>> condition, string[] ignoreFields = null, bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery<TDto,T>(condition, TableName, ignoreFields: ignoreFields, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQuerySqlQuery<TDto, T>(condition, TableName, ignoreFields: ignoreFields, dbType: isWrite ? WriterDataType : ReaderDataType);
             return GetDataAccess(isWrite: isWrite).QueryAsync<TDto>(query);
         }
 
@@ -552,7 +574,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>范总数量</returns>
         public int QueryCount(object condition, bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQueryCountSqlQuery(condition, TableName, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQueryCountSqlQuery(condition, TableName, dbType: isWrite ? WriterDataType : ReaderDataType);
             return GetDataAccess(isWrite: isWrite).ExecuteScalar<int>(query);
         }
 
@@ -586,7 +608,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>范总数量</returns>
         public int QueryCount(Expression<Func<T, bool>> condition, bool isWrite = false)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQueryCountSqlQuery(condition, TableName, dbType: DataType);
+            SqlQuery query = SqlQueryUtil.BuilderQueryCountSqlQuery(condition, TableName, dbType: isWrite ? WriterDataType : ReaderDataType);
             return GetDataAccess(isWrite: isWrite).ExecuteScalar<int>(query);
         }
 
@@ -740,7 +762,7 @@ namespace JQCore.DataAccess.Repositories
         /// <returns>分页查询结果</returns>
         protected IEnumerable<TModel> PageQuery<TModel>(string selectColumn, string selectTable, string where, string order, int pageIndex, int pageSize, object cmdParms = null)
         {
-            SqlQuery query = SqlQueryUtil.BuilderQueryPageSqlQuery(selectColumn, selectTable, where, order, pageIndex, pageSize, dbType: DataType, cmdParms: cmdParms);
+            SqlQuery query = SqlQueryUtil.BuilderQueryPageSqlQuery(selectColumn, selectTable, where, order, pageIndex, pageSize, dbType: ReaderDataType, cmdParms: cmdParms);
             return GetDataAccess(isWrite: false).Query<TModel>(query);
         }
 

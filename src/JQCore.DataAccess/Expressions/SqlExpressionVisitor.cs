@@ -25,7 +25,7 @@ namespace JQCore.DataAccess.Expressions
         /// <param name="prefix">表明前缀 如：A.</param>
         /// <param name="paramertNamePrefix">参数名字前缀 如：W_</param>
         ///  <param name="dbType">数据库类型</param>
-        public SqlExpressionVisitor(string prefix = "", string paramertNamePrefix = "", DatabaseType dbType = DatabaseType.MSSQLServer) : base(prefix: prefix)
+        public SqlExpressionVisitor(string prefix = "", string paramertNamePrefix = "", DatabaseType dbType = DatabaseType.MSSQLServer) : base(prefix: prefix, dbType: dbType)
         {
             _paramertNamePrefix = paramertNamePrefix;
             _dbType = dbType;

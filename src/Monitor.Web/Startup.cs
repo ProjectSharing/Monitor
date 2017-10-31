@@ -1,12 +1,12 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Hangfire;
-using Hangfire.Dashboard;
 using Hangfire.Redis;
 using JQCore.Configuration;
 using JQCore.Dependency;
 using JQCore.Mvc.Filter;
 using JQCore.Redis;
+using JQCore.Utils;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -18,7 +18,6 @@ using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using NLog.Web;
 using System;
-using System.Security.Claims;
 
 namespace Monitor.Web
 {
@@ -75,6 +74,7 @@ namespace Monitor.Web
             ContainerManager.UseAutofacContainer(builder)
                             .UseRedis()
                             .UseRedisLock()
+                            .UseCallContext()
                             ;
             ApplicationContainer = (ContainerManager.Instance.Container as AutofacObjectContainer).Container;
             return new AutofacServiceProvider(ApplicationContainer);
