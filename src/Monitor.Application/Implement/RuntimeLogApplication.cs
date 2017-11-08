@@ -47,15 +47,15 @@ namespace Monitor.Application.Implement
         /// </summary>
         /// <param name="runtimeLogModelList">运行日志列表</param>
         /// <returns>操作结果</returns>
-        public Task<OperateResult> AddLogListAsync(List<RuntimeLogModel> runtimeLogModelList)
+        public OperateResult AddLogList(List<RuntimeLogModel> runtimeLogModelList)
         {
-            return OperateUtil.ExecuteAsync(async () =>
-            {
-                await runtimeLogModelList.ForEachAsync(async (item) =>
-                 {
-                     await AddLogAsync(item);
-                 });
-            }, callMemberName: "RuntimeLogApplication-AddLogListAsync");
+            return OperateUtil.Execute(() =>
+           {
+               foreach (var item in runtimeLogModelList)
+               {
+                   AddLogAsync(item).Wait();
+               }
+           }, callMemberName: "RuntimeLogApplication-AddLogListAsync");
         }
     }
 }

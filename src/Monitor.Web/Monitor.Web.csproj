@@ -16,6 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JQCore.DataAccess\JQCore.DataAccess.csproj" />
+    <ProjectReference Include="..\JQCore.MQ\JQCore.MQ.csproj" />
     <ProjectReference Include="..\JQCore.Mvc\JQCore.Mvc.csproj" />
     <ProjectReference Include="..\JQCore.Redis\JQCore.Redis.csproj" />
     <ProjectReference Include="..\JQCore\JQCore.csproj" />
@@ -38,6 +39,9 @@
     </Content>
     <Content Update="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="rabbitmq.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      Microsoft SQL Server 2008                    */
-/* Created on:     2017/10/12 15:03:26                          */
+/* Created on:     2017/11/8 21:03:58                           */
 /*==============================================================*/
 
 
@@ -565,7 +565,7 @@ create table M_EmailSendedRecord (
    FID                  int                  identity(1,1),
    FReceiveEmail        varchar(128)         null,
    FTheme               nvarchar(256)        null,
-   FContent             nvarchar(4000)       null,
+   FContent             nvarchar(max)        null,
    FSendEmail           varchar(128)         null,
    FSendState           int                  not null,
    FStateRemark         varchar(256)         null,
@@ -1343,7 +1343,7 @@ create table M_RuntimeLog (
    FProjectName         varchar(128)         null,
    FServicerID          int                  not null,
    FServicerMac         varchar(128)         null,
-   FCallMemberName      varchar(128)         null,
+   FCallMemberName      varchar(256)         null,
    FContent             varchar(max)         null,
    FSource              int                  not null,
    FExecuteTime         datetime             not null,

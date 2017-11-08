@@ -4,6 +4,8 @@ using Hangfire;
 using Hangfire.Redis;
 using JQCore.Configuration;
 using JQCore.Dependency;
+using JQCore.MQ;
+using JQCore.MQ.Logger;
 using JQCore.Mvc.Filter;
 using JQCore.Redis;
 using JQCore.Utils;
@@ -28,6 +30,7 @@ namespace Monitor.Web
             var builder = new ConfigurationBuilder()
                           .SetBasePath(hostingEnvironment.ContentRootPath)
                           .AddJsonFile("appsettings.json", true, true)
+                          .AddJsonFile("rabbitmq.json", true, true)
                           ;
             Configuration = builder.Build();
             ConfigurationManage.SetConfiguration(Configuration);
@@ -74,6 +77,8 @@ namespace Monitor.Web
             ContainerManager.UseAutofacContainer(builder)
                             .UseRedis()
                             .UseRedisLock()
+                            .UseRabbitMQ()
+                            .UseMQLog()
                             .UseCallContext()
                             ;
             ApplicationContainer = (ContainerManager.Instance.Container as AutofacObjectContainer).Container;
@@ -95,6 +100,7 @@ namespace Monitor.Web
 
             //add NLog to ASP.NET Core
             loggerFactory.AddNLog();
+            loggerFactory.AddMQLog();
 
             //add NLog.Web
             app.AddNLogWeb();
@@ -112,6 +118,7 @@ namespace Monitor.Web
             });
 
             applicationLifetime.RegisterRedisShutDown();
+            applicationLifetime.RegisterMQShutDown();
         }
     }
 }

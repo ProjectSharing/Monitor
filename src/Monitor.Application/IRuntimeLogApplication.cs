@@ -25,6 +25,6 @@ namespace Monitor.Application
         /// </summary>
         /// <param name="runtimeLogModelList">运行日志列表</param>
         /// <returns>操作结果</returns>
-        Task<OperateResult> AddLogListAsync(List<RuntimeLogModel> runtimeLogModelList);
+        OperateResult AddLogList(List<RuntimeLogModel> runtimeLogModelList);
     }
 }

@@ -1,0 +1,15 @@
+﻿{
+  "MQMonitor": {
+    "MQ": {
+      "HostName": "192.168.101.111",
+      "UserName": "TestAccount",
+      "Password": "123",
+      "VirtualHost": "Monitor",
+      "RequestedHeartbeat": 60
+    },
+    "ProjectInfo": {
+      "ProjectName": "Monitor",
+      "FSource": 2
+    }
+  }
+}

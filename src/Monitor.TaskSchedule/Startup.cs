@@ -6,7 +6,9 @@ using Hangfire.Redis;
 using JQCore.Configuration;
 using JQCore.Dependency;
 using JQCore.Hangfire;
+using JQCore.MQ;
 using JQCore.Redis;
+using JQCore.Utils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -14,9 +16,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Monitor.Application;
+using Monitor.Trans;
 using NLog.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Security.Claims;
+using JQCore.MQ.Logger;
 
 namespace Monitor.TaskSchedule
 {
@@ -27,6 +32,7 @@ namespace Monitor.TaskSchedule
             var builder = new ConfigurationBuilder()
                           .SetBasePath(hostingEnvironment.ContentRootPath)
                           .AddJsonFile("appsettings.json", true, true)
+                          .AddJsonFile("rabbitmq.json", true, true)
                           ;
             Configuration = builder.Build();
             ConfigurationManage.SetConfiguration(Configuration);
@@ -59,6 +65,9 @@ namespace Monitor.TaskSchedule
             ContainerManager.UseAutofacContainer(builder)
                             .UseRedis()
                             .UseRedisLock()
+                            .UseRabbitMQ()
+                            .UseMQLog()
+                            .UseCallContext()
                             ;
             ApplicationContainer = (ContainerManager.Instance.Container as AutofacObjectContainer).Container;
             return new AutofacServiceProvider(ApplicationContainer);
@@ -74,6 +83,7 @@ namespace Monitor.TaskSchedule
 
             //add NLog to ASP.NET Core
             loggerFactory.AddNLog();
+            loggerFactory.AddMQLog();
 
             app.UseHangfireServer();
             app.UseHangfireDashboard("/TaskScheduling", options: new DashboardOptions
@@ -86,6 +96,7 @@ namespace Monitor.TaskSchedule
             {
                 r.Run(context =>
                 {
+                    LogUtil.Info("开始启动同步缓存任务");
                     using (var scope = ContainerManager.BeginLeftScope())
                     {
                         var sysConfigApplication = scope.Resolve<ISysConfigApplication>();
@@ -104,7 +115,41 @@ namespace Monitor.TaskSchedule
                             TaskScheldulingUtil.RemoveRecurringJobIfExists(projectSynchroTaskID);
                         });
                     }
+                    LogUtil.Info("完成启动同步缓存任务");
                     return context.Response.WriteAsync("Create SynchroConfig Success");
+                });
+            });
+
+            app.Map("/MonitorLog", r =>
+            {
+                r.Run(context =>
+                {
+                    LogUtil.Info("开始启动监听传输日志");
+                    var mqFactory = ContainerManager.Resolve<IMQFactory>();
+                    var client = mqFactory.Create(MQConfig.GetConfig("MQMonitor"));
+                    client.Subscribe<List<RuntimeLogModel>>((message) =>
+                    {
+                        if (message != null && message.Count > 0)
+                        {
+                            //LogUtil.Info("接收到消息");
+                            using (var scope = ContainerManager.BeginLeftScope())
+                            {
+                                var runtimeLogApplication = scope.Resolve<IRuntimeLogApplication>();
+                                runtimeLogApplication.AddLogList(message);
+                            }
+                            //LogUtil.Info("消息处理结束");
+                        }
+                    }, "Monitor.Message", "Monitor.Message", "Monitor.LoggerMessage.*", exchangeType: MQExchangeType.TOPICS, errorActionHandle: (message, e) =>
+                    {
+                        LogUtil.Info("消息处理出现异常");
+                        LogUtil.Error(e);
+                    });
+                    LogUtil.Info("启动监听传输日志完成");
+                    applicationLifetime.ApplicationStopping.Register(() =>
+                    {
+                        client.Dispose();
+                    });
+                    return context.Response.WriteAsync("Create MonitorLog Success");
                 });
             });
 
@@ -114,6 +159,7 @@ namespace Monitor.TaskSchedule
             });
 
             applicationLifetime.RegisterRedisShutDown();
+            applicationLifetime.RegisterMQShutDown();
         }
     }
 
