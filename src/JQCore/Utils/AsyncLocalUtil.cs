@@ -22,7 +22,7 @@ namespace JQCore.Utils
         {
             get
             {
-                return Activity.Current?.Id ?? WebHttpContext.Current.TraceIdentifier;
+                return Activity.Current?.Id ?? WebHttpContext.Current?.TraceIdentifier??Guid.NewGuid().ToString("N");
             }
         }
 
