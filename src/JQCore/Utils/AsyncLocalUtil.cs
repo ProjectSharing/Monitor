@@ -1,5 +1,7 @@
 ﻿using JQCore.Dependency;
+using JQCore.Web;
 using System;
+using System.Diagnostics;
 using System.Threading;
 
 namespace JQCore.Utils
@@ -16,11 +18,11 @@ namespace JQCore.Utils
         /// <summary>
         /// 获取当前的请求随机GID，同一次请求唯一
         /// </summary>
-        public static Guid CurrentGID
+        public static string CurrentGID
         {
             get
             {
-                return ContainerManager.Resolve<ICallContextProvider>().Current.GID;
+                return Activity.Current?.Id ?? WebHttpContext.Current.TraceIdentifier;
             }
         }
 

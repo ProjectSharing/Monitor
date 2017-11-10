@@ -69,7 +69,7 @@ namespace JQCore.MQ.Logger
                 FLogLevel = messageType,
                 FProjectName = projectName,
                 FSource = source,
-                FRequestGuid = AsyncLocalUtil.CurrentGID.ToString("N"),
+                FRequestGuid = AsyncLocalUtil.CurrentGID,
                 FServerMac = ComputerUtil.MacAddress,
                 FCallMemberName = WebHttpContext.AbsoluteUrl
 
