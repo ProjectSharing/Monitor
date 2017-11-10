@@ -8,8 +8,8 @@
       "RequestedHeartbeat": 60
     },
     "ProjectInfo": {
-      "ProjectName": "Monitor",
-      "FSource": 2
+      "ProjectName": "监控后台",
+      "FSource": 6
     }
   }
 }

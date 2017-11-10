@@ -73,7 +73,7 @@ namespace JQCore.DataAccess
 
         protected override void DisposeCode()
         {
-            LogUtil.Info("DataAccessFactory:执行释放方法");
+            // LogUtil.Info("DataAccessFactory:执行释放方法");
             foreach (var item in _dataAccessCache)
             {
                 item.Value?.Close();

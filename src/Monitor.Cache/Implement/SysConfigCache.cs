@@ -78,8 +78,19 @@ namespace Monitor.Cache.Implement
                 LogUtil.Info("开始同步系统信息");
                 var lastSynchroTime = await GetLastSynchroTimeAsync(Cache_Synchro_SysConfig);
                 LogUtil.Info($"系统信息上次同步时间;{lastSynchroTime.ToDefaultFormat()}");
-                var sysConfigList = await _sysConfigRepository.QueryListAsync(m => m.FCreateTime >= lastSynchroTime || m.FLastModifyTime >= lastSynchroTime);
+                var sysConfigList = await _sysConfigRepository.QueryListAsync();//m => m.FCreateTime >= lastSynchroTime || m.FLastModifyTime >= lastSynchroTime
                 LogUtil.Info($"共{(sysConfigList?.Count().ToString()) ?? "0"}条信息需要同步");
+                var existsCacheKeyList = RedisClient.HashKeys(Cache_SysConfigList);
+                if (existsCacheKeyList != null && existsCacheKeyList.Any())
+                {
+                    foreach (var existsCacheKey in existsCacheKeyList)
+                    {
+                        if (!sysConfigList.Any(m => m.FID.ToString() == existsCacheKey))
+                        {
+                            await RedisClient.HashDeleteAsync(Cache_SysConfigList, existsCacheKey);
+                        }
+                    }
+                }
                 foreach (var sysConfigInfo in sysConfigList)
                 {
                     if (!sysConfigInfo.FIsDeleted)

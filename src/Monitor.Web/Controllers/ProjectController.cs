@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Monitor.Application;
 using Monitor.Trans;
 using System.Threading.Tasks;
+using JQCore.Mvc.Extensions;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -79,6 +80,16 @@ namespace Monitor.Web.Controllers
                 model.OperateUserID = AdminID;
                 return _projectApplication.EditProjectAsync(model);
             });
+        }
+
+        /// <summary>
+        /// 获取项目列表
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> ProjectSelectList()
+        {
+            var operateResult = await _projectApplication.LoadProjectListAsync();
+            return operateResult.ToJsonResult();
         }
     }
 }

@@ -26,5 +26,12 @@ namespace Monitor.Application
         /// <param name="runtimeLogModelList">运行日志列表</param>
         /// <returns>操作结果</returns>
         OperateResult AddLogList(List<RuntimeLogModel> runtimeLogModelList);
+
+        /// <summary>
+        /// 加载运行日志列表
+        /// </summary>
+        /// <param name="queryWhere">查询条件</param>
+        /// <returns></returns>
+        Task<OperateResult<IPageResult<RuntimeLogListDto>>> GetRuntimeLogListAsync(RuntimeLogPageQueryWhere queryWhere);
     }
 }

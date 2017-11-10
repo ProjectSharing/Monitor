@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using static Monitor.Constant.CacheKeyConstant;
 using JQCore.Extensions;
+using System.Collections.Generic;
+using Monitor.Trans;
 
 namespace Monitor.Cache.Implement
 {
@@ -43,6 +45,30 @@ namespace Monitor.Cache.Implement
         }
 
         /// <summary>
+        /// 获取服务器列表
+        /// </summary>
+        /// <returns>服务器列表</returns>
+        public async Task<IEnumerable<ServicerListDto>> GetServicerListAsync()
+        {
+            var servicerList = await GetValueAsync(async () =>
+            {
+                return await RedisClient.HashValuesAsync<ServicerInfo>(Cache_ServicerList);
+            }, async () =>
+            {
+                return await _servicerRepository.QueryListAsync(m => m.FIsDeleted == false);
+            }, memberName: "ProjectCache-GetProjectInfoAsync");
+            return servicerList.Select(m => new ServicerListDto
+            {
+                FID = m.FID,
+                FComment = m.FComment,
+                FName = m.FName,
+                FLastModifyTime = m.FLastModifyTime ?? m.FCreateTime,
+                FIP = m.FIP,
+                FMacAddress = m.FMacAddress
+            });
+        }
+
+        /// <summary>
         /// 修改服务器到redis缓存
         /// </summary>
         /// <param name="serviserID">服务器ID</param>
@@ -77,8 +103,19 @@ namespace Monitor.Cache.Implement
                 LogUtil.Info("开始同步服务器信息");
                 var lastSynchroTime = await GetLastSynchroTimeAsync(Cache_Synchro_Service);
                 LogUtil.Info($"服务器信息上次同步时间;{lastSynchroTime.ToDefaultFormat()}");
-                var serviceList = await _servicerRepository.QueryListAsync(m => m.FCreateTime >= lastSynchroTime || m.FLastModifyTime >= lastSynchroTime);
+                var serviceList = await _servicerRepository.QueryListAsync();
                 LogUtil.Info($"共{(serviceList?.Count().ToString()) ?? "0"}条信息需要同步");
+                var existsCacheKeyList = RedisClient.HashKeys(Cache_ServicerList);
+                if (existsCacheKeyList != null && existsCacheKeyList.Any())
+                {
+                    foreach (var existsCacheKey in existsCacheKeyList)
+                    {
+                        if (!serviceList.Any(m => m.FID.ToString() == existsCacheKey))
+                        {
+                            await RedisClient.HashDeleteAsync(Cache_ServicerList, existsCacheKey);
+                        }
+                    }
+                }
                 foreach (var servicerInfo in serviceList)
                 {
                     if (!servicerInfo.FIsDeleted)

@@ -82,7 +82,7 @@ namespace JQCore.Utils
                 {
                     message.To.Add(new MailboxAddress(to));
                 });
-                message.Subject = "用户激活";
+                message.Subject = subject;
                 var textPart = new TextPart(TextFormat.Plain);
                 textPart.SetText(Encoding.UTF8, content);
                 message.Body = textPart;

@@ -1,0 +1,101 @@
+﻿@model IPageResult<WarningLogListDto>
+@{
+    ViewData["Title"] = "警告日志列表";
+}
+<div id="page-wrapper">
+    <div class="row">
+        <div class="panel panel-default">
+            <form asp-action="Index" method="post" id="PageListForm">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="col-sm-2">警告日志列表</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body" style="padding-top:0px;">
+                    <div id="dataTables-example_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                        @Html.Partial("_QueryWhere", ViewBag.QueryWhere as WarningLogPageQueryWhere)
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div id="TableContainerDiv" style="overflow:auto;">
+                                    <table class="table-striped table-bordered table-hover dataTable" id="dataTables-example" style="word-wrap: break-word; word-break: break-all;width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th class="center" style="width:150px;">项目名字</th>
+                                                <th class="center" style="width:150px;">服务器名字</th>
+                                                <th class="center" style="width:100px;">日志来源</th>
+                                                <th class="left" style="width:600px;">日志内容</th>
+                                                <th class="center" style="width:100px;">日志级别</th>
+                                                <th class="center" style="width:120px;">调用方法名字</th>
+                                                <th class="center" style="width:220px;">请求标识</th>
+                                                <th class="center" style="width:100px;">通知状态</th>
+                                                <th class="center" style="width:100px;">处理状态</th>
+                                                <th class="center" style="width:100px;">处理建议</th>
+                                                <th class="center" style="width:100px;">处理方案</th>
+                                                <th class="center" style="width:130px;">日志生成时间</th>
+                                                <th class="center" style="width:130px;">最后修改时间</th>
+                                                <th class="center">操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model != null && Model.Data.Any())
+                                            {
+                                                foreach (var item in Model)
+                                                {
+                                                    <tr>
+                                                        <td class="center">@item.FProjectName</td>
+                                                        <td class="center">@item.FServicerName</td>
+                                                        <td class="center">@item.FSource.Desc()</td>
+                                                        <td class="left">@item.FContent</td>
+                                                        <td class="center">@item.FLogLevel.Desc()</td>
+                                                        <td class="center">@item.FCallMemberName</td>
+                                                        <td class="center">@item.FRequestGuid</td>
+                                                        <td class="center">@item.FNoticeState.Desc()</td>
+                                                        <td class="center">@item.FDealState.Desc()</td>
+                                                        <td class="center">@item.FOperateAdvice</td>
+                                                        <td class="center">@item.FTreatmentScheme</td>
+                                                        <td class="center">@item.FExecuteTime</td>
+                                                        <td class="center">@item.FLastModifyTime</td>
+                                                        <td class="center">
+                                                            @if (item.FDealState == Monitor.Constant.DealState.WaitDeal)
+                                                            {
+                                                                <a class="btn btn-info btn-sm OpenFrame" href="/WarnLog/Deal/@item.FID.ToString()?w=600&h=350" title="处理日志">处理</a>
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr><td class="center" colspan="14">暂无记录</td></tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.panel-body -->
+                <div class="panel-footer dataTables_wrapper">
+                    <div class="row">
+                        <pager jqcore-page="Model"></pager>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Script{
+    <script type="text/javascript">
+        var currentProjectID = "@(ViewBag.QueryWhere.ProjectID)";
+        var currentServicerID= "@(ViewBag.QueryWhere.ServicerID)";
+        $(function () {
+            BindProjectList("#ProjectID", currentProjectID);
+            BindServicerList("#ServicerID", currentServicerID);
+            $("#TableContainerDiv").width($("#dataTables-example_wrapper").width());
+        })
+
+    </script>
+}

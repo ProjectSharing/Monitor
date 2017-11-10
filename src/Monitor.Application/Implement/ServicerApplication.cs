@@ -8,6 +8,7 @@ using Monitor.DomainService;
 using Monitor.Repository;
 using Monitor.Trans;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using static Monitor.Constant.IgnoreConstant;
 using static Monitor.Constant.LockKeyConstant;
@@ -121,6 +122,18 @@ namespace Monitor.Application.Implement
             {
                 await _servicerCache.SynchroServiceAsync();
             }, callMemberName: "ServicerApplication-SynchroConfigAsync");
+        }
+
+        /// <summary>
+        /// 获取服务器列表
+        /// </summary>
+        /// <returns></returns>
+        public Task<OperateResult<IEnumerable<ServicerListDto>>> LoadServicerListAsync()
+        {
+            return OperateUtil.ExecuteAsync(async () =>
+            {
+                return await _servicerCache.GetServicerListAsync();
+            }, callMemberName: "ServicerApplication-GetServicerListAsync");
         }
     }
 }

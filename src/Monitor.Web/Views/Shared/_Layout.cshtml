@@ -282,61 +282,10 @@
                                     <a href="/WarnLog">警告日志</a>
                                 </li>
                                 <li>
-                                    <a href="buttons.html">Buttons</a>
+                                    <a href="/RuntimeLog">运行日志</a>
                                 </li>
                                 <li>
-                                    <a href="notifications.html">Notifications</a>
-                                </li>
-                                <li>
-                                    <a href="typography.html">Typography</a>
-                                </li>
-                                <li>
-                                    <a href="icons.html"> Icons</a>
-                                </li>
-                                <li>
-                                    <a href="grid.html">Grid</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-                        <li>
-                            <a href="#"><i class="fa fa-sitemap fa-fw"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="#">Second Level Item</a>
-                                </li>
-                                <li>
-                                    <a href="#">Second Level Item</a>
-                                </li>
-                                <li>
-                                    <a href="#">Third Level <span class="fa arrow"></span></a>
-                                    <ul class="nav nav-third-level">
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                    </ul>
-                                    <!-- /.nav-third-level -->
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-                        <li class="active">
-                            <a href="#"><i class="fa fa-files-o fa-fw"></i> Sample Pages<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a class="active" href="blank.html">Blank Page</a>
-                                </li>
-                                <li>
-                                    <a href="login.html">Login Page</a>
+                                    <a href="/EmailSendedRecord">邮件发送记录</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -355,19 +304,30 @@
     <script src="~/lib/layer/src/layer.js"></script>
     <script src="~/lib/SBAdmin2/dist/js/sb-admin-2.js"></script>
     <script src="~/js/utils/publicUtil.js"></script>
+    <script src="~/js/utils/SelectItemUtil.js"></script>
     @RenderSection("Script", false)
     <script type="text/javascript">
         var Refresh = function () {
             location.href = location.href;
         };
         var RestPageIndex = function () {
-            $("PageIndex").val(1);
+            $("#PageIndex").val(1);
         };
         $("#PageListForm").submit(function () {
             ShowLoading();
         });
         $(".dataTables_wrapper .paginate_button a[title]").click(function () {
             ShowLoading();
+        });
+        $(".pagination a").click(function (e) {
+            var h = $(this).attr('href');
+            if (h !== "" && h !== undefined) {
+                var res = h.match(/PageIndex=(\d+)/g);
+                $('#PageIndex').val(res[0].replace("PageIndex=", ""));
+                $("#PageListForm").submit();
+                return false;
+            }
+            return false;
         });
     </script>
 </body>

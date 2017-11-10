@@ -8,6 +8,7 @@ using Monitor.DomainService;
 using Monitor.Repository;
 using Monitor.Trans;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using static Monitor.Constant.IgnoreConstant;
 using static Monitor.Constant.LockKeyConstant;
@@ -121,6 +122,18 @@ namespace Monitor.Application.Implement
                     throw new BizException("修改失败");
                 }
             }, callMemberName: "ProjectApplication-EditProjectAsync");
+        }
+
+        /// <summary>
+        /// 加载全部的项目列表
+        /// </summary>
+        /// <returns></returns>
+        public Task<OperateResult<IEnumerable<ProjectListDto>>> LoadProjectListAsync()
+        {
+            return OperateUtil.ExecuteAsync(async () =>
+            {
+                return await _projectCache.GetProjectListAsync();
+            }, callMemberName: "ProjectApplication-LoadProjectListAsync");
         }
     }
 }

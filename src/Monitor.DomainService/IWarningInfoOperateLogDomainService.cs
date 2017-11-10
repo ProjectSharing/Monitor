@@ -1,4 +1,7 @@
-﻿namespace Monitor.DomainService
+﻿using Monitor.Domain;
+using System.Threading.Tasks;
+
+namespace Monitor.DomainService
 {
     /// <summary>
     /// 类名：IWarningInfoOperateLogDomainService.cs
@@ -8,5 +11,33 @@
     /// </summary>
     public interface IWarningInfoOperateLogDomainService
     {
+        /// <summary>
+        /// 添加操作记录
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <param name="keyID">主键</param>
+        /// <param name="content">操作内容</param>
+        /// <param name="operateUserID">操作人</param>
+        /// <returns></returns>
+        Task AddLogAsync(int type, int keyID, string content, int operateUserID);
+
+        /// <summary>
+        /// 添加操作记录
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <param name="keyID">主键</param>
+        /// <param name="content">操作内容</param>
+        /// <param name="operateUserID">操作人</param>
+        void AddLog(int type, int keyID, string content, int operateUserID);
+
+        /// <summary>
+        /// 创建操作记录信息
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <param name="keyID">主键</param>
+        /// <param name="content">操作内容</param>
+        /// <param name="operateUserID">操作人</param>
+        /// <returns>操作记录信息</returns>
+        WarningInfoOperateLogInfo Create(int type, int keyID, string content, int operateUserID);
     }
 }

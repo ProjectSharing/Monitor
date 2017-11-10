@@ -1,5 +1,8 @@
 ﻿using JQCore.DataAccess.Repositories;
+using JQCore.Result;
 using Monitor.Domain;
+using Monitor.Trans;
+using System.Threading.Tasks;
 
 namespace Monitor.Repository
 {
@@ -11,5 +14,18 @@ namespace Monitor.Repository
     /// </summary>
     public interface IWarningLogRepository : IBaseDataRepository<WarningLogInfo>
     {
+        /// <summary>
+        /// 异步查找警告日志列表
+        /// </summary>
+        /// <param name="queryWhere">查询条件</param>
+        /// <returns>警告日志列表</returns>
+        Task<IPageResult<WarningLogListDto>> GetWarningLogListAsync(WarningLogPageQueryWhere queryWhere);
+
+        /// <summary>
+        /// 获取处理信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<WarningLogDealModel> GetWarningLogDealModel(int id);
     }
 }

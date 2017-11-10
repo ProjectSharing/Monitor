@@ -1,5 +1,6 @@
 ﻿using JQCore.Result;
 using Monitor.Trans;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Monitor.Application
@@ -45,5 +46,11 @@ namespace Monitor.Application
         /// <param name="projectModel">项目信息</param>
         /// <returns>操作结果</returns>
         Task<OperateResult> EditProjectAsync(ProjectModel projectModel);
+
+        /// <summary>
+        /// 加载全部的项目列表
+        /// </summary>
+        /// <returns></returns>
+        Task<OperateResult<IEnumerable<ProjectListDto>>> LoadProjectListAsync();
     }
 }

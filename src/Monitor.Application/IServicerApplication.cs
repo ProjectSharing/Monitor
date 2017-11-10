@@ -1,5 +1,6 @@
 ﻿using JQCore.Result;
 using Monitor.Trans;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Monitor.Application
@@ -45,5 +46,11 @@ namespace Monitor.Application
         /// </summary>
         /// <returns>操作结果</returns>
         Task<OperateResult> SynchroServiceAsync();
+
+        /// <summary>
+        /// 获取服务器列表
+        /// </summary>
+        /// <returns></returns>
+        Task<OperateResult<IEnumerable<ServicerListDto>>> LoadServicerListAsync();
     }
 }

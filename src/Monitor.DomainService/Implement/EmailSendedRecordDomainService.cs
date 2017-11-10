@@ -49,12 +49,12 @@ namespace Monitor.DomainService.Implement
             else
             {
                 //获取收件人邮箱
-                var adminInfo = await _adminRepository.GetInfoAsync(m => m.FState == UserState.Enable && m.FIsDeleted == false && m.FEmail != null);
+                var adminInfo = await _adminRepository.GetInfoAsync(m => m.FState == UserState.Enable && m.FIsDeleted == false);
                 var receiveEmailAccount = adminInfo?.FEmail;
                 //获取发送邮箱账号密码
                 var sendEmailAccount = await _sysConfigCache.GetValueAsync(Email_Account);
                 var sendEmailAccountPwd = await _sysConfigCache.GetValueAsync(Email_AccountPwd);
-                var sendEmailInfo = CreateWaitSendEmail(theme, content, receiveEmailAccount, sendEmailAccountPwd);
+                var sendEmailInfo = CreateWaitSendEmail(theme, content, receiveEmailAccount, sendEmailAccount);
                 if (StringUtil.HaveAnyIsNullOrWhiteSpace(receiveEmailAccount, sendEmailAccountPwd, sendEmailAccount))
                 {
                     sendEmailInfo.NotSend(GetNotSendRemarkWhenAccountError(receiveEmailAccount, sendEmailAccount, sendEmailAccountPwd), -1);

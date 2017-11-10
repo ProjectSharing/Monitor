@@ -75,7 +75,7 @@ namespace JQCore.Mvc.TagHelpers
             {
                 htmlBuilder.Append("<ul class='pagination'>");
 
-                string urlFormat = GetUrlFormat();
+                string urlFormat = GetUrlFormat().Replace("PageIndex=%7B0%7D", "PageIndex={0}");
 
                 AppendPageButton(htmlBuilder, 1, "首页", 1 == PageResult.PageIndex, urlFormat);
                 AppendPageButton(htmlBuilder, PageResult.PrevPageIndex, "上一页", PageResult.PageIndex == PageResult.PrevPageIndex, urlFormat);

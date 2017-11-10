@@ -1,0 +1,71 @@
+﻿@model IPageResult<EmailSendRecordListDto>
+@{
+    ViewData["Title"] = "邮件发送记录";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="page-wrapper">
+    <div class="row">
+        <div class="panel panel-default">
+            <form asp-action="Index" method="post" id="PageListForm">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="col-sm-2">邮件发送记录</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body" style="padding-top:0px;">
+                    <div id="dataTables-example_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                        @Html.Partial("_QueryWhere", ViewBag.QueryWhere as EmailSendRecordPageQueryWhere)
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table class="table table-striped table-bordered table-hover dataTable" id="dataTables-example" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th class="center">接收账号</th>
+                                            <th class="center">主题</th>
+                                            <th class="center">发送账号</th>
+                                            <th class="left" style="width:300px;">日志内容</th>
+                                            <th class="center">发送状态</th>
+                                            <th class="center">发送备注</th>
+                                            <th class="center">操作时间</th>
+                                            <th class="center">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model != null && Model.Data.Any())
+                                        {
+                                            foreach (var item in Model)
+                                            {
+                                                <tr>
+                                                    <td class="center">@item.FReceiveEmail</td>
+                                                    <td class="center">@item.FTheme</td>
+                                                    <td class="center">@item.FSendEmail</td>
+                                                    <td class="left" style="width:300px;">@item.FContent</td>
+                                                    <td class="center">@item.FSendState.Desc()</td>
+                                                    <td class="center">@item.FStateRemark</td>
+                                                    <td class="center">@item.FLastModifyTime</td>
+                                                    <td class="center"></td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr><td class="center" colspan="8">暂无记录</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.panel-body -->
+                <div class="panel-footer dataTables_wrapper">
+                    <div class="row">
+                        <pager jqcore-page="Model"></pager>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

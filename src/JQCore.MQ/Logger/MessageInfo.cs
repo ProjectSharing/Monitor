@@ -39,7 +39,7 @@ namespace JQCore.MQ.Logger
         public string FContent { get; set; }
 
         /// <summary>
-        /// 日志来源【1:前端,2:后台,3:IOS,4:Android,5:API,6:其它】
+        /// 日志来源【1:前端,2:网站,3:IOS,4:Android,5:API,6:管理后台,7:其它】
         /// </summary>
         public int FSource { get; set; } = 2;
 

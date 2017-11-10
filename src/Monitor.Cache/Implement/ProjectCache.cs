@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using static Monitor.Constant.CacheKeyConstant;
 using JQCore.Extensions;
+using Monitor.Trans;
+using System.Collections.Generic;
 
 namespace Monitor.Cache.Implement
 {
@@ -43,6 +45,22 @@ namespace Monitor.Cache.Implement
         }
 
         /// <summary>
+        /// 获取项目列表
+        /// </summary>
+        /// <returns>项目列表</returns>
+        public async Task<IEnumerable<ProjectListDto>> GetProjectListAsync()
+        {
+            var projectList = await GetValueAsync(async () =>
+            {
+                return await RedisClient.HashValuesAsync<ProjectInfo>(Cache_ProjectList);
+            }, async () =>
+            {
+                return await _projectRepository.QueryListAsync(m => m.FIsDeleted == false);
+            }, memberName: "ProjectCache-GetProjectInfoAsync");
+            return projectList.Select(m => new ProjectListDto { FID = m.FID, FComment = m.FComment, FName = m.FName, FLastModifyTime = m.FLastModifyTime ?? m.FCreateTime });
+        }
+
+        /// <summary>
         /// 项目信息发生变化
         /// </summary>
         /// <param name="projectID">项目ID</param>
@@ -77,8 +95,19 @@ namespace Monitor.Cache.Implement
                 LogUtil.Info("开始同步项目信息");
                 var lastSynchroTime = await GetLastSynchroTimeAsync(Cache_Synchro_Project);
                 LogUtil.Info($"项目信息上次同步时间;{lastSynchroTime.ToDefaultFormat()}");
-                var projectList = await _projectRepository.QueryListAsync(m => m.FCreateTime >= lastSynchroTime || m.FLastModifyTime >= lastSynchroTime);
+                var projectList = await _projectRepository.QueryListAsync();
                 LogUtil.Info($"共{(projectList?.Count().ToString()) ?? "0"}条信息需要同步");
+                var existsCacheKeyList = RedisClient.HashKeys(Cache_ProjectList);
+                if (existsCacheKeyList != null && existsCacheKeyList.Any())
+                {
+                    foreach (var existsCacheKey in existsCacheKeyList)
+                    {
+                        if (!projectList.Any(m => m.FID.ToString() == existsCacheKey))
+                        {
+                            await RedisClient.HashDeleteAsync(Cache_ProjectList, existsCacheKey);
+                        }
+                    }
+                }
                 foreach (var projectInfo in projectList)
                 {
                     if (!projectInfo.FIsDeleted)

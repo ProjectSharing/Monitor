@@ -3,6 +3,12 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="wwwroot\lib\select2\**" />
+    <Content Remove="wwwroot\lib\select2\**" />
+    <EmbeddedResource Remove="wwwroot\lib\select2\**" />
+    <None Remove="wwwroot\lib\select2\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Autofac" Version="4.6.1" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.0" />
     <PackageReference Include="Hangfire" Version="1.6.17" />

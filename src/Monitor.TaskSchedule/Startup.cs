@@ -131,13 +131,11 @@ namespace Monitor.TaskSchedule
                     {
                         if (message != null && message.Count > 0)
                         {
-                            //LogUtil.Info("接收到消息");
                             using (var scope = ContainerManager.BeginLeftScope())
                             {
                                 var runtimeLogApplication = scope.Resolve<IRuntimeLogApplication>();
                                 runtimeLogApplication.AddLogList(message);
                             }
-                            //LogUtil.Info("消息处理结束");
                         }
                     }, "Monitor.Message", "Monitor.Message", "Monitor.LoggerMessage.*", exchangeType: MQExchangeType.TOPICS, errorActionHandle: (message, e) =>
                     {

@@ -1,4 +1,6 @@
 ﻿using Monitor.Domain;
+using Monitor.Trans;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Monitor.Cache
@@ -18,6 +20,12 @@ namespace Monitor.Cache
         /// <param name="projectName">项目名字</param>
         /// <returns>项目信息</returns>
         Task<ProjectInfo> GetProjectInfoAsync(string projectName);
+
+        /// <summary>
+        /// 获取项目列表
+        /// </summary>
+        /// <returns>项目列表</returns>
+        Task<IEnumerable<ProjectListDto>> GetProjectListAsync();
 
         /// <summary>
         /// 项目信息发生变化

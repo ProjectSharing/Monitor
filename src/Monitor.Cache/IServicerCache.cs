@@ -1,4 +1,6 @@
 ﻿using Monitor.Domain;
+using Monitor.Trans;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Monitor.Cache
@@ -18,6 +20,12 @@ namespace Monitor.Cache
         /// <param name="servicerMac">服务器Mac地址</param>
         /// <returns>服务器信息</returns>
         Task<ServicerInfo> GetServicerInfoAsync(string servicerMac);
+
+        /// <summary>
+        /// 获取服务器列表
+        /// </summary>
+        /// <returns>服务器列表</returns>
+        Task<IEnumerable<ServicerListDto>> GetServicerListAsync();
 
         /// <summary>
         /// 修改服务器到redis缓存

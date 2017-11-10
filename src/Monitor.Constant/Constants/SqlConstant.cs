@@ -13,5 +13,15 @@
         /// SQLSERVER  With(Nolcok)
         /// </summary>
         public const string SQLSERVER_WITHNOLOCK = " WITH(NOLOCK) ";
+
+        /// <summary>
+        /// LEFT JOIN
+        /// </summary>
+        public static readonly string LeftJoin = " LEFT JOIN ";
+
+        /// <summary>
+        /// ON
+        /// </summary>
+        public static readonly string On = " ON ";
     }
 }

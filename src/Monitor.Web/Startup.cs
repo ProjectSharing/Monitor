@@ -42,7 +42,8 @@ namespace Monitor.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().AddControllersAsServices();
+            services.AddMvc().AddControllersAsServices().AddJsonOptions(op => op.SerializerSettings.ContractResolver =
+                                         new Newtonsoft.Json.Serialization.DefaultContractResolver()); ;
             services.AddSession()
                     .AddMemoryCache()
                     .AddOptions()

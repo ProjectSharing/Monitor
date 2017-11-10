@@ -78,5 +78,15 @@ namespace Monitor.Web.Controllers
               return _servicerApplication.EditServicerAsync(model);
           });
         }
+
+        /// <summary>
+        /// 获取项目列表
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> ServicerSelectList()
+        {
+            var operateResult = await _servicerApplication.LoadServicerListAsync();
+            return operateResult.ToJsonResult();
+        }
     }
 }

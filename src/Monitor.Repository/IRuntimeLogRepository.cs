@@ -1,5 +1,8 @@
 ﻿using JQCore.DataAccess.Repositories;
+using JQCore.Result;
 using Monitor.Domain;
+using Monitor.Trans;
+using System.Threading.Tasks;
 
 namespace Monitor.Repository
 {
@@ -11,5 +14,11 @@ namespace Monitor.Repository
     /// </summary>
     public interface IRuntimeLogRepository : IBaseDataRepository<RuntimeLogInfo>
     {
+        /// <summary>
+        /// 加载运行时日志信息
+        /// </summary>
+        /// <param name="queryWhere">查询条件</param>
+        /// <returns></returns>
+        Task<IPageResult<RuntimeLogListDto>> GetRuntimeLogListAsync(RuntimeLogPageQueryWhere queryWhere);
     }
 }

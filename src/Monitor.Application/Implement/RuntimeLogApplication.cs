@@ -57,5 +57,18 @@ namespace Monitor.Application.Implement
                }
            }, callMemberName: "RuntimeLogApplication-AddLogListAsync");
         }
+
+        /// <summary>
+        /// 加载运行日志列表
+        /// </summary>
+        /// <param name="queryWhere">查询条件</param>
+        /// <returns></returns>
+        public Task<OperateResult<IPageResult<RuntimeLogListDto>>> GetRuntimeLogListAsync(RuntimeLogPageQueryWhere queryWhere)
+        {
+            return OperateUtil.ExecuteAsync(() =>
+            {
+                return _runtimeLogRepository.GetRuntimeLogListAsync(queryWhere);
+            }, callMemberName: "RuntimeLogApplication-GetRuntimeLogListAsync");
+        }
     }
 }
