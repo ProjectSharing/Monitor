@@ -1,8 +1,5 @@
-﻿using JQCore.Dependency;
-using JQCore.Web;
+﻿using JQCore.Web;
 using System;
-using System.Diagnostics;
-using System.Threading;
 
 namespace JQCore.Utils
 {
@@ -22,54 +19,15 @@ namespace JQCore.Utils
         {
             get
             {
-                return Activity.Current?.Id ?? WebHttpContext.Current?.TraceIdentifier??Guid.NewGuid().ToString("N");
-            }
-        }
-
-        /// <summary>
-        /// 使用callcontext
-        /// </summary>
-        /// <param name="containerManager"></param>
-        /// <returns></returns>
-        public static ContainerManager UseCallContext(this ContainerManager containerManager)
-        {
-            return containerManager.AddSingleton<ICallContextProvider, CallContextProvider>()
-                              ;
-        }
-    }
-
-    public interface ICallContextProvider
-    {
-        AsyncLocalInfo Current { get; set; }
-    }
-
-    internal class CallContextProvider : ICallContextProvider
-    {
-        private AsyncLocal<AsyncLocalInfo> _asyncLocal = new AsyncLocal<AsyncLocalInfo>();
-
-        public AsyncLocalInfo Current
-        {
-            get
-            {
-                return _asyncLocal.Value = (_asyncLocal.Value ?? new AsyncLocalInfo());
-            }
-            set { _asyncLocal.Value = value; }
-        }
-    }
-
-    public class AsyncLocalInfo
-    {
-        private Guid _gID;
-
-        public Guid GID
-        {
-            get
-            {
-                if (_gID == Guid.Empty)
+                if (WebHttpContext.Current != null)
                 {
-                    _gID = Guid.NewGuid();
+                    if (WebHttpContext.Current.TraceIdentifier == null)
+                    {
+                        WebHttpContext.Current.TraceIdentifier = Guid.NewGuid().ToString("N");
+                    }
+                    return WebHttpContext.Current.TraceIdentifier;
                 }
-                return _gID;
+                return Guid.NewGuid().ToString("N");
             }
         }
     }

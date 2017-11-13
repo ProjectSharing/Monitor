@@ -1,6 +1,7 @@
 ﻿using JQCore.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
+using JQCore.Utils;
 
 namespace JQCore.MQ.Logger
 {
@@ -13,6 +14,13 @@ namespace JQCore.MQ.Logger
     /// </summary>
     public class MQLogger : ILogger
     {
+        private string _categoryName;
+
+        public MQLogger(string categoryName)
+        {
+            _categoryName = categoryName;
+        }
+
         public IDisposable BeginScope<TState>(TState state)
         {
             return new ScopeDispose();
@@ -20,7 +28,22 @@ namespace JQCore.MQ.Logger
 
         public bool IsEnabled(LogLevel logLevel)
         {
-            return true;
+            var catergoryName = ConfigurationManage.GetValue($"MQMonitor:ProjectInfo:CategoryName");
+            if (!string.IsNullOrWhiteSpace(catergoryName))
+            {
+                var catergoryNameList = catergoryName.Split(',');
+                var isMatched = false;
+                foreach (var item in catergoryNameList)
+                {
+                    if (_categoryName.IsMatch(item))
+                    {
+                        isMatched = true;
+                        break;
+                    }
+                }
+                return isMatched;
+            }
+            return false;
         }
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)

@@ -13,7 +13,7 @@ namespace JQCore.MQ.Logger
     {
         public ILogger CreateLogger(string categoryName)
         {
-            return new MQLogger();
+            return new MQLogger(categoryName);
         }
 
         public void Dispose()

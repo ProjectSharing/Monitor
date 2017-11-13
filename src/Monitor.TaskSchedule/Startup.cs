@@ -67,7 +67,6 @@ namespace Monitor.TaskSchedule
                             .UseRedisLock()
                             .UseRabbitMQ()
                             .UseMQLog()
-                            .UseCallContext()
                             ;
             ApplicationContainer = (ContainerManager.Instance.Container as AutofacObjectContainer).Container;
             return new AutofacServiceProvider(ApplicationContainer);

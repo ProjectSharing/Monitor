@@ -9,7 +9,8 @@
     },
     "ProjectInfo": {
       "ProjectName": "监控后台",
-      "FSource": 6
+      "FSource": 6,
+      "CategoryName": "JQCore.*"
     }
   }
 }
