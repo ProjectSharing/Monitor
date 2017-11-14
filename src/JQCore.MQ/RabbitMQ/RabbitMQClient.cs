@@ -1,12 +1,10 @@
-﻿using JQCore.MQ.Serialization;
+﻿using JQCore.Extensions;
+using JQCore.MQ.Serialization;
 using JQCore.Utils;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using JQCore.Extensions;
-using RabbitMQ.Client.Events;
-using System.Diagnostics;
 
 namespace JQCore.MQ.RabbitMQ
 {
