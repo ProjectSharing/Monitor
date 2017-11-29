@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      Microsoft SQL Server 2008                    */
-/* Created on:     2017/11/8 21:03:58                           */
+/* Created on:     2017/11/29 21:35:30                          */
 /*==============================================================*/
 
 
@@ -48,6 +48,13 @@ go
 
 if exists (select 1
             from  sysobjects
+           where  id = object_id('M_RuntimeSql')
+            and   type = 'U')
+   drop table M_RuntimeSql
+go
+
+if exists (select 1
+            from  sysobjects
            where  id = object_id('M_ServiceGroup')
             and   type = 'U')
    drop table M_ServiceGroup
@@ -69,6 +76,13 @@ go
 
 if exists (select 1
             from  sysobjects
+           where  id = object_id('M_SqlParameter')
+            and   type = 'U')
+   drop table M_SqlParameter
+go
+
+if exists (select 1
+            from  sysobjects
            where  id = object_id('M_SysConfig')
             and   type = 'U')
    drop table M_SysConfig
@@ -86,6 +100,13 @@ if exists (select 1
            where  id = object_id('M_WarningLog')
             and   type = 'U')
    drop table M_WarningLog
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('M_WarningSql')
+            and   type = 'U')
+   drop table M_WarningSql
 go
 
 /*==============================================================*/
@@ -1619,6 +1640,291 @@ execute sp_addextendedproperty 'MS_Description',
 go
 
 /*==============================================================*/
+/* Table: M_RuntimeSql                                          */
+/*==============================================================*/
+create table M_RuntimeSql (
+   FID                  int                  identity(1,1),
+   FProjectID           int                  not null,
+   FProjectName         varchar(128)         null,
+   FServicerID          int                  not null,
+   FServicerMac         varchar(128)         null,
+   FSqlDbType           varchar(64)          null,
+   FSqlText             varchar(4000)        null,
+   FRequestGuid         varchar(64)          null,
+   FTimeElapsed         decimal(18,2)        not null,
+   FIsSuccess           bit                  not null,
+   FExecutedTime        datetime             not null,
+   FCreateTime          datetime             not null,
+   FIsDeleted           bit                  not null,
+   constraint PK_M_RUNTIMESQL primary key (FID)
+)
+go
+
+if exists (select 1 from  sys.extended_properties
+           where major_id = object_id('M_RuntimeSql') and minor_id = 0)
+begin 
+   declare @CurrentUser sysname 
+select @CurrentUser = user_name() 
+execute sp_dropextendedproperty 'MS_Description',  
+   'user', @CurrentUser, 'table', 'M_RuntimeSql' 
+ 
+end 
+
+
+select @CurrentUser = user_name() 
+execute sp_addextendedproperty 'MS_Description',  
+   '执行SQL信息', 
+   'user', @CurrentUser, 'table', 'M_RuntimeSql'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_RuntimeSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FID')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FID'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '主键ID',
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FID'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_RuntimeSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FProjectID')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FProjectID'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '所属项目',
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FProjectID'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_RuntimeSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FProjectName')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FProjectName'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '项目名字',
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FProjectName'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_RuntimeSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FServicerID')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FServicerID'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '部署服务器ID',
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FServicerID'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_RuntimeSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FServicerMac')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FServicerMac'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '服务器Mac地址',
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FServicerMac'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_RuntimeSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FSqlDbType')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FSqlDbType'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   'SQL数据库类型',
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FSqlDbType'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_RuntimeSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FSqlText')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FSqlText'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   'SQL文本',
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FSqlText'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_RuntimeSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FRequestGuid')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FRequestGuid'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '请求标识(同一次请求中值相同)',
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FRequestGuid'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_RuntimeSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FTimeElapsed')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FTimeElapsed'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '执行消耗时间',
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FTimeElapsed'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_RuntimeSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FIsSuccess')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FIsSuccess'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '是否成功',
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FIsSuccess'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_RuntimeSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FExecutedTime')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FExecutedTime'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '执行时间',
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FExecutedTime'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_RuntimeSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FCreateTime')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FCreateTime'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '添加时间',
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FCreateTime'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_RuntimeSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FIsDeleted')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FIsDeleted'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '是否删除',
+   'user', @CurrentUser, 'table', 'M_RuntimeSql', 'column', 'FIsDeleted'
+go
+
+/*==============================================================*/
 /* Table: M_ServiceGroup                                        */
 /*==============================================================*/
 create table M_ServiceGroup (
@@ -2231,6 +2537,151 @@ select @CurrentUser = user_name()
 execute sp_addextendedproperty 'MS_Description', 
    '最后修改人ID',
    'user', @CurrentUser, 'table', 'M_Servicer', 'column', 'FLastModifyUserID'
+go
+
+/*==============================================================*/
+/* Table: M_SqlParameter                                        */
+/*==============================================================*/
+create table M_SqlParameter (
+   FID                  bigint               identity(1,1),
+   FRuntimeSqlID        int                  not null,
+   FName                varchar(128)         null,
+   FValue               varchar(max)         null,
+   FCreateTime          datetime             not null,
+   FIsdeleted           bit                  not null,
+   constraint PK_M_SQLPARAMETER primary key (FID)
+)
+go
+
+if exists (select 1 from  sys.extended_properties
+           where major_id = object_id('M_SqlParameter') and minor_id = 0)
+begin 
+   declare @CurrentUser sysname 
+select @CurrentUser = user_name() 
+execute sp_dropextendedproperty 'MS_Description',  
+   'user', @CurrentUser, 'table', 'M_SqlParameter' 
+ 
+end 
+
+
+select @CurrentUser = user_name() 
+execute sp_addextendedproperty 'MS_Description',  
+   'SQL参数信息', 
+   'user', @CurrentUser, 'table', 'M_SqlParameter'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_SqlParameter')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FID')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_SqlParameter', 'column', 'FID'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '主键',
+   'user', @CurrentUser, 'table', 'M_SqlParameter', 'column', 'FID'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_SqlParameter')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FRuntimeSqlID')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_SqlParameter', 'column', 'FRuntimeSqlID'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   'SQL记录ID',
+   'user', @CurrentUser, 'table', 'M_SqlParameter', 'column', 'FRuntimeSqlID'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_SqlParameter')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FName')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_SqlParameter', 'column', 'FName'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '参数名',
+   'user', @CurrentUser, 'table', 'M_SqlParameter', 'column', 'FName'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_SqlParameter')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FValue')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_SqlParameter', 'column', 'FValue'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '参数值',
+   'user', @CurrentUser, 'table', 'M_SqlParameter', 'column', 'FValue'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_SqlParameter')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FCreateTime')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_SqlParameter', 'column', 'FCreateTime'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '添加时间',
+   'user', @CurrentUser, 'table', 'M_SqlParameter', 'column', 'FCreateTime'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_SqlParameter')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FIsdeleted')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_SqlParameter', 'column', 'FIsdeleted'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '是否删除',
+   'user', @CurrentUser, 'table', 'M_SqlParameter', 'column', 'FIsdeleted'
 go
 
 /*==============================================================*/
@@ -2946,5 +3397,270 @@ select @CurrentUser = user_name()
 execute sp_addextendedproperty 'MS_Description', 
    '最后修改人ID',
    'user', @CurrentUser, 'table', 'M_WarningLog', 'column', 'FLastModifyUserID'
+go
+
+/*==============================================================*/
+/* Table: M_WarningSql                                          */
+/*==============================================================*/
+create table M_WarningSql (
+   FID                  int                  identity(1,1),
+   FRuntimeSqlID        int                  not null,
+   FSqlSign             int                  not null,
+   FOperateAdvice       varchar(256)         null,
+   FNoticeState         int                  not null,
+   FDealState           int                  not null,
+   FTreatmentScheme     varchar(256)         null,
+   FIsDeleted           bit                  not null,
+   FCreateTime          datetime             not null,
+   FCreateUserID        int                  not null,
+   FLastModifyTime      datetime             null,
+   FLastModifyUserID    int                  null,
+   constraint PK_M_WARNINGSQL primary key (FID)
+)
+go
+
+if exists (select 1 from  sys.extended_properties
+           where major_id = object_id('M_WarningSql') and minor_id = 0)
+begin 
+   declare @CurrentUser sysname 
+select @CurrentUser = user_name() 
+execute sp_dropextendedproperty 'MS_Description',  
+   'user', @CurrentUser, 'table', 'M_WarningSql' 
+ 
+end 
+
+
+select @CurrentUser = user_name() 
+execute sp_addextendedproperty 'MS_Description',  
+   'SQL预警信息', 
+   'user', @CurrentUser, 'table', 'M_WarningSql'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_WarningSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FID')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FID'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '主键',
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FID'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_WarningSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FRuntimeSqlID')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FRuntimeSqlID'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   'SQL记录ID',
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FRuntimeSqlID'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_WarningSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FSqlSign')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FSqlSign'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   'SQL标识',
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FSqlSign'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_WarningSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FOperateAdvice')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FOperateAdvice'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '处理建议',
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FOperateAdvice'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_WarningSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FNoticeState')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FNoticeState'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '通知状态(1:未通知 2:已通知 3:通知失败)',
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FNoticeState'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_WarningSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FDealState')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FDealState'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '处理状态(1:待处理,2:已处理,3:不处理)',
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FDealState'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_WarningSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FTreatmentScheme')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FTreatmentScheme'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '处理方案',
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FTreatmentScheme'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_WarningSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FIsDeleted')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FIsDeleted'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '是否删除',
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FIsDeleted'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_WarningSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FCreateTime')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FCreateTime'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '创建时间',
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FCreateTime'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_WarningSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FCreateUserID')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FCreateUserID'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '创建人ID',
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FCreateUserID'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_WarningSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FLastModifyTime')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FLastModifyTime'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '最后修改时间',
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FLastModifyTime'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_WarningSql')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FLastModifyUserID')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FLastModifyUserID'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '最后修改人ID',
+   'user', @CurrentUser, 'table', 'M_WarningSql', 'column', 'FLastModifyUserID'
 go
 
