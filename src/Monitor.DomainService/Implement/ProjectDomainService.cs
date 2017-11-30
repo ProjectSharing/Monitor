@@ -56,6 +56,28 @@ namespace Monitor.DomainService.Implement
         }
 
         /// <summary>
+        /// 根据名字获取项目ID，不存在时则添加
+        /// </summary>
+        /// <param name="projectName">项目名字</param>
+        /// <returns></returns>
+        public async Task<int> GetProjectIDAsync(string projectName)
+        {
+            if (projectName.IsNotNullAndNotEmptyWhiteSpace())
+            {
+                var projectInfo = await _projectCache.GetProjectInfoAsync(projectName.Trim());
+                if (projectInfo == null)
+                {
+                    projectInfo = await AddWhenNotExistAsync(projectName.Trim());
+                }
+                if (projectInfo != null)
+                {
+                    return projectInfo.FID;
+                }
+            }
+            return 0;
+        }
+
+        /// <summary>
         /// 创建项目，当名字不存在时
         /// </summary>
         /// <param name="projectName">项目名字</param>

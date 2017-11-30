@@ -68,5 +68,20 @@
         /// 系统配置信息表名
         /// </summary>
         public const string TABLE_NAME_SYSCONFIG = "M_SysConfig";
+
+        /// <summary>
+        /// 执行SQL信息表名
+        /// </summary>
+        public const string TABLE_NAME_RUNTIMESQL = "M_RuntimeSql";
+
+        /// <summary>
+        /// SQL参数信息表名
+        /// </summary>
+        public const string TABLE_NAME_SQLPARAMETER = "M_SqlParameter";
+
+        /// <summary>
+        /// SQL预警信息表名
+        /// </summary>
+        public const string TABLE_NAME_WARNINGSQL = "M_WarningSql";
     }
 }

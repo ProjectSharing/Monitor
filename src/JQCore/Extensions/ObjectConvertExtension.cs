@@ -164,6 +164,31 @@ namespace JQCore.Extensions
             return null;
         }
 
+        public static double ToSafeDouble(this object o, double defValue)
+        {
+            if (o == null || string.IsNullOrWhiteSpace(o.ToString()))
+            {
+                return defValue;
+            }
+            double result = defValue;
+            if (o != null)
+            {
+                double.TryParse(o.ToString(), out result);
+            }
+            return result;
+        }
+
+        public static double? ToSafeDouble(this object o)
+        {
+            if (o != null && !string.IsNullOrWhiteSpace(o.ToString()))
+            {
+                double result;
+                double.TryParse(o.ToString().Trim(), out result);
+                return result;
+            }
+            return null;
+        }
+
         public static bool ToSafeBool(this object o, bool defValue)
         {
             if (o != null)

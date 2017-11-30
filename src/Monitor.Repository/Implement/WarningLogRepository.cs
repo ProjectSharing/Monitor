@@ -52,11 +52,11 @@ namespace Monitor.Repository.Implement
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Task<WarningLogDealModel> GetWarningLogDealModel(int id)
+        public Task<WarningDealModel> GetWarningLogDealModel(int id)
         {
             string selectSQL = $"SELECT FID,FOperateAdvice,FTreatmentScheme FROM {TABLE_NAME_WARNINGLOG} WHERE FIsDeleted=0 AND FID=@FID;";
             var sqlQuery = new SqlQuery(selectSQL, new { FID = id });
-            return GetDtoAsync<WarningLogDealModel>(sqlQuery);
+            return GetDtoAsync<WarningDealModel>(sqlQuery);
         }
     }
 }

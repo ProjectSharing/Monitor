@@ -7,7 +7,7 @@
     /// 类功能描述：处理警告日志Model
     /// 创建标识：yjq 2017/11/9 15:01:41
     /// </summary>
-    public class WarningLogDealModel: BaseOperateModel
+    public class WarningDealModel: BaseOperateModel
     {
         /// <summary>
         /// 主键ID

@@ -14,6 +14,13 @@ namespace Monitor.DomainService
     public interface IProjectDomainService
     {
         /// <summary>
+        /// 根据名字获取项目ID，不存在时则添加
+        /// </summary>
+        /// <param name="projectName">项目名字</param>
+        /// <returns></returns>
+        Task<int> GetProjectIDAsync(string projectName);
+
+        /// <summary>
         /// 创建项目，当名字不存在时
         /// </summary>
         /// <param name="projectName">项目名字</param>

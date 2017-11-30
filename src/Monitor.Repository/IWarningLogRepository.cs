@@ -26,6 +26,6 @@ namespace Monitor.Repository
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<WarningLogDealModel> GetWarningLogDealModel(int id);
+        Task<WarningDealModel> GetWarningLogDealModel(int id);
     }
 }

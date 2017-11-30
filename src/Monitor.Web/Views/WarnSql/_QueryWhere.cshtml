@@ -1,0 +1,17 @@
+﻿@model WarningSqlPageQueryWhere
+<div class="row">
+    <div class="col-sm-12" style="border-bottom: 1px solid #eee;background-color: #F3F3F3;padding:10px 0 10px 0;">
+        <input type="hidden" asp-for="PageIndex" />
+        <label class="ml-20">
+            项目:
+            <select asp-for="ProjectID" class="form-control" ></select>
+        </label>
+        <label class="ml-20">
+            服务器:
+            <select asp-for="ServicerID" class="form-control"></select>
+        </label>
+        <label class="ml-20">调用方法:<input type="text" asp-for="CallMethodName" class="form-control input-sm"></label>
+        <label class="ml-20">请求标识:<input type="text" asp-for="RequestGuid" class="form-control input-sm"></label>
+        <input type="submit" class="form-control input-sm btn btn-info ml-15" value="查询" onclick="RestPageIndex()" />
+    </div>
+</div> 

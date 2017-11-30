@@ -85,6 +85,28 @@ namespace Monitor.DomainService.Implement
         }
 
         /// <summary>
+        /// 根据服务器mac地址获取服务器ID，没有则添加
+        /// </summary>
+        /// <param name="serverMac"></param>
+        /// <returns></returns>
+        public async Task<int> GetServerIDAsync(string serverMac)
+        {
+            if (serverMac.IsNotNullAndNotEmptyWhiteSpace())
+            {
+                var servicerInfo = await _servicerCache.GetServicerInfoAsync(serverMac.Trim());
+                if (servicerInfo == null)
+                {
+                    servicerInfo = await AddWhenNotExistAsync(serverMac.Trim());
+                }
+                if (servicerInfo != null)
+                {
+                    return servicerInfo.FID;
+                }
+            }
+            return 0;
+        }
+
+        /// <summary>
         /// 创建服务器，当名字不存在时
         /// </summary>
         /// <param name="servicerMac">Mac地址</param>

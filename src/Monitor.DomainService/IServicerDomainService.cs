@@ -28,6 +28,13 @@ namespace Monitor.DomainService
         Task CheckAsync(ServicerInfo servicerInfo);
 
         /// <summary>
+        /// 根据服务器mac地址获取服务器ID，没有则添加
+        /// </summary>
+        /// <param name="serverMac"></param>
+        /// <returns></returns>
+        Task<int> GetServerIDAsync(string serverMac);
+
+        /// <summary>
         /// 创建服务器，当名字不存在时
         /// </summary>
         /// <param name="servicerMac">Mac地址</param>

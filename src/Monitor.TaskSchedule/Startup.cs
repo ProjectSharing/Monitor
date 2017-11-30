@@ -7,6 +7,7 @@ using JQCore.Configuration;
 using JQCore.Dependency;
 using JQCore.Hangfire;
 using JQCore.MQ;
+using JQCore.MQ.Logger;
 using JQCore.Redis;
 using JQCore.Utils;
 using Microsoft.AspNetCore.Builder;
@@ -20,8 +21,6 @@ using Monitor.Trans;
 using NLog.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Security.Claims;
-using JQCore.MQ.Logger;
 
 namespace Monitor.TaskSchedule
 {
@@ -147,6 +146,37 @@ namespace Monitor.TaskSchedule
                         client.Dispose();
                     });
                     return context.Response.WriteAsync("Create MonitorLog Success");
+                });
+            });
+
+            app.Map("/MonitorSql", r =>
+            {
+                r.Run(context =>
+                {
+                    LogUtil.Info("开始启动监听SQL执行信息");
+                    var mqFactory = ContainerManager.Resolve<IMQFactory>();
+                    var client = mqFactory.Create(MQConfig.GetConfig("MQMonitor"));
+                    client.Subscribe<List<RuntimeSqlModel>>((message) =>
+                    {
+                        if (message != null && message.Count > 0)
+                        {
+                            using (var scope = ContainerManager.BeginLeftScope())
+                            {
+                                var runtimeSqlApplication = scope.Resolve<IRuntimeSqlApplication>();
+                                runtimeSqlApplication.AddRuntimeSqlList(message);
+                            }
+                        }
+                    }, "Monitor.Message", "Monitor.Sql", "Monitor.Sql.*", exchangeType: MQExchangeType.TOPICS, errorActionHandle: (message, e) =>
+                    {
+                        LogUtil.Info("消息处理出现异常");
+                        LogUtil.Error(e);
+                    });
+                    LogUtil.Info("启动监听SQL执行信息完成");
+                    applicationLifetime.ApplicationStopping.Register(() =>
+                    {
+                        client.Dispose();
+                    });
+                    return context.Response.WriteAsync("Create MonitorSql Success");
                 });
             });
 

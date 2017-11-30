@@ -60,27 +60,11 @@ namespace Monitor.DomainService.Implement
             };
             if (runtimeLogInfo.FProjectName.IsNotNullAndNotEmptyWhiteSpace())
             {
-                var projectInfo = await _projectCache.GetProjectInfoAsync(runtimeLogInfo.FProjectName.Trim());
-                if (projectInfo == null)
-                {
-                    projectInfo = await _projectDomainService.AddWhenNotExistAsync(runtimeLogInfo.FProjectName.Trim());
-                }
-                if (projectInfo != null)
-                {
-                    runtimeLogInfo.FProjectID = projectInfo.FID;
-                }
+                runtimeLogInfo.FProjectID = await _projectDomainService.GetProjectIDAsync(runtimeLogInfo.FProjectName);
             }
             if (runtimeLogInfo.FServicerMac.IsNotNullAndNotEmptyWhiteSpace())
             {
-                var servicerInfo = await _servicerCache.GetServicerInfoAsync(runtimeLogInfo.FServicerMac.Trim());
-                if (servicerInfo == null)
-                {
-                    servicerInfo = await _servicerDomainService.AddWhenNotExistAsync(runtimeLogInfo.FServicerMac.Trim());
-                }
-                if (servicerInfo != null)
-                {
-                    runtimeLogInfo.FServicerID = servicerInfo.FID;
-                }
+                runtimeLogInfo.FServicerID = await _servicerDomainService.GetServerIDAsync(runtimeLogInfo.FServicerMac);
             }
             return runtimeLogInfo;
         }
@@ -95,14 +79,16 @@ namespace Monitor.DomainService.Implement
             if (runtimeLogInfo != null && runtimeLogInfo.IsNeedWarning())
             {
                 var warningLogInfo = _warningLogDomainService.Create(runtimeLogInfo);
-                await _warningLogRepository.InsertOneAsync(warningLogInfo, keyName: "FID", ignoreFields: FID);
                 //判断一小时之内有没有超出五条同样日志标识的记录,假如超出则不发送邮件,
                 int waitDealCount = await _warningLogRepository.QueryCountAsync(m => m.FLogSign == warningLogInfo.FLogSign && m.FCreateTime >= DateTimeUtil.Now.AddHours(-1) && m.FNoticeState == NoticeState.WaitNotice && m.FIsDeleted == false);
                 if (waitDealCount <= 5)
                 {
                     //发送邮件
                     await _emailSendedRecordDomainService.SendEmailAsync($"你有来自项目【{runtimeLogInfo.FProjectName}】新的警告邮件", runtimeLogInfo.FContent, runtimeLogInfo.FProjectID);
+                    warningLogInfo.FNoticeState = NoticeState.Noticed;
                 }
+                await _warningLogRepository.InsertOneAsync(warningLogInfo, keyName: "FID", ignoreFields: FID);
+
             }
         }
     }

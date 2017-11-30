@@ -46,7 +46,7 @@ namespace Monitor.Web.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public Task<IActionResult> Deal(WarningLogDealModel model)
+        public Task<IActionResult> Deal(WarningDealModel model)
         {
             return this.JsonResultAsync(() =>
             {

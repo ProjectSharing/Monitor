@@ -40,6 +40,17 @@
     <Folder Include="wwwroot\css\domian\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="wwwroot\js\DatePicker\calendar.js" />
+    <None Include="wwwroot\js\DatePicker\DatePicker.js" />
+    <None Include="wwwroot\js\DatePicker\lang\en.js" />
+    <None Include="wwwroot\js\DatePicker\lang\zh-cn.js" />
+    <None Include="wwwroot\js\DatePicker\lang\zh-tw.js" />
+    <None Include="wwwroot\js\DatePicker\WdatePicker.js" />
+    <None Include="wwwroot\js\DatePicker\开发包\lang\en.js" />
+    <None Include="wwwroot\js\DatePicker\开发包\lang\zh-cn.js" />
+    <None Include="wwwroot\js\DatePicker\开发包\lang\zh-tw.js" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Update="ipdata.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

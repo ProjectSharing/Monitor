@@ -1,0 +1,37 @@
+﻿@model RuntimeSqlPageQueryWhere
+@using Monitor.Constant
+<div class="row">
+    <div class="col-sm-12" style="border-bottom: 1px solid #eee;background-color: #F3F3F3;padding:10px 0 10px 0;">
+        <input type="hidden" asp-for="PageIndex" />
+        <label class="ml-20">
+            项目:
+            <select asp-for="ProjectID" class="form-control"></select>
+        </label>
+        <label class="ml-20">
+            服务器:
+            <select asp-for="ServicerID" class="form-control"></select>
+        </label>
+        <label class="ml-20">
+            日志来源:
+            <select asp-for="Source" class="form-control" asp-items="SelectItemUtil.ToListItems<Source>()">
+                <option value="">-请选择-</option>
+            </select>
+        </label>
+        <label class="ml-20">RequestID:<input type="text" asp-for="RequestGuid" class="form-control input-sm"></label>
+        <br />
+        <label class="ml-20">
+            消耗时长:
+            <input type="text" asp-for="MinTimeElapsed" class="form-control input-sm">
+            -
+            <input type="text" asp-for="MaxTimeElapsed" class="form-control input-sm">
+        </label>
+        <label class="ml-20">
+            执行时间:
+            <input type="text" asp-for="ExecuteTimeStart" class="form-control input-sm" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',vel:'d244_2', maxDate: '#F{$dp.$D(\'ExecuteTimeEnd\')}'})" />
+            -
+            <input type="text" asp-for="ExecuteTimeEnd" class="form-control input-sm" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',vel:'d244_2'})" />
+        </label>
+
+        <input type="submit" class="form-control input-sm btn btn-info ml-15" value="查询" onclick="RestPageIndex()" />
+    </div>
+</div> 

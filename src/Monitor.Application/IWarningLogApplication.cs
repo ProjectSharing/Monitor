@@ -24,13 +24,13 @@ namespace Monitor.Application
         /// </summary>
         /// <param name="id">警告日志记录ID</param>
         /// <returns></returns>
-        Task<OperateResult<WarningLogDealModel>> GetDealModelAsync(int id);
+        Task<OperateResult<WarningDealModel>> GetDealModelAsync(int id);
 
         /// <summary>
         /// 处理警告日志日志
         /// </summary>
         /// <param name="model">处理信息</param>
         /// <returns></returns>
-        Task<OperateResult> DealAsync(WarningLogDealModel model);
+        Task<OperateResult> DealAsync(WarningDealModel model);
     }
 }

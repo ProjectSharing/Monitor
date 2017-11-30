@@ -18,5 +18,10 @@
         /// 邮件发送密码
         /// </summary>
         public static readonly string Email_AccountPwd = "SendEmailAccountPwd";
+
+        /// <summary>
+        /// sql执行消耗预警最小时间
+        /// </summary>
+        public static readonly string SqlWarningMinTimeElapsed = "SqlWarningMinTimeElapsed";
     }
 }

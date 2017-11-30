@@ -61,16 +61,5 @@ namespace Monitor.Trans
                 }
             }
         }
-
-
-        /// <summary>
-        /// 判断是否需要警告
-        /// </summary>
-        /// <returns>true表示需要提示</returns>
-        public bool IsNeedWarning()
-        {
-            if (LogLevel == null) return false;
-            return LogLevel.Value == Constant.LogLevel.Error || LogLevel.Value == Constant.LogLevel.Warn || LogLevel.Value == Constant.LogLevel.Fatal;
-        }
     }
 }

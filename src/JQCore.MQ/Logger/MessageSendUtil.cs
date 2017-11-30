@@ -1,5 +1,4 @@
-﻿using JQCore.Dependency;
-using JQCore.Utils;
+﻿using JQCore.Utils;
 using System.Collections.Generic;
 
 namespace JQCore.MQ.Logger
@@ -15,16 +14,6 @@ namespace JQCore.MQ.Logger
     {
         internal static BufferQueue<MessageInfo> _MessageQueue = new BufferQueue<MessageInfo>(20000, MessageHandle, HaveNoCountHandle);
         private const string _EXCHANGENAME = "Monitor.Message";
-
-        /// <summary>
-        /// 获取MQLoggerConfig的服务器配置
-        /// </summary>
-        /// <returns></returns>
-        private static MQConfig GetConfig()
-        {
-            var logMQConfigProvider = ContainerManager.Resolve<ILogMQConfigProvider>();
-            return logMQConfigProvider.GetConfig();
-        }
 
         /// <summary>
         /// 消息列表
@@ -71,19 +60,7 @@ namespace JQCore.MQ.Logger
         /// <param name="messageList">消息列表</param>
         private static void SendMessage(MessageType messageType, List<MessageInfo> messageList)
         {
-            if (messageList != null && messageList.Count > 0)
-            {
-                ExceptionUtil.LogException(() =>
-                {
-                    var conifg = GetConfig();
-                    using (var mqClient = ContainerManager.Resolve<IMQFactory>().Create(conifg))
-                    {
-                        string queueName = "Monitor.Message";
-                        string routeKey = string.Concat("Monitor.LoggerMessage.", messageType.ToString());
-                        mqClient.Publish(messageList, _EXCHANGENAME, queueName, routeKey, exchangeType: MQExchangeType.TOPICS, durable: true);
-                    }
-                }, memberName: "MessageSendUtil-MessageHandle-SendMessag");
-            }
+            MonitorSendUtil.SendMessage(messageList, _EXCHANGENAME, "Monitor.Message", string.Concat("Monitor.LoggerMessage.", messageType.ToString()));
         }
     }
 }

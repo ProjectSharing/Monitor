@@ -47,7 +47,7 @@ namespace Monitor.Application.Implement
         /// </summary>
         /// <param name="id">警告日志记录ID</param>
         /// <returns></returns>
-        public Task<OperateResult<WarningLogDealModel>> GetDealModelAsync(int id)
+        public Task<OperateResult<WarningDealModel>> GetDealModelAsync(int id)
         {
             return OperateUtil.ExecuteAsync(async () =>
             {
@@ -60,7 +60,7 @@ namespace Monitor.Application.Implement
         /// </summary>
         /// <param name="model">处理信息</param>
         /// <returns></returns>
-        public Task<OperateResult> DealAsync(WarningLogDealModel model)
+        public Task<OperateResult> DealAsync(WarningDealModel model)
         {
             return OperateUtil.ExecuteAsync(async () =>
             {

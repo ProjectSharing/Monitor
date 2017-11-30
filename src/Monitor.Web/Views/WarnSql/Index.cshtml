@@ -1,0 +1,92 @@
+﻿@model IPageResult<WarningSqlListDto>
+@{
+    ViewData["Title"] = "预警SQL列表";
+}
+<div id="page-wrapper">
+    <div class="row">
+        <div class="panel panel-default">
+            <form asp-action="Index" method="post" id="PageListForm">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="col-sm-2">预警SQL列表</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body" style="padding-top:0px;">
+                    <div id="dataTables-example_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                        @Html.Partial("_QueryWhere", ViewBag.QueryWhere as WarningSqlPageQueryWhere)
+                        <div class="row" style="margin-top:5px;">
+                            @if (Model != null && Model.Data.Any())
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <div class="col-lg-12">
+                                        <div class="panel panel-info">
+                                            <div class="panel-heading">
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="col-sm-2">
+                                                            项目名字:@item.FProjectName
+                                                        </div>
+                                                        <div class="col-sm-2">
+                                                            服务器名字:@item.FServicerName
+                                                        </div>
+                                                        <div class="col-sm-2">
+                                                            日志来源:@item.FSource.Desc()
+                                                        </div>
+                                                        <div class="col-sm-2">
+                                                            通知状态:@item.FNoticeState.Desc()
+                                                        </div>
+                                                        <div class="col-sm-2">
+                                                            处理状态:@item.FDealState.Desc()
+                                                        </div>
+                                                        @if (item.FDealState == Monitor.Constant.DealState.WaitDeal)
+                                                        {
+                                                            <div class="col-sm-1 col-sm-offset-1 center">
+                                                                <a class="btn btn-info btn-sm OpenFrame" href="/WarnSql/Deal/@item.FID.ToString()?w=600&h=350" title="处理日志">处理</a>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel-body">
+                                                @Html.Raw(item.FContent)
+                                                <p>【生成时间：@item.FExecutedTime】【调用方法名字：@item.FCallMemberName】【请求标识：@item.FRequestGuid】</p>
+                                            </div>
+                                            @if (item.FDealState == Monitor.Constant.DealState.Dealed)
+                                            {
+                                                <div class="panel-footer">
+                                                    处理方案：@item.FTreatmentScheme
+                                                </div>
+                                            }
+
+                                        </div>
+                                    </div>
+
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+                <!-- /.panel-body -->
+                <div class="panel-footer dataTables_wrapper">
+                    <div class="row">
+                        <pager jqcore-page="Model"></pager>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Script{
+    <script type="text/javascript">
+        var currentProjectID = "@(ViewBag.QueryWhere.ProjectID)";
+        var currentServicerID= "@(ViewBag.QueryWhere.ServicerID)";
+        $(function () {
+            BindProjectList("#ProjectID", currentProjectID);
+            BindServicerList("#ServicerID", currentServicerID);
+        })
+
+    </script>
+}
