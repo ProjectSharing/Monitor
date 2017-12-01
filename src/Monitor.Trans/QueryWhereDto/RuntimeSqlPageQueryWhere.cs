@@ -28,6 +28,11 @@ namespace Monitor.Trans
         public int? ServicerID { get; set; }
 
         /// <summary>
+        /// 数据库ID
+        /// </summary>
+        public int? FDatabeseID { get; set; }
+
+        /// <summary>
         /// 请求的GUID标识，同一个GUID表明是同一次请求
         /// </summary>
         public string RequestGuid { get; set; }

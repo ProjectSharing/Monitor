@@ -28,6 +28,11 @@ namespace Monitor.Trans
         public string FServicerName { get; set; }
 
         /// <summary>
+        /// 数据库名字
+        /// </summary>
+        public string FDatabaseName { get; set; }
+
+        /// <summary>
         /// SQL数据库类型
         /// </summary>
         public string FSqlDbType { get; set; }

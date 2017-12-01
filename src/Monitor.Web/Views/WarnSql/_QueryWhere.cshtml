@@ -10,6 +10,10 @@
             服务器:
             <select asp-for="ServicerID" class="form-control"></select>
         </label>
+        <label class="ml-20">
+            数据库:
+            <select asp-for="DatabeseID" class="form-control"></select>
+        </label>
         <label class="ml-20">调用方法:<input type="text" asp-for="CallMethodName" class="form-control input-sm"></label>
         <label class="ml-20">请求标识:<input type="text" asp-for="RequestGuid" class="form-control input-sm"></label>
         <input type="submit" class="form-control input-sm btn btn-info ml-15" value="查询" onclick="RestPageIndex()" />

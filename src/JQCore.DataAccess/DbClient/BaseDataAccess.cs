@@ -293,7 +293,7 @@ namespace JQCore.DataAccess.DbClient
                 {
                     throw new NotSupportedException(DatabaseTyoe.ToString());
                 }
-            }, dbType: DatabaseTyoe.ToString(), memberName: "BaseDataAccess-BulkInsert");
+            }, dbType: DatabaseTyoe.ToString(), memberName: "BaseDataAccess-BulkInsert", dbConnection: Connection);
         }
 
         /// <summary>

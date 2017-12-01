@@ -33,6 +33,9 @@
                                                             服务器名字:@item.FServicerName
                                                         </div>
                                                         <div class="col-sm-2">
+                                                            数据库名字:@item.FDatabaseName
+                                                        </div>
+                                                        <div class="col-sm-2">
                                                             日志来源:@item.FSource.Desc()
                                                         </div>
                                                         <div class="col-sm-2">
@@ -72,10 +75,12 @@
     <script src="~/js/DatePicker/WdatePicker.js"></script>
     <script type="text/javascript">
         var currentProjectID = "@(ViewBag.QueryWhere.ProjectID)";
-        var currentServicerID= "@(ViewBag.QueryWhere.ServicerID)";
+        var currentServicerID = "@(ViewBag.QueryWhere.ServicerID)";
+        var currentDbID= "@(ViewBag.QueryWhere.FDatabeseID)";
         $(function () {
             BindProjectList("#ProjectID", currentProjectID);
             BindServicerList("#ServicerID", currentServicerID);
+            BindDatabaseList("#FDatabeseID", currentDbID);
         })
 
     </script>

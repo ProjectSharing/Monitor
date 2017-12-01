@@ -34,6 +34,12 @@ namespace Monitor.Constant
         /// 项目信息
         /// </summary>
         [Description("项目信息")]
-        Project = 4
+        Project = 4,
+
+        /// <summary>
+        /// 数据库信息
+        /// </summary>
+        [Description("数据库信息")]
+        Database = 5
     }
 }

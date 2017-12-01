@@ -22,6 +22,11 @@ namespace Monitor.Trans
         public int? ServicerID { get; set; }
 
         /// <summary>
+        /// 数据库ID
+        /// </summary>
+        public int? DatabeseID { get; set; }
+
+        /// <summary>
         /// 调用方法
         /// </summary>
         public string CallMethodName { get; set; }

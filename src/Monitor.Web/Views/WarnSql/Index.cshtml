@@ -52,7 +52,7 @@
                                             </div>
                                             <div class="panel-body">
                                                 @Html.Raw(item.FContent)
-                                                <p>【生成时间：@item.FExecutedTime】【调用方法名字：@item.FCallMemberName】【请求标识：@item.FRequestGuid】</p>
+                                                <p>【生成时间：@item.FExecutedTime】【调用方法名字：@item.FCallMemberName】【请求标识：@item.FRequestGuid】【数据库名字:@item.FDatabaseName】</p>
                                             </div>
                                             @if (item.FDealState == Monitor.Constant.DealState.Dealed)
                                             {
@@ -83,9 +83,11 @@
     <script type="text/javascript">
         var currentProjectID = "@(ViewBag.QueryWhere.ProjectID)";
         var currentServicerID= "@(ViewBag.QueryWhere.ServicerID)";
+        var currentDbID= "@(ViewBag.QueryWhere.DatabeseID)";
         $(function () {
             BindProjectList("#ProjectID", currentProjectID);
             BindServicerList("#ServicerID", currentServicerID);
+            BindDatabaseList("#DatabeseID", currentDbID);
         })
 
     </script>

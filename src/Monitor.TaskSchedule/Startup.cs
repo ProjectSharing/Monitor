@@ -106,11 +106,15 @@ namespace Monitor.TaskSchedule
                         var projectApplication = scope.Resolve<IProjectApplication>();
                         var projectSynchroTaskID = Guid.NewGuid().ToString("N");
                         TaskScheldulingUtil.CreateRecurringJob(projectSynchroTaskID, () => projectApplication.SynchroProjectAsync(), cronExpression: "0/10 * * * *");
+                        var databaseApplication = scope.Resolve<IDatabaseApplication>();
+                        var databaseSynchroTaskID = Guid.NewGuid().ToString("N");
+                        TaskScheldulingUtil.CreateRecurringJob(databaseSynchroTaskID, () => databaseApplication.SynchroDatabaseAsync(), cronExpression: "0/10 * * * *");
                         applicationLifetime.ApplicationStopping.Register(() =>
                         {
                             TaskScheldulingUtil.RemoveRecurringJobIfExists(sysConfigSynchroTaskID);
                             TaskScheldulingUtil.RemoveRecurringJobIfExists(servicerSynchroTaskID);
                             TaskScheldulingUtil.RemoveRecurringJobIfExists(projectSynchroTaskID);
+                            TaskScheldulingUtil.RemoveRecurringJobIfExists(databaseSynchroTaskID);
                         });
                     }
                     LogUtil.Info("完成启动同步缓存任务");

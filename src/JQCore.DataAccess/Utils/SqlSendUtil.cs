@@ -74,7 +74,8 @@ namespace JQCore.DataAccess.Utils
         /// <param name="timeElapsed">消耗时间</param>
         /// <param name="isSuccess">是否成功</param>
         /// <param name="dbType">数据库类型</param>
-        public static void GrabSql(string memberName, double timeElapsed, bool isSuccess, string dbType = null)
+        /// <param name="dataBaseName">数据库名字</param>
+        public static void GrabSql(string memberName, double timeElapsed, bool isSuccess, string dbType = null, string dataBaseName = null)
         {
             try
             {
@@ -82,7 +83,7 @@ namespace JQCore.DataAccess.Utils
                 {
                     return;
                 }
-                var runtimeSqlModel = Create(memberName, timeElapsed, isSuccess, dbType: dbType);
+                var runtimeSqlModel = Create(memberName, timeElapsed, isSuccess, dbType: dbType, dataBaseName: dataBaseName);
                 AddMessage(runtimeSqlModel);
             }
             catch (Exception ex)
@@ -98,7 +99,8 @@ namespace JQCore.DataAccess.Utils
         /// <param name="timeElapsed">消耗时间</param>
         /// <param name="isSuccess">是否成功</param>
         /// <param name="dbType">数据库类型</param>
-        public static void GrabSql(SqlQuery sqlQuery, double timeElapsed, bool isSuccess, string dbType = null)
+        /// <param name="dataBaseName">数据库名字</param>
+        public static void GrabSql(SqlQuery sqlQuery, double timeElapsed, bool isSuccess, string dbType = null, string dataBaseName = null)
         {
             try
             {
@@ -106,7 +108,7 @@ namespace JQCore.DataAccess.Utils
                 {
                     return;
                 }
-                var runtimeSqlModel = Create(sqlQuery, timeElapsed, isSuccess, dbType: dbType);
+                var runtimeSqlModel = Create(sqlQuery, timeElapsed, isSuccess, dbType: dbType, dataBaseName: dataBaseName);
                 AddMessage(runtimeSqlModel);
             }
             catch (Exception ex)
@@ -140,8 +142,9 @@ namespace JQCore.DataAccess.Utils
         /// <param name="timeElapsed">消耗时间</param>
         /// <param name="isSuccess">是否成功</param>
         /// <param name="dbType">数据库类型</param>
+        /// <param name="dataBaseName">数据库名字</param>
         /// <returns></returns>
-        private static RuntimeSqlModel Create(string MemberName, double timeElapsed, bool isSuccess, string dbType = null)
+        private static RuntimeSqlModel Create(string MemberName, double timeElapsed, bool isSuccess, string dbType = null, string dataBaseName = null)
         {
             var runtimeSqlModel = new RuntimeSqlModel
             {
@@ -154,7 +157,8 @@ namespace JQCore.DataAccess.Utils
                 FSqlDbType = dbType,
                 FSqlText = MemberName,
                 FTimeElapsed = timeElapsed,
-                FMemberName = WebHttpContext.AbsoluteUrl
+                FMemberName = WebHttpContext.AbsoluteUrl,
+                FDatabaseName = dataBaseName
             };
             return runtimeSqlModel;
         }
@@ -166,8 +170,9 @@ namespace JQCore.DataAccess.Utils
         /// <param name="timeElapsed">消耗时间</param>
         /// <param name="isSuccess">是否成功</param>
         /// <param name="dbType">数据库类型</param>
+        /// <param name="dataBaseName">数据库名字</param>
         /// <returns></returns>
-        private static RuntimeSqlModel Create(SqlQuery sqlQuery, double timeElapsed, bool isSuccess, string dbType = null)
+        private static RuntimeSqlModel Create(SqlQuery sqlQuery, double timeElapsed, bool isSuccess, string dbType = null, string dataBaseName = null)
         {
             var runtimeSqlModel = new RuntimeSqlModel
             {
@@ -180,7 +185,8 @@ namespace JQCore.DataAccess.Utils
                 FSqlDbType = dbType,
                 FSqlText = sqlQuery.CommandText,
                 FTimeElapsed = timeElapsed,
-                FMemberName = WebHttpContext.AbsoluteUrl
+                FMemberName = WebHttpContext.AbsoluteUrl,
+                FDatabaseName = dataBaseName
             };
             if (sqlQuery.ParameterList != null && sqlQuery.ParameterList.Any())
             {
@@ -218,6 +224,11 @@ namespace JQCore.DataAccess.Utils
         /// SQL数据库类型
         /// </summary>
         public string FSqlDbType { get; set; }
+
+        /// <summary>
+        /// 数据库名字
+        /// </summary>
+        public string FDatabaseName { get; set; }
 
         /// <summary>
         /// SQL文本

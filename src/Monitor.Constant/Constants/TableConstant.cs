@@ -83,5 +83,10 @@
         /// SQL预警信息表名
         /// </summary>
         public const string TABLE_NAME_WARNINGSQL = "M_WarningSql";
+
+        /// <summary>
+        /// 数据库信息表名
+        /// </summary>
+        public const string TABLE_NAME_DATABASE = "M_Database";
     }
 }

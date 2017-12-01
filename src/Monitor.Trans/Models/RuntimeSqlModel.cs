@@ -39,6 +39,11 @@ namespace Monitor.Trans
         public string FMemberName { get; set; }
 
         /// <summary>
+        /// 数据库名字
+        /// </summary>
+        public string FDatabaseName { get; set; }
+
+        /// <summary>
         /// 请求标识(同一次请求中值相同)
         /// </summary>
         public string FRequestGuid { get; set; }

@@ -33,6 +33,7 @@ namespace Monitor.Repository.Implement
             SqlWhereBuilder whereBuilder = new SqlWhereBuilder("A.FIsDeleted=0", ReaderDataType);
             whereBuilder.AppendEqual("A.FProjectID", queryWhere.ProjectID, nameof(queryWhere.ProjectID))
                         .AppendEqual("A.FServicerID", queryWhere.ServicerID, nameof(queryWhere.ServicerID))
+                        .AppendEqual("A.FDatabeseID", queryWhere.FDatabeseID, nameof(queryWhere.FDatabeseID))
                         .AppendEqual("A.FSource", queryWhere.Source, nameof(queryWhere.Source))
                         .AppendEqual("A.FRequestGuid", queryWhere.RequestGuid, nameof(queryWhere.RequestGuid))
                         .AppendMoreThanOrEqual("A.FTimeElapsed", queryWhere.MinTimeElapsed, nameof(queryWhere.MinTimeElapsed))
@@ -41,7 +42,7 @@ namespace Monitor.Repository.Implement
                         .AppendLessThan("A.FExecuteTime", queryWhere.ExecuteTimeEndValue, nameof(queryWhere.ExecuteTimeEndValue))
                         ;
             string selectTable = $"{TABLE_NAME_RUNTIMESQL} A {SQLSERVER_WITHNOLOCK} LEFT JOIN {TABLE_NAME_SERVCER} B {SQLSERVER_WITHNOLOCK} ON A.FServicerID=B.FID AND B.FIsDeleted=0";
-            const string selectColumn = "A.FID,A.FProjectName,B.FName AS FServicerName,A.FSqlDbType,A.FSqlText,A.FMemberName,A.FRequestGuid,A.FTimeElapsed,A.FSource,A.FIsSuccess,A.FExecutedTime";
+            const string selectColumn = "A.FID,A.FProjectName,B.FName AS FServicerName,A.FDatabaseName,A.FSqlDbType,A.FSqlText,A.FMemberName,A.FRequestGuid,A.FTimeElapsed,A.FSource,A.FIsSuccess,A.FExecutedTime";
             const string order = "A.FExecutedTime DESC";
             return QueryPageListAsync<RuntimeSqlListDto>(selectColumn, selectTable, whereBuilder.ToString(), order, queryWhere.PageIndex, queryWhere.PageSize, cmdParms: queryWhere);
         }

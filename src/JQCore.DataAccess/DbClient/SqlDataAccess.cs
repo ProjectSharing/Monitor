@@ -44,7 +44,7 @@ namespace JQCore.DataAccess.DbClient
             return SqlMonitorUtil.Monitor(query, () =>
             {
                 return _conn.Execute(query.CommandText, query.ParaItems, Tran, query.CommandTimeout, query.CommandType);
-            }, dbType: DatabaseTyoe.ToString());
+            }, dbType: DatabaseTyoe.ToString(), dbConnection: Connection);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace JQCore.DataAccess.DbClient
             return await SqlMonitorUtil.MonitorAsync(query, async () =>
             {
                 return await _conn.ExecuteAsync(query.CommandText, query.ParaItems, Tran, query.CommandTimeout, query.CommandType);
-            }, dbType: DatabaseTyoe.ToString());
+            }, dbType: DatabaseTyoe.ToString(), dbConnection: Connection);
         }
 
         #endregion 执行增删改方法，返回受影响的行数
@@ -79,7 +79,7 @@ namespace JQCore.DataAccess.DbClient
             return SqlMonitorUtil.Monitor(query, () =>
             {
                 return _conn.ExecuteScalar<T>(query.CommandText, query.ParaItems, Tran, query.CommandTimeout, query.CommandType);
-            }, dbType: DatabaseTyoe.ToString());
+            }, dbType: DatabaseTyoe.ToString(), dbConnection: Connection);
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace JQCore.DataAccess.DbClient
             return await SqlMonitorUtil.MonitorAsync(query, async () =>
             {
                 return await _conn.ExecuteScalarAsync<T>(query.CommandText, query.ParaItems, Tran, query.CommandTimeout, query.CommandType);
-            }, dbType: DatabaseTyoe.ToString());
+            }, dbType: DatabaseTyoe.ToString(), dbConnection: Connection);
         }
 
         #endregion 取出第一条数据
@@ -117,7 +117,7 @@ namespace JQCore.DataAccess.DbClient
             return SqlMonitorUtil.Monitor(query, () =>
             {
                 return _conn.QueryFirstOrDefault<T>(query.CommandText, query.ParaItems, Tran, query.CommandTimeout, query.CommandType);
-            }, dbType: DatabaseTyoe.ToString());
+            }, dbType: DatabaseTyoe.ToString(), dbConnection: Connection);
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace JQCore.DataAccess.DbClient
             return await SqlMonitorUtil.MonitorAsync(query, async () =>
             {
                 return await _conn.QueryFirstOrDefaultAsync<T>(query.CommandText, query.ParaItems, Tran, query.CommandTimeout, query.CommandType);
-            }, dbType: DatabaseTyoe.ToString());
+            }, dbType: DatabaseTyoe.ToString(), dbConnection: Connection);
         }
 
         #endregion 返回第一条结果信息
@@ -151,7 +151,7 @@ namespace JQCore.DataAccess.DbClient
             return SqlMonitorUtil.Monitor(query, () =>
             {
                 return _conn.Query<T>(query.CommandText, query.ParaItems, Tran, true, query.CommandTimeout, query.CommandType);
-            }, dbType: DatabaseTyoe.ToString());
+            }, dbType: DatabaseTyoe.ToString(), dbConnection: Connection);
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace JQCore.DataAccess.DbClient
             return await SqlMonitorUtil.MonitorAsync(query, async () =>
             {
                 return await _conn.QueryAsync<T>(query.CommandText, query.ParaItems, Tran, query.CommandTimeout, query.CommandType);
-            }, dbType: DatabaseTyoe.ToString());
+            }, dbType: DatabaseTyoe.ToString(), dbConnection: Connection);
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace JQCore.DataAccess.DbClient
                                splitOn: splitOn,
                                commandTimeout: query.CommandTimeout,
                                commandType: query.CommandType);
-            }, dbType: DatabaseTyoe.ToString());
+            }, dbType: DatabaseTyoe.ToString(), dbConnection: Connection);
         }
 
         /// <summary>
@@ -219,7 +219,7 @@ namespace JQCore.DataAccess.DbClient
                                splitOn: splitOn,
                                commandTimeout: query.CommandTimeout,
                                commandType: query.CommandType);
-            }, dbType: DatabaseTyoe.ToString());
+            }, dbType: DatabaseTyoe.ToString(), dbConnection: Connection);
         }
 
         /// <summary>
@@ -246,7 +246,7 @@ namespace JQCore.DataAccess.DbClient
                                splitOn: splitOn,
                                commandTimeout: query.CommandTimeout,
                                commandType: query.CommandType);
-            }, dbType: DatabaseTyoe.ToString());
+            }, dbType: DatabaseTyoe.ToString(), dbConnection: Connection);
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace JQCore.DataAccess.DbClient
                                splitOn: splitOn,
                                commandTimeout: query.CommandTimeout,
                                commandType: query.CommandType);
-            }, dbType: DatabaseTyoe.ToString());
+            }, dbType: DatabaseTyoe.ToString(), dbConnection: Connection);
         }
 
         /// <summary>
@@ -301,7 +301,7 @@ namespace JQCore.DataAccess.DbClient
                                splitOn: splitOn,
                                commandTimeout: query.CommandTimeout,
                                commandType: query.CommandType);
-            }, dbType: DatabaseTyoe.ToString());
+            }, dbType: DatabaseTyoe.ToString(), dbConnection: Connection);
         }
 
         /// <summary>
@@ -329,7 +329,7 @@ namespace JQCore.DataAccess.DbClient
                                splitOn: splitOn,
                                commandTimeout: query.CommandTimeout,
                                commandType: query.CommandType);
-            }, dbType: DatabaseTyoe.ToString());
+            }, dbType: DatabaseTyoe.ToString(), dbConnection: Connection);
         }
 
         /// <summary>
@@ -358,7 +358,7 @@ namespace JQCore.DataAccess.DbClient
                                splitOn: splitOn,
                                commandTimeout: query.CommandTimeout,
                                commandType: query.CommandType);
-            }, dbType: DatabaseTyoe.ToString());
+            }, dbType: DatabaseTyoe.ToString(), dbConnection: Connection);
         }
 
         /// <summary>
@@ -387,7 +387,7 @@ namespace JQCore.DataAccess.DbClient
                                splitOn: splitOn,
                                commandTimeout: query.CommandTimeout,
                                commandType: query.CommandType);
-            }, dbType: DatabaseTyoe.ToString());
+            }, dbType: DatabaseTyoe.ToString(), dbConnection: Connection);
         }
 
         /// <summary>
@@ -407,7 +407,7 @@ namespace JQCore.DataAccess.DbClient
                 {
                     return action(multiple);
                 }
-            }, dbType: DatabaseTyoe.ToString());
+            }, dbType: DatabaseTyoe.ToString(), dbConnection: Connection);
         }
 
         /// <summary>
@@ -427,7 +427,7 @@ namespace JQCore.DataAccess.DbClient
                 {
                     return action(multiple);
                 }
-            }, dbType: DatabaseTyoe.ToString());
+            }, dbType: DatabaseTyoe.ToString(), dbConnection: Connection);
         }
 
         /// <summary>
@@ -447,7 +447,7 @@ namespace JQCore.DataAccess.DbClient
                     table.Load(reader);
                     return table;
                 }
-            }, dbType: DatabaseTyoe.ToString());
+            }, dbType: DatabaseTyoe.ToString(), dbConnection: Connection);
         }
 
         /// <summary>
@@ -467,7 +467,7 @@ namespace JQCore.DataAccess.DbClient
                     table.Load(reader);
                     return table;
                 }
-            }, dbType: DatabaseTyoe.ToString());
+            }, dbType: DatabaseTyoe.ToString(), dbConnection: Connection);
         }
 
         #endregion 查询

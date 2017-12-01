@@ -8,7 +8,7 @@ namespace Monitor.Domain
     /// 类名：RuntimeSqlInfo.cs
     /// 类属性：公共类（非静态）
     /// 类功能描述：执行SQL信息
-    /// 创建标识：template 2017-11-29 22:17:30
+    /// 创建标识：template 2017-12-01 13:29:26
     /// </summary>
     public sealed class RuntimeSqlInfo
     {
@@ -38,6 +38,16 @@ namespace Monitor.Domain
         public string FServicerMac { get; set; }
 
         /// <summary>
+        /// 数据库ID
+        /// </summary>
+        public int FDatabeseID { get; set; }
+
+        /// <summary>
+        /// 数据库名字
+        /// </summary>
+        public string FDatabaseName { get; set; }
+
+        /// <summary>
         /// SQL数据库类型
         /// </summary>
         public string FSqlDbType { get; set; }
@@ -48,24 +58,24 @@ namespace Monitor.Domain
         public string FSqlText { get; set; }
 
         /// <summary>
-        /// 调用方法名字或地址
-        /// </summary>
-        public string FMemberName { get; set; }
-
-        /// <summary>
         /// 请求标识(同一次请求中值相同)
         /// </summary>
         public string FRequestGuid { get; set; }
 
         /// <summary>
-        /// 执行消耗时间
+        /// 调用方法名字或地址
         /// </summary>
-        public double FTimeElapsed { get; set; }
+        public string FMemberName { get; set; }
 
         /// <summary>
         /// 日志来源【1:前端,2:网站,3:IOS,4:Android,5:API,6:管理后台,7:其它】
         /// </summary>
         public Source FSource { get; set; }
+
+        /// <summary>
+        /// 执行消耗时间
+        /// </summary>
+        public double FTimeElapsed { get; set; }
 
         /// <summary>
         /// 是否成功

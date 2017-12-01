@@ -33,6 +33,7 @@ namespace Monitor.Repository.Implement
         {
             SqlWhereBuilder whereBuilder = new SqlWhereBuilder("A.FIsDeleted=0", ReaderDataType);
             whereBuilder.AppendEqual("B.FProjectID", queryWhere.ProjectID, nameof(queryWhere.ProjectID))
+                        .AppendEqual("B.FDatabeseID", queryWhere.DatabeseID, nameof(queryWhere.DatabeseID))
                         .AppendEqual("B.FServicerID", queryWhere.ServicerID, nameof(queryWhere.ServicerID))
                         .AppendLike("B.FCallMemberName", queryWhere.CallMethodName, nameof(queryWhere.CallMethodName))
                         .AppendEqual("B.FSource", queryWhere.Source, nameof(queryWhere.Source))
@@ -41,7 +42,7 @@ namespace Monitor.Repository.Implement
                         .AppendEqual("A.FDealState", queryWhere.DealState, nameof(queryWhere.DealState))
                 ;
             string selectTable = $"{TABLE_NAME_WARNINGSQL} A {SQLSERVER_WITHNOLOCK} {LeftJoin} {TABLE_NAME_RUNTIMESQL} B {SQLSERVER_WITHNOLOCK} {On} A.FRuntimeSqlID=B.FID {LeftJoin} {TABLE_NAME_SERVCER} C {SQLSERVER_WITHNOLOCK} {On} C.FID=B.FServicerID  AND C.FIsDeleted=0";
-            const string selectColumn = "A.FID,A.FOperateAdvice,a.FTreatmentScheme,A.FNoticeState,A.FDealState,ISNULL(A.FLastModifyTime,A.FCreateTime) FLastModifyTime,B.FMemberName AS FCallMemberName,B.FSqlText AS FContent,B.FSource,B.FExecutedTime,B.FRequestGuid,B.FProjectName,C.FName AS FServicerName ";
+            const string selectColumn = "A.FID,A.FOperateAdvice,a.FTreatmentScheme,A.FNoticeState,A.FDealState,ISNULL(A.FLastModifyTime,A.FCreateTime) FLastModifyTime,B.FMemberName AS FCallMemberName,B.FSqlText AS FContent,B.FSource,B.FExecutedTime,B.FRequestGuid,B.FProjectName,C.FName AS FServicerName,B.FDatabaseName ";
             const string order = "A.FDealState,ISNULL(A.FLastModifyTime,A.FCreateTime)";
             return QueryPageListAsync<WarningSqlListDto>(selectColumn, selectTable, whereBuilder.ToString(), order, queryWhere.PageIndex, queryWhere.PageSize, cmdParms: queryWhere);
         }

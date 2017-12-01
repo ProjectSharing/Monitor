@@ -53,6 +53,11 @@ namespace Monitor.Trans
         public string FServicerName { get; set; }
 
         /// <summary>
+        /// 数据库名字
+        /// </summary>
+        public string FDatabaseName { get; set; }
+
+        /// <summary>
         /// 调用方法名字
         /// </summary>
         public string FCallMemberName { get; set; }

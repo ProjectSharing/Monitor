@@ -27,8 +27,9 @@ namespace Monitor.DomainService.Implement
         private readonly IWarningSqlDomainService _warningSqlDomainService;
         private readonly IWarningSqlRepository _warningSqlRepository;
         private readonly IEmailSendedRecordDomainService _emailSendedRecordDomainService;
+        private readonly IDatabaseDomainService _databaseDomainService;
 
-        public RuntimeSqlDomainService(IProjectDomainService projectDomainService, IServicerDomainService servicerDomainService, IRuntimeSqlRepository runtimeSqlRepository, ISqlParameterRepository sqlParameterRepository, ISysConfigCache sysConfigCache, IWarningSqlDomainService warningSqlDomainService, IWarningSqlRepository warningSqlRepository, IEmailSendedRecordDomainService emailSendedRecordDomainService)
+        public RuntimeSqlDomainService(IProjectDomainService projectDomainService, IServicerDomainService servicerDomainService, IRuntimeSqlRepository runtimeSqlRepository, ISqlParameterRepository sqlParameterRepository, ISysConfigCache sysConfigCache, IWarningSqlDomainService warningSqlDomainService, IWarningSqlRepository warningSqlRepository, IEmailSendedRecordDomainService emailSendedRecordDomainService, IDatabaseDomainService databaseDomainService)
         {
             _projectDomainService = projectDomainService;
             _servicerDomainService = servicerDomainService;
@@ -38,6 +39,7 @@ namespace Monitor.DomainService.Implement
             _warningSqlDomainService = warningSqlDomainService;
             _warningSqlRepository = warningSqlRepository;
             _emailSendedRecordDomainService = emailSendedRecordDomainService;
+            _databaseDomainService = databaseDomainService;
         }
 
         /// <summary>
@@ -79,7 +81,8 @@ namespace Monitor.DomainService.Implement
                 FSqlText = runtimeSqlModel.FSqlText,
                 FTimeElapsed = runtimeSqlModel.FTimeElapsed,
                 FMemberName = runtimeSqlModel.FMemberName,
-                FSource = runtimeSqlModel.FSource
+                FSource = runtimeSqlModel.FSource,
+                FDatabaseName = runtimeSqlModel.FDatabaseName
             };
             if (runtimeSqlInfo.FProjectName.IsNotNullAndNotEmptyWhiteSpace())
             {
@@ -88,6 +91,10 @@ namespace Monitor.DomainService.Implement
             if (runtimeSqlInfo.FServicerMac.IsNotNullAndNotEmptyWhiteSpace())
             {
                 runtimeSqlInfo.FServicerID = await _servicerDomainService.GetServerIDAsync(runtimeSqlInfo.FServicerMac);
+            }
+            if (runtimeSqlModel.FDatabaseName.IsNotNullAndNotEmptyWhiteSpace())
+            {
+                runtimeSqlInfo.FDatabeseID = await _databaseDomainService.GetDatabaseIDAsync(runtimeSqlModel.FDatabaseName, runtimeSqlModel.FSqlDbType);
             }
             return runtimeSqlInfo;
         }

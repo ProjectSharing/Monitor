@@ -12,6 +12,10 @@
             <select asp-for="ServicerID" class="form-control"></select>
         </label>
         <label class="ml-20">
+            数据库:
+            <select asp-for="FDatabeseID" class="form-control"></select>
+        </label>
+        <label class="ml-20">
             日志来源:
             <select asp-for="Source" class="form-control" asp-items="SelectItemUtil.ToListItems<Source>()">
                 <option value="">-请选择-</option>

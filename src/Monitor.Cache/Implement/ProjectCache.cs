@@ -40,7 +40,7 @@ namespace Monitor.Cache.Implement
                  return projectList.FirstOrDefault(m => m.FName == projectName && m.FIsDeleted == false);
              }, async () =>
              {
-                 return await _projectRepository.GetInfoAsync(m => m.FName == projectName);
+                 return await _projectRepository.GetInfoAsync(m => m.FName == projectName && m.FIsDeleted == false);
              }, memberName: "ProjectCache-GetProjectInfoAsync");
         }
 
@@ -125,7 +125,7 @@ namespace Monitor.Cache.Implement
                 }
                 await UpdateLastSynchroTimeAsync(Cache_Synchro_Project);
                 LogUtil.Info("同步项目信息完成");
-            }, memberName: "ProjectCache-SynchroConfigAsync");
+            }, memberName: "ProjectCache-SynchroProjectAsync");
         }
     }
 }
