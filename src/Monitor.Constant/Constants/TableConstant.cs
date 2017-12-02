@@ -88,5 +88,10 @@
         /// 数据库信息表名
         /// </summary>
         public const string TABLE_NAME_DATABASE = "M_Database";
+
+        /// <summary>
+        /// SQL统计表名
+        /// </summary>
+        public const string TABLE_NAME_SQLSTATISTICS = "M_SqlStatistics";
     }
 }
