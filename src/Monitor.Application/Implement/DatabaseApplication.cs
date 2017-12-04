@@ -135,5 +135,18 @@ namespace Monitor.Application.Implement
                 return await _databaseCache.GetDatabaseListAsync();
             }, callMemberName: "DatabaseApplication-LoadDbListAsync");
         }
+
+        /// <summary>
+        /// 获取表结构列表
+        /// </summary>
+        /// <param name="dbID">数据库ID</param>
+        /// <returns>表结构列表</returns>
+        public Task<OperateResult<IEnumerable<TableStructureDto>>> GetTableStructureListAsync(int dbID)
+        {
+            return OperateUtil.ExecuteAsync(async () =>
+            {
+                return await _databaseRepository.GetTableStructureListAsync(dbID);
+            }, callMemberName: "DatabaseApplication-GetTableStructureListAsync");
+        }
     }
 }

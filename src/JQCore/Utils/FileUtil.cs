@@ -30,5 +30,17 @@ namespace JQCore.Utils
         {
             return !IsExistsFile(filePath);
         }
+
+        /// <summary>
+        /// 删除指定路径的文件
+        /// </summary>
+        /// <param name="filePath">文件路径</param>
+        public static void DeleteFile(string filePath)
+        {
+            if (IsExistsFile(filePath))
+            {
+                File.Delete(filePath);
+            }
+        }
     }
 }

@@ -1,0 +1,69 @@
+﻿/* jQuery TreeTable Core 2.0 stylesheet
+ *
+ * This file contains styles that are used to display the tree table. Each tree
+ * table is assigned the +treeTable+ class.
+ * ========================================================================= */
+
+/* jquery.treeTable.collapsible
+ * ------------------------------------------------------------------------- */
+.treeTable tr td .expander
+{
+	background-position: left center;
+	background-repeat: no-repeat;
+	cursor: pointer;
+	padding: 0;
+	zoom: 1; /* IE7 Hack */
+}
+
+.treeTable tr.collapsed td .expander
+{
+	background-image: url(images/plus.gif);
+}
+
+.treeTable tr.expanded td .expander
+{
+	background-image: url(images/minus.gif);
+}
+
+/* jquery.treeTable.sortable
+ * ------------------------------------------------------------------------- */
+.treeTable tr.selected, .treeTable tr.accept
+{
+    background2: #D0E5F5;
+    background1: #FBEC88;
+    background: #e0eccc;
+}
+
+.treeTable tr.collapsed.selected td .expander, .treeTable tr.collapsed.accept td .expander
+{
+	background-image: url(images/plus.gif);
+}
+
+.treeTable tr.expanded.selected td .expander, .treeTable tr.expanded.accept td .expander
+{
+	background-image: url(images/minus.gif);
+}
+
+.treeTable .ui-draggable-dragging
+{
+	color: #000;
+	z-index: 1;
+}
+
+.treeTable span.folder
+{
+	background-position: center left;
+	background-repeat: no-repeat;
+	padding: .2em 0 .2em 1.5em;
+}
+
+.treeTable span.file
+{
+	background-image: url(images/page_white_text.png);
+}
+
+.treeTable span.folder
+{
+	background-image: url(images/folder.png);
+	vertical-align: middle;
+}

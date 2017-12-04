@@ -1,4 +1,5 @@
 ﻿using JQCore.Mvc.ActionResult;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Monitor.Application;
 using Monitor.Trans;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Monitor.Web.Controllers
 {
+    [AllowAnonymous]
     public class DatabaseController : BaseController
     {
         private readonly IDatabaseApplication _databaseApplication;
@@ -87,6 +89,22 @@ namespace Monitor.Web.Controllers
         {
             var operateResult = await _databaseApplication.LoadDbListAsync();
             return operateResult.ToJsonResult();
+        }
+
+        /// <summary>
+        /// 显示表结构
+        /// </summary>
+        /// <param name="dbID">数据库ID</param>
+        /// <returns></returns>
+        public async Task<IActionResult> TableStructure(int? dbID)
+        {
+            if (dbID == null)
+            {
+                return View();
+            }
+            var operateResult = await _databaseApplication.GetTableStructureListAsync(dbID.Value);
+            ViewBag.CurrentDbID = dbID;
+            return View(operateResult.Value);
         }
     }
 }

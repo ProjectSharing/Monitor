@@ -52,5 +52,12 @@ namespace Monitor.Application
         /// </summary>
         /// <returns></returns>
         Task<OperateResult<IEnumerable<DatabaseListDto>>> LoadDbListAsync();
+
+        /// <summary>
+        /// 获取表结构列表
+        /// </summary>
+        /// <param name="dbID">数据库ID</param>
+        /// <returns>表结构列表</returns>
+        Task<OperateResult<IEnumerable<TableStructureDto>>> GetTableStructureListAsync(int dbID);
     }
 }

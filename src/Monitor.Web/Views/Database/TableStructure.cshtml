@@ -1,0 +1,100 @@
+﻿@model IEnumerable<TableStructureDto>
+@{
+    ViewData["Title"] = "表结构查看";
+}
+<div id="page-wrapper">
+    <div class="row">
+        <div class="panel panel-default">
+            <form asp-action="TableStructure" method="post" id="PageListForm">
+                <div class="panel-body" style="padding-top:0px;">
+                    <div id="dataTables-example_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                        <div class="row">
+                            <div class="col-sm-12" style="border-bottom: 1px solid #eee;background-color: #F3F3F3;padding:10px 0 10px 0;">
+                                <label class="ml-20">
+                                    数据库:
+                                    <select id="dbID" name="dbID" class="form-control"></select>
+                                </label>
+                                <input type="submit" class="form-control input-sm btn btn-info ml-15" value="查询" onclick="RestPageIndex()" />
+                                <label class="ml-20">
+                                    筛选:
+                                    <input value="" class="form-control" onkeyup="selectColumn(this)" />
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table class="table table-striped table-bordered table-hover dataTable" id="dataTables-example" style="width: 100%;">
+                                    <tbody>
+                                        @if (Model != null && Model.Any())
+                                        {
+                                            var currentIndex = 1;
+                                            foreach (var item in Model)
+                                            {
+                                                <tr data-struct="table" data-table="@(currentIndex.ToString())" class="table-@(currentIndex.ToString())" style="cursor:pointer;">
+                                                    <td class="left">
+                                                        <span style="margin-left:15px;"><i class="fa fa-table fa-fw"></i>@item.TableName【@item.Description】</span>
+                                                    </td>
+                                                </tr>
+                                                foreach (var columnItem in item.ColumnList)
+                                                {
+                                                    <tr data-struct="column" class="child-table-@(currentIndex.ToString())" data-table="@(currentIndex.ToString())">
+                                                        <td class="left">
+                                                            <span style="margin-left:50px;">
+                                                                <i class="fa fa-navicon fa-fw"></i>@columnItem.ColumnName【@columnItem.DataType,@columnItem.MaxLength.ToString()】
+                                                                @Html.Raw(columnItem.IsNullable == 1 ? " 可空" : " <code>不可空</code>")
+                                                                @(columnItem.ColumnDefaultValue.IsNotNullAndNotEmptyWhiteSpace() ? $"【默认值:{columnItem.ColumnDefaultValue}】" : "")
+                                                                【@columnItem.ColumnDescription】
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                                currentIndex++;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr><td class="center" colspan="1">暂无记录</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Script{
+    <script type="text/javascript">
+        var currentDbID= "@(ViewBag.CurrentDbID)";
+        $(function () {
+            BindDatabaseList("#dbID", currentDbID);
+            $("[data-struct='table']").click(function (e) {
+                var tableIndex = $(this).data("table");
+                $(".child-table-" + tableIndex).toggle(100);
+            });
+            $("[data-struct='column']").hide();
+        })
+        var selectColumn = function (obj) {
+            var searchText = $(obj).val();
+            $("[data-struct='table']").each(function () {
+                var tableIndex = $(this).data("table");
+                if ($(this).text().indexOf(searchText) > 0) {
+                    $(".child-table-" + tableIndex).show();
+                } else {
+                    $(".table-" + tableIndex).hide();
+                    $(".child-table-" + tableIndex).hide();
+                }
+            });
+
+            $("[data-struct='column']").each(function () {
+                var tableIndex = $(this).data("table");
+                if ($(this).text().indexOf(searchText) > 0) {
+                    $(".table-" + tableIndex).show();
+                    $(".child-table-" + tableIndex).show();
+                }
+            });
+        };
+    </script>
+}

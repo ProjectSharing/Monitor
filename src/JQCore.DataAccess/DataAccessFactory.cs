@@ -1,5 +1,4 @@
 ﻿using JQCore.DataAccess.DbClient;
-using JQCore.Utils;
 using System.Collections.Generic;
 
 namespace JQCore.DataAccess
@@ -57,6 +56,19 @@ namespace JQCore.DataAccess
             {
                 return _dataAccessCache[key] = CreateDataAccess(configName, isWriter: isWriter);
             }
+        }
+
+        /// <summary>
+        ///  获取数据库访问接口
+        /// </summary>
+        /// <param name="databaseType">数据库类型</param>
+        /// <param name="connetion">连接信息</param>
+        /// <param name="isWriter">是否为写</param>
+        /// <returns>数据库访问接口</returns>
+        public IDataAccess GetDataAccess(DatabaseType databaseType, string connetion, bool isWriter = true)
+        {
+            var dbProperty = DBSettings.CreateDatabaseProperty(databaseType, connetion);
+            return new SqlDataAccess(dbProperty, isWriter);
         }
 
         /// <summary>

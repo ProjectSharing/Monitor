@@ -1,10 +1,12 @@
 ﻿using JQCore.DataAccess.Utils;
 using JQCore.Utils;
 using JQCore.Web;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace JQCore.DataAccess.DbClient
@@ -194,6 +196,10 @@ namespace JQCore.DataAccess.DbClient
                     conn = new SqlConnection(dbConnection.ConnectionString);
                     break;
 
+                case DatabaseType.MySql:
+                    conn = new MySqlConnection(dbConnection.ConnectionString);
+                    break;
+
                 default:
                     throw new NotSupportedException("DatabaseType NotSupported");
             }
@@ -289,11 +295,37 @@ namespace JQCore.DataAccess.DbClient
                         sqlbulkcopy.WriteToServer(table.CreateDataReader());
                     }
                 }
+                else if (table != null && DatabaseTyoe == DatabaseType.MySql)
+                {
+                    string tmpPath = System.IO.Path.GetTempFileName();
+                    try
+                    {
+                        string csv = table.ToCsv();
+                        System.IO.File.WriteAllText(tmpPath, csv);
+                        Open();
+                        MySqlBulkLoader bulk = new MySqlBulkLoader(Connection as MySqlConnection)
+                        {
+                            FieldTerminator = ",",
+                            FieldQuotationCharacter = '"',
+                            EscapeCharacter = '"',
+                            LineTerminator = "\r\n",
+                            FileName = tmpPath,
+                            NumberOfLinesToSkip = 0,
+                            TableName = tableName,
+                        };
+                        bulk.Columns.AddRange(table.Columns.Cast<DataColumn>().Select(colum => colum.ColumnName).ToList());
+                        int insertCount = bulk.Load();
+                    }
+                    finally
+                    {
+                        FileUtil.DeleteFile(tmpPath);
+                    }
+                }
                 else
                 {
                     throw new NotSupportedException(DatabaseTyoe.ToString());
                 }
-            }, dbType: DatabaseTyoe.ToString(), memberName: "BaseDataAccess-BulkInsert", dbConnection: Connection);
+            }, dbType: DatabaseTyoe.ToString(), memberName: "BaseDataAccess-BulkInsert");
         }
 
         /// <summary>

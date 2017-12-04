@@ -76,6 +76,17 @@ namespace JQCore.DataAccess.Repositories
         #region 获取数据操作
 
         /// <summary>
+        /// 数据库创建工厂
+        /// </summary>
+        protected IDataAccessFactory DataAccessFactory
+        {
+            get
+            {
+                return _dataAccessFactory;
+            }
+        }
+
+        /// <summary>
         /// 获取数据操作
         /// </summary>
         /// <param name="isWrite">是否需要执行写操作</param>
@@ -568,7 +579,7 @@ namespace JQCore.DataAccess.Repositories
 
         /// <summary>
         /// 查询数量
-        /// </summary> 
+        /// </summary>
         /// <param name="condition">查询条件</param>
         /// <param name="isWrite">是否为写连接(事务中使用)</param>
         /// <returns>范总数量</returns>

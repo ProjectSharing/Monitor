@@ -49,6 +49,7 @@
     <None Include="wwwroot\js\DatePicker\开发包\lang\en.js" />
     <None Include="wwwroot\js\DatePicker\开发包\lang\zh-cn.js" />
     <None Include="wwwroot\js\DatePicker\开发包\lang\zh-tw.js" />
+    <None Include="wwwroot\js\DeptTreeTable\jquery.treeTable.js" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="ipdata.config">

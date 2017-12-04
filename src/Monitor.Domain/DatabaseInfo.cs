@@ -26,6 +26,11 @@ namespace Monitor.Domain
         public string FDbType { get; set; }
 
         /// <summary>
+        /// 数据库链接字符串
+        /// </summary>
+        public string FConnection { get; set; }
+
+        /// <summary>
         /// 备注
         /// </summary>
         public string FComment { get; set; }

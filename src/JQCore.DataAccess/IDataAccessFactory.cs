@@ -19,5 +19,14 @@ namespace JQCore.DataAccess
         /// <param name="isWriter">是否为写连接，不是则为读连接，默认为写连接</param>
         /// <returns>数据操作</returns>
         IDataAccess GetDataAccess(string configName, bool isWriter = true);
+
+        /// <summary>
+        ///  获取数据库访问接口(返回对象需要自己处理释放)
+        /// </summary>
+        /// <param name="databaseType">数据库类型</param>
+        /// <param name="connetion">连接信息</param>
+        /// <param name="isWriter">是否为写</param>
+        /// <returns>数据库访问接口</returns>
+        IDataAccess GetDataAccess(DatabaseType databaseType, string connetion, bool isWriter = true);
     }
 }

@@ -21,7 +21,7 @@ namespace JQCore.DataAccess.Utils
     /// 类功能描述：SQL拼接工具
     /// 创建标识：yjq 2017/9/5 20:13:36
     /// </summary>
-    public static class SqlQueryUtil
+    public static partial class SqlQueryUtil
     {
         /// <summary>
         /// 拼接单个插入的SqlQuery
@@ -764,5 +764,7 @@ namespace JQCore.DataAccess.Utils
                     return tableName;
             }
         }
+
+
     }
 }

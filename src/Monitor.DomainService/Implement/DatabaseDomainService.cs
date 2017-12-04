@@ -46,7 +46,8 @@ namespace Monitor.DomainService.Implement
                 FID = databaseMode.FID ?? 0,
                 FCreateTime = DateTimeUtil.Now,
                 FCreateUserID = databaseMode.OperateUserID.Value,
-                FDbType = databaseMode.FDbType ?? string.Empty
+                FDbType = databaseMode.FDbType ?? string.Empty,
+                FConnection = databaseMode.FConnection
             };
             if (databaseInfo.FID > 0)
             {
