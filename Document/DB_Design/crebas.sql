@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      Microsoft SQL Server 2008                    */
-/* Created on:     2017/12/2 13:04:51                           */
+/* Created on:     2017/12/4 11:26:45                           */
 /*==============================================================*/
 
 
@@ -600,6 +600,7 @@ create table M_Database (
    FID                  int                  identity(1,1),
    FName                varchar(128)         null,
    FDbType              varchar(64)          null,
+   FConnection          varchar(512)         null,
    FComment             varchar(64)          null,
    FIsDeleted           bit                  not null,
    FCreateTime          datetime             not null,
@@ -682,6 +683,25 @@ select @CurrentUser = user_name()
 execute sp_addextendedproperty 'MS_Description', 
    '数据库类型',
    'user', @CurrentUser, 'table', 'M_Database', 'column', 'FDbType'
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('M_Database')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'FConnection')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'M_Database', 'column', 'FConnection'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '数据库链接字符串',
+   'user', @CurrentUser, 'table', 'M_Database', 'column', 'FConnection'
 go
 
 if exists(select 1 from sys.extended_properties p where
