@@ -130,6 +130,21 @@ namespace JQCore.Expressions
             return first.Compose(second, Expression.OrElse);
         }
 
+        /// <summary>
+        /// 获取表达式的成员名字
+        /// </summary>
+        /// <typeparam name="T">对象类型</typeparam>
+        /// <typeparam name="TProperty">属性</typeparam>
+        /// <param name="express">表达式</param>
+        /// <returns>属性名字</returns>
+        public static string GetMemberName<T, TProperty>(this Expression<Func<T, TProperty>> express)
+        {
+            EnsureUtil.NotNull(express, "express");
+            var body = express.Body as MemberExpression;
+            EnsureUtil.NotNull(body, "body");
+            return body.Member.Name;
+        }
+
         private class ParameterRebinder : ExpressionVisitor
         {
             private readonly Dictionary<ParameterExpression, ParameterExpression> _map;

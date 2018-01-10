@@ -71,6 +71,50 @@ namespace JQCore.DataAccess.Repositories
         Task<int> DeleteAsync(Expression<Func<T, bool>> condition);
 
         /// <summary>
+        /// 获取最小值
+        /// </summary>
+        /// <typeparam name="TProperty">属性</typeparam>
+        /// <typeparam name="TReturn">返回类型</typeparam>
+        /// <param name="expression">属性表达式</param>
+        /// <param name="condition">条件</param>
+        /// <param name="isWrite">是否为写连接</param>
+        /// <returns>最小值</returns>
+        TReturn Min<TProperty, TReturn>(Expression<Func<T, TProperty>> expression, Expression<Func<T, bool>> condition, bool isWrite = false);
+
+        /// <summary>
+        /// 异步获取最小值
+        /// </summary>
+        /// <typeparam name="TProperty">属性</typeparam>
+        /// <typeparam name="TReturn">返回类型</typeparam>
+        /// <param name="expression">属性表达式</param>
+        /// <param name="condition">条件</param>
+        /// <param name="isWrite">是否为写连接</param>
+        /// <returns>最小值</returns>
+        Task<TReturn> MinAsync<TProperty, TReturn>(Expression<Func<T, TProperty>> expression, Expression<Func<T, bool>> condition, bool isWrite = false);
+
+        /// <summary>
+        /// 获取最大值
+        /// </summary>
+        /// <typeparam name="TProperty">属性</typeparam>
+        /// <typeparam name="TReturn">返回类型</typeparam>
+        /// <param name="expression">属性表达式</param>
+        /// <param name="condition">条件</param>
+        /// <param name="isWrite">是否为写连接</param>
+        /// <returns>最大值</returns>
+        TReturn Max<TProperty, TReturn>(Expression<Func<T, TProperty>> expression, Expression<Func<T, bool>> condition, bool isWrite = false);
+
+        /// <summary>
+        /// 异步获取最大值
+        /// </summary>
+        /// <typeparam name="TProperty">属性</typeparam>
+        /// <typeparam name="TReturn">返回类型</typeparam>
+        /// <param name="expression">属性表达式</param>
+        /// <param name="condition">条件</param>
+        /// <param name="isWrite">是否为写连接</param>
+        /// <returns>最大值</returns>
+        Task<TReturn> MaxAsync<TProperty, TReturn>(Expression<Func<T, TProperty>> expression, Expression<Func<T, bool>> condition, bool isWrite = false);
+
+        /// <summary>
         /// 获取传输对象
         /// </summary>
         /// <typeparam name="TDto">传输对象类型</typeparam>

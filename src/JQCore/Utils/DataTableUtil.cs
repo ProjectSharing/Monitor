@@ -147,9 +147,23 @@ namespace JQCore.Utils
                     }
                     else if (colum.DataType == typeof(bool))
                     {
-                        sb.Append(row[colum].ToSafeInt32());
+                        if (row[colum] == null)
+                        {
+                            sb.Append(row[colum]);
+                        }
+                        else
+                        {
+                            if (row[colum].ToSafeBool() == true)
+                            {
+                                sb.Append(1);
+                            }
+                            else
+                            {
+                                sb.Append("");
+                            }
+                        }
                     }
-                    else sb.Append(row[colum].ToString());
+                    else sb.Append(row[colum]);
                 }
                 sb.AppendLine();
             }

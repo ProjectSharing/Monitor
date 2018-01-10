@@ -1,6 +1,7 @@
 ﻿using JQCore.DataAccess.Attributes;
 using JQCore.DataAccess.DbClient;
 using JQCore.DataAccess.Expressions;
+using JQCore.Expressions;
 using JQCore.Extensions;
 using JQCore.Utils;
 using System;
@@ -220,6 +221,94 @@ namespace JQCore.DataAccess.Utils
             }
             var sql = $"DELETE FROM {tableName}{whereFields};";
             return new SqlQuery(sql, whereInfo.Item2);
+        }
+
+        /// <summary>
+        /// 拼接查询最小值的sql语句
+        /// </summary>
+        /// <typeparam name="T">类型</typeparam>
+        /// <typeparam name="TProperty">属性</typeparam>
+        /// <param name="expression">属性表达式</param>
+        /// <param name="tableName">表名</param>
+        /// <param name="condition">条件</param>
+        /// <param name="dbType">数据库类型，默认MSSQLServer</param>
+        /// <returns>查询最小值的SqlQuery</returns>
+        public static SqlQuery BuilderQueryMinSqlQuery<T, TProperty>(Expression<Func<T, TProperty>> expression, string tableName, Expression<Func<T, bool>> condition, DatabaseType dbType = DatabaseType.MSSQLServer)
+        {
+            string columnName = expression.GetMemberName();
+            var whereInfo = SqlExpressionVisitor.GetSqlWhere(condition, dbType: dbType);
+            var whereFields = string.Empty;
+            if (whereInfo.Item1.IsNotNullAndNotEmptyWhiteSpace())
+            {
+                whereFields = $" WHERE {whereInfo.Item1}";
+            }
+            string sql = $"SELECT MIN({columnName}) FROM {tableName} {whereFields}";
+            return new SqlQuery(sql, condition);
+        }
+
+        /// <summary>
+        /// 拼接查询最小值的sql语句
+        /// </summary>
+        /// <param name="columnName">字段名</param>
+        /// <param name="tableName">表名</param>
+        /// <param name="condition">条件</param>
+        /// <param name="dbType">数据库类型，默认MSSQLServer</param>
+        /// <returns>查询最小值的SqlQuery</returns>
+        public static SqlQuery BuilderQueryMinSqlQuery(string columnName, string tableName, object condition, DatabaseType dbType = DatabaseType.MSSQLServer)
+        {
+            var whereFields = string.Empty;
+            var whereProperties = PropertyUtil.GetPropertyInfos(condition);
+            var whereFieldNames = whereProperties.Select(p => p.Name);
+            if (whereFieldNames.Any())
+            {
+                whereFields = " WHERE " + string.Join(" AND ", whereFieldNames.Select(p => p + " = " + GetSign(dbType) + p));
+            }
+            string sql = $"SELECT MIN({columnName}) FROM {tableName} {whereFields}";
+            return new SqlQuery(sql, condition);
+        }
+
+        /// <summary>
+        /// 拼接查询最大值的SQL语句
+        /// </summary>
+        /// <typeparam name="T">类型</typeparam>
+        /// <typeparam name="TProperty">属性</typeparam>
+        /// <param name="expression">属性表达式</param>
+        /// <param name="tableName">表名</param>
+        /// <param name="condition">条件</param>
+        /// <param name="dbType">数据库类型，默认MSSQLServer</param>
+        /// <returns>查询最大值的SqlQuery</returns>
+        public static SqlQuery BuilderQueryMaxSqlQuery<T, TProperty>(Expression<Func<T, TProperty>> expression, string tableName, Expression<Func<T, bool>> condition, DatabaseType dbType = DatabaseType.MSSQLServer)
+        {
+            string columnName = expression.GetMemberName();
+            var whereInfo = SqlExpressionVisitor.GetSqlWhere(condition, dbType: dbType);
+            var whereFields = string.Empty;
+            if (whereInfo.Item1.IsNotNullAndNotEmptyWhiteSpace())
+            {
+                whereFields = $" WHERE {whereInfo.Item1}";
+            }
+            string sql = $"SELECT MAX({columnName}) FROM {tableName} {whereFields}";
+            return new SqlQuery(sql, condition);
+        }
+
+        /// <summary>
+        /// 拼接查询最大值的SQL语句
+        /// </summary>
+        /// <param name="columnName">字段名</param>
+        /// <param name="tableName">表名</param>
+        /// <param name="condition">条件</param>
+        /// <param name="dbType">数据库类型，默认MSSQLServer</param>
+        /// <returns>查询最大值的SqlQuery</returns>
+        public static SqlQuery BuilderQueryMaxSqlQuery(string columnName, string tableName, object condition, DatabaseType dbType = DatabaseType.MSSQLServer)
+        {
+            var whereFields = string.Empty;
+            var whereProperties = PropertyUtil.GetPropertyInfos(condition);
+            var whereFieldNames = whereProperties.Select(p => p.Name);
+            if (whereFieldNames.Any())
+            {
+                whereFields = " WHERE " + string.Join(" AND ", whereFieldNames.Select(p => p + " = " + GetSign(dbType) + p));
+            }
+            string sql = $"SELECT MAX({columnName}) FROM {tableName} {whereFields}";
+            return new SqlQuery(sql, condition);
         }
 
         /// <summary>
@@ -764,7 +853,5 @@ namespace JQCore.DataAccess.Utils
                     return tableName;
             }
         }
-
-
     }
 }

@@ -296,6 +296,66 @@ namespace JQCore.DataAccess.Repositories
         }
 
         /// <summary>
+        /// 获取最小值
+        /// </summary>
+        /// <typeparam name="TProperty">属性</typeparam>
+        /// <typeparam name="TReturn">返回类型</typeparam>
+        /// <param name="expression">属性表达式</param>
+        /// <param name="condition">条件</param>
+        /// <param name="isWrite">是否为写连接</param>
+        /// <returns>最小值</returns>
+        public TReturn Min<TProperty, TReturn>(Expression<Func<T, TProperty>> expression, Expression<Func<T, bool>> condition, bool isWrite = false)
+        {
+            SqlQuery query = SqlQueryUtil.BuilderQueryMinSqlQuery(expression, TableName, condition, dbType: WriterDataType);
+            return GetDataAccess(isWrite: isWrite).QuerySingleOrDefault<TReturn>(query);
+        }
+
+        /// <summary>
+        /// 异步获取最小值
+        /// </summary>
+        /// <typeparam name="TProperty">属性</typeparam>
+        /// <typeparam name="TReturn">返回类型</typeparam>
+        /// <param name="expression">属性表达式</param>
+        /// <param name="condition">条件</param>
+        /// <param name="isWrite">是否为写连接</param>
+        /// <returns>最小值</returns>
+        public Task<TReturn> MinAsync<TProperty, TReturn>(Expression<Func<T, TProperty>> expression, Expression<Func<T, bool>> condition, bool isWrite = false)
+        {
+            SqlQuery query = SqlQueryUtil.BuilderQueryMinSqlQuery(expression, TableName, condition, dbType: WriterDataType);
+            return GetDataAccess(isWrite: isWrite).QuerySingleOrDefaultAsync<TReturn>(query);
+        }
+
+        /// <summary>
+        /// 获取最大值
+        /// </summary>
+        /// <typeparam name="TProperty">属性</typeparam>
+        /// <typeparam name="TReturn">返回类型</typeparam>
+        /// <param name="expression">属性表达式</param>
+        /// <param name="condition">条件</param>
+        /// <param name="isWrite">是否为写连接</param>
+        /// <returns>最大值</returns>
+        public TReturn Max<TProperty, TReturn>(Expression<Func<T, TProperty>> expression, Expression<Func<T, bool>> condition, bool isWrite = false)
+        {
+            SqlQuery query = SqlQueryUtil.BuilderQueryMaxSqlQuery(expression, TableName, condition, dbType: WriterDataType);
+            return GetDataAccess(isWrite: isWrite).QuerySingleOrDefault<TReturn>(query);
+        }
+
+        /// <summary>
+        /// 异步获取最大值
+        /// </summary>
+        /// <typeparam name="TProperty">属性</typeparam>
+        /// <typeparam name="TReturn">返回类型</typeparam>
+        /// <param name="expression">属性表达式</param>
+        /// <param name="condition">条件</param>
+        /// <param name="isWrite">是否为写连接</param>
+        /// <returns>最大值</returns>
+        public Task<TReturn> MaxAsync<TProperty, TReturn>(Expression<Func<T, TProperty>> expression, Expression<Func<T, bool>> condition, bool isWrite = false)
+        {
+            SqlQuery query = SqlQueryUtil.BuilderQueryMaxSqlQuery(expression, TableName, condition, dbType: WriterDataType);
+            return GetDataAccess(isWrite: isWrite).QuerySingleOrDefaultAsync<TReturn>(query);
+        }
+
+        /// <summary>
         /// 获取单个对象
         /// </summary>
         /// <param name="condition">获取条件</param>

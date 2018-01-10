@@ -266,10 +266,8 @@ namespace JQCore.DataAccess.DbClient
         /// <returns>Task</returns>
         public Task BulkInsertAsync<T>(List<T> list, string tableName, string[] ignoreFields = null)
         {
-            return Task.Run(() =>
-            {
-                BulkInsert(list, tableName, ignoreFields: ignoreFields);
-            });
+            var dataTable = list.ToTable(ignoreFields: ignoreFields);
+            return BulkInsertAsync(dataTable, tableName);
         }
 
         /// <summary>
@@ -336,7 +334,53 @@ namespace JQCore.DataAccess.DbClient
         /// <returns>Task</returns>
         public Task BulkInsertAsync(DataTable table, string tableName)
         {
-            return Task.Run(() => { BulkInsert(table, tableName); });
+            return SqlMonitorUtil.MonitorAsync(async () =>
+            {
+                if (table != null && DatabaseTyoe == DatabaseType.MSSQLServer)
+                {
+                    Open();
+                    using (SqlBulkCopy sqlbulkcopy = new SqlBulkCopy(Connection as SqlConnection, SqlBulkCopyOptions.Default, Tran as SqlTransaction))
+                    {
+                        sqlbulkcopy.BatchSize = table.Rows.Count;
+                        sqlbulkcopy.DestinationTableName = tableName;
+                        for (int i = 0; i < table.Columns.Count; i++)
+                        {
+                            sqlbulkcopy.ColumnMappings.Add(table.Columns[i].ColumnName, table.Columns[i].ColumnName);
+                        }
+                        await sqlbulkcopy.WriteToServerAsync(table.CreateDataReader());
+                    }
+                }
+                else if (table != null && DatabaseTyoe == DatabaseType.MySql)
+                {
+                    string tmpPath = System.IO.Path.GetTempFileName();
+                    try
+                    {
+                        string csv = table.ToCsv();
+                        System.IO.File.WriteAllText(tmpPath, csv);
+                        Open();
+                        MySqlBulkLoader bulk = new MySqlBulkLoader(Connection as MySqlConnection)
+                        {
+                            FieldTerminator = ",",
+                            FieldQuotationCharacter = '"',
+                            EscapeCharacter = '"',
+                            LineTerminator = "\r\n",
+                            FileName = tmpPath,
+                            NumberOfLinesToSkip = 0,
+                            TableName = tableName,
+                        };
+                        bulk.Columns.AddRange(table.Columns.Cast<DataColumn>().Select(colum => colum.ColumnName).ToList());
+                        int insertCount = await bulk.LoadAsync();
+                    }
+                    finally
+                    {
+                        FileUtil.DeleteFile(tmpPath);
+                    }
+                }
+                else
+                {
+                    throw new NotSupportedException(DatabaseTyoe.ToString());
+                }
+            }, dbType: DatabaseTyoe.ToString(), memberName: "BaseDataAccess-BulkInsert");
         }
     }
 }
