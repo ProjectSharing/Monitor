@@ -10,18 +10,13 @@
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="System.Net.NetworkInformation" Version="4.3.0" />
     <PackageReference Include="ZKWeb.System.Drawing" Version="4.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Microsoft.Extensions.Caching.Abstractions">
-      <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.extensions.caching.abstractions\2.0.0\lib\netstandard2.0\Microsoft.Extensions.Caching.Abstractions.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>
